@@ -1,6 +1,7 @@
 plugins {
     application
     scala
+    id("org.openjfx.javafxplugin") version "0.1.0"
 }
 
 group = "scalatro"
@@ -22,5 +23,10 @@ tasks.test {
 }
 
 application {
-    mainClass.set("scalatro.Application")
+    mainClass.set("scalatro.ScalatroMain")
+}
+
+javafx {
+    version = "26.0.1"
+    modules("javafx.controls", "javafx.fxml")
 }
