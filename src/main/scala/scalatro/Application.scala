@@ -1,6 +1,6 @@
 package scalatro
 
-object Main:
-  @main 
+object Application:
+  @main
   def main(): Unit =
     println("Hello, world")

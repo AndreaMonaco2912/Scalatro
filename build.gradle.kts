@@ -22,5 +22,5 @@ tasks.test {
 }
 
 application {
-    mainClass.set("scalatro.Main")
+    mainClass.set("scalatro.Application")
 }
