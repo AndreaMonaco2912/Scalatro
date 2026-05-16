@@ -2,14 +2,13 @@ package scalatro
 
 import javafx.application.Application
 import javafx.fxml.FXMLLoader
-import javafx.scene.Parent
-import javafx.scene.Scene
+import javafx.scene.{Parent, Scene}
 import javafx.stage.Stage
 
-
 object ScalatroMain:
-  def main(args: Array[String]): Unit =
-    Application.launch(classOf[MainApp], args*)
+  @main
+  def main(): Unit =
+    Application.launch(classOf[MainApp])
 
 class MainApp extends Application:
   override def start(stage: Stage): Unit =

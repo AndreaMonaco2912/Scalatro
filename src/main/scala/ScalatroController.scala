@@ -1,15 +1,15 @@
 package scalatro
 
+import javafx.fxml.{FXML, Initializable}
+import javafx.scene.control.Label
+
 import java.net.URL
 import java.util.ResourceBundle
-import javafx.event.ActionEvent
-import javafx.fxml.FXML
-import javafx.fxml.Initializable
-import javafx.scene.control.Label
+import scala.compiletime.uninitialized
 
 
 class ScalatroController extends Initializable:
-  @FXML private var label: Label = null
+  @FXML private var label: Label = uninitialized
 
   override def initialize(url: URL, rb: ResourceBundle): Unit =
     val javaVersion = System.getProperty("java.version")
