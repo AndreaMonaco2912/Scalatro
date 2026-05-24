@@ -1,1 +1,11 @@
-"Product backlog item","Sprint task","Volunteer","Initial estimate of effort",1,2,3,4,5,6
+Product backlog item,Sprint task,Volunteer,Initial estimate of effort,1,2,3,4,5,6
+I would like to be able to play a round,Define card,Samorì,10,,,,,,
+,Define effects,Samorì,5,,,,,,
+,Detect hand,Ronchi,4,,,,,,
+,Calculate hand score,Ronchi,11,,,,,,
+,Play card,Baldazzi,5,,,,,,
+,Discard card,Baldazzi,1,,,,,,
+,Calculate total score,Baldazzi,7,,,,,,
+,Win and loss,Baldazzi/Monaco,2,,,,,,
+I would like to be able to play multiple rounds,Define match with multiple rounds,Monaco,10,,,,,,
+,Get next round,Monaco,5,,,,,,
