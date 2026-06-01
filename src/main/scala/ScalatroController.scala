@@ -2,6 +2,7 @@ package scalatro
 
 import javafx.fxml.{FXML, Initializable}
 import javafx.scene.control.{Label, TextField}
+import scalafx.scene.control.{Label as SfxLabel, TextField as SfxTextField}
 
 import java.net.URL
 import java.util.ResourceBundle
@@ -17,4 +18,6 @@ class StartController extends Initializable:
   @FXML private var input: TextField = uninitialized
 
   override def initialize(url: URL, resourceBundle: ResourceBundle): Unit =
-    mirror.textProperty().bindBidirectional(input.textProperty())
+    val sfxMirror = new SfxLabel(mirror)
+    val sfxInput = new SfxTextField(input)
+    sfxMirror.text <== sfxInput.text
