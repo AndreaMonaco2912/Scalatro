@@ -55,3 +55,50 @@ lazy val root = (project in file("."))
       case x => MergeStrategy.defaultMergeStrategy(x)
     }
   )
+
+// See https://www.wartremover.org/doc/warts.html.
+wartremoverErrors ++= Seq(
+  Wart.AnyVal,
+  Wart.EitherProjectionPartial,
+  Wart.IterableOps,
+  Wart.LeakingSealed,
+  Wart.Null,
+  Wart.ObjectThrowable,
+  Wart.Option2Iterable,
+  Wart.OptionPartial,
+  Wart.PlatformDefault,
+  Wart.Product,
+  Wart.Return,
+  Wart.Serializable,
+  Wart.TryPartial
+)
+
+wartremoverWarnings ++= Seq(
+  Wart.ArrayEquals,
+  Wart.ArrayToString,
+  Wart.AsInstanceOf,
+  Wart.CollectHeadOption,
+  Wart.DropTakeToSlice,
+  Wart.FilterEmpty,
+  Wart.FilterHeadOption,
+  Wart.FilterSize,
+  Wart.FindExists,
+  Wart.ForeachEntry,
+  Wart.GetGetOrElse,
+  Wart.GetOrElseNull,
+  Wart.IsInstanceOf,
+  Wart.KeySet,
+  Wart.MapContains,
+  Wart.MapUnit,
+  Wart.NonUnitStatements,
+  Wart.ReverseFind,
+  Wart.ReverseIterator,
+  Wart.ReverseTakeReverse,
+  Wart.SizeIs,
+  Wart.SizeToLength,
+  Wart.SortFilter,
+  Wart.SortedMaxMin,
+  Wart.SortedMaxMinOption,
+  Wart.StringPlusAny,
+  Wart.ToString
+)
