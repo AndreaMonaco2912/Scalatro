@@ -31,7 +31,8 @@ val javafxDeps = javafxModules.map { m =>
 }
 
 ThisBuild / libraryDependencies ++= Seq(
-  "org.scalatest" %% "scalatest" % "3.2.20" % Test
+  "org.scalatest" %% "scalatest" % "3.2.20" % Test,
+  "org.scalafx" %% "scalafx" % "26.0.0-R38"
 )
 
 lazy val root = (project in file("."))
