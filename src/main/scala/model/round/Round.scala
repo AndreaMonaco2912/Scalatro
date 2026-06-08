@@ -12,6 +12,7 @@ object Score:
   extension (s: Score)
     def +(other: Score): Score = s + other
     def -(other: Score): Score = s - other
+    def *(other: Double): Score = s * other
     def >(other: Score): Boolean = s > other
     def <(other: Score): Boolean = s < other
     def >=(other: Score): Boolean = s >= other
