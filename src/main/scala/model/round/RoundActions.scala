@@ -27,8 +27,9 @@ object RoundActions:
 
   def drawCard: StateRound[Unit] =
     State.modify { state =>
-      state.deck.headOption match
+      val (drawn, remaining) = state.deck.draw(1)
+      drawn.headOption match
         case Some(card) =>
-          state.copy(deck = state.deck.drop(1), hand = state.hand :+ card)
+          state.copy(deck = remaining, hand = state.hand :+ card)
         case None => state
     }

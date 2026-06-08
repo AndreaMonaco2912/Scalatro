@@ -1,7 +1,7 @@
 package scalatro
 package model.round
 
-import model.commons.Card
+import model.commons.{Card, Deck}
 import model.round.Score.*
 
 object Score:
@@ -27,5 +27,5 @@ object Hand:
 case class Round(
     score: Score,
     hand: Seq[Card],
-    deck: Seq[Card]
+    deck: Deck
 )

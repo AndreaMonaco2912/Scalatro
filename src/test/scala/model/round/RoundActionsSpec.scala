@@ -1,7 +1,7 @@
 package scalatro
 package model.round
 
-import model.commons.{Card, Suit}
+import model.commons.{Card, Deck, Suit}
 import model.round.Builder.{testDeck, testHand}
 
 import org.scalatest.flatspec.AnyFlatSpec
@@ -13,15 +13,18 @@ trait Builder extends BeforeAndAfterEach:
   val round: Round = Round(Score.zero, testHand, testDeck)
 
 object Builder:
-  val cardsInHand = 3
-  val (testHand, testDeck) = Seq(
+  val testHand: Seq[Card] = Seq(
     Card(1, Suit.Clubs),
     Card(2, Suit.Hearts),
-    Card(3, Suit.Diamonds),
-    Card(4, Suit.Spades),
-    Card(5, Suit.Clubs),
-    Card(6, Suit.Hearts)
-  ).splitAt(cardsInHand)
+    Card(3, Suit.Diamonds)
+  )
+  val testDeck: Deck = Deck(
+    Seq(
+      Card(4, Suit.Spades),
+      Card(5, Suit.Clubs),
+      Card(6, Suit.Hearts)
+    )
+  )
 
 class RoundActionsSpec extends AnyFlatSpec with Matchers with Builder:
   import RoundActions.*

@@ -22,6 +22,9 @@ object Deck:
       rank <- 1 to 13
     yield Card(rank, suit)
 
+  def apply(cards: Seq[Card]): Deck =
+    cards
+
   extension (d: Deck)
     def shuffle(using rng: Random): Deck = rng.shuffle(d)
     def draw(n: Int): (Seq[Card], Deck) =
