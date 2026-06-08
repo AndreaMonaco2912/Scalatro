@@ -1,8 +1,8 @@
 package scalatro
 package model.round
 
+import model.commons.{Card, Suit}
 import model.round.Builder.{testDeck, testHand}
-import model.round.Placeholders.Card
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
@@ -15,12 +15,12 @@ trait Builder extends BeforeAndAfterEach:
 object Builder:
   val cardsInHand = 3
   val (testHand, testDeck) = Seq(
-    Card("1", 1),
-    Card("2", 2),
-    Card("3", 3),
-    Card("4", 4),
-    Card("5", 5),
-    Card("6", 6)
+    Card(1, Suit.Clubs),
+    Card(2, Suit.Hearts),
+    Card(3, Suit.Diamonds),
+    Card(4, Suit.Spades),
+    Card(5, Suit.Clubs),
+    Card(6, Suit.Hearts)
   ).splitAt(cardsInHand)
 
 class RoundActionsSpec extends AnyFlatSpec with Matchers with Builder:
@@ -32,27 +32,27 @@ class RoundActionsSpec extends AnyFlatSpec with Matchers with Builder:
     newRound.deck.size should be(round.deck.size - 1)
 
   "Discarding a card" should "remove it from hand" in:
-    val card = Card("1", 1)
+    val card = Card(1, Suit.Clubs)
     round.hand should contain(card)
     val newRound = discardCardAndReplace(card).runS(round).value
-    newRound.hand should not contain (card)
+    newRound.hand should not contain card
 
   "Discarding a card" should "replace it from deck" in:
-    val card1 = Card("1", 1)
-    val card2 = Card("4", 4)
-    round.hand should not contain (card2)
+    val card1 = Card(1, Suit.Clubs)
+    val card2 = Card(4, Suit.Spades)
+    round.hand should not contain card2
     val newRound = discardCardAndReplace(card1).runS(round).value
     newRound.hand should contain(card2)
 
   "Playing a card" should "discard and replace it" in:
-    val card = Card("1", 1)
+    val card = Card(1, Suit.Clubs)
     val round1 = discardCardAndReplace(card).runS(round).value
     val round2 = playCard(card).runS(round).value
     round1.hand should be(round2.hand)
     round1.deck should be(round2.deck)
 
   "Playing a card" should "increase the score" in:
-    val card = Card("1", 1)
+    val card = Card(1, Suit.Clubs)
     playCard(card).runS(round).value.score should be(
-      round.score + Score(card.value)
+      round.score + Score(card.rank)
     )

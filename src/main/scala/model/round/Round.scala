@@ -1,7 +1,7 @@
 package scalatro
 package model.round
 
-import model.round.Placeholders.Card
+import model.commons.Card
 import model.round.Score.*
 
 object Score:
@@ -23,11 +23,6 @@ object Hand:
   opaque type Hand = Seq[Card]
   def empty: Hand = Seq()
   extension (hand: Hand) def isEmpty: Boolean = hand.isEmpty
-
-object Deck:
-  opaque type Deck = Seq[Card]
-  def empty: Deck = Seq()
-  extension (deck: Deck) def isEmpty: Boolean = deck.isEmpty
 
 case class Round(
     score: Score,
