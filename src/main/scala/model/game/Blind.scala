@@ -1,8 +1,8 @@
 package scalatro
 package model.game
 
-import model.round.Score.Score
 import model.round.Score
+import model.round.Score.Score
 
 import cats.data.State
 
@@ -24,7 +24,7 @@ object Blind:
       State.modify(b => b.copy(roundNum = b.roundNum + 1))
 
     def increaseScore: State[Blind, Unit] =
-      State.modify(b => b.copy(score = b.score * increaseAmount))
+      State.modify(b => b.copy(score = b.score * Score(increaseAmount)))
 
     for
       _ <- increaseRound
