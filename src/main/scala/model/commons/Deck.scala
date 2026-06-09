@@ -3,16 +3,6 @@ package model.commons
 
 import scala.util.Random
 
-//enum Suit:
-//  case Spades, Hearts, Clubs, Diamonds
-//
-//case class Card(rank: Int, suit: Suit)
-
-def score(card: Card): Int = card.rank match
-  case Rank.Jack | Rank.Queen | Rank.King => 10
-  case Rank.Ace            => 11
-  case n            => n.ordinal
-
 opaque type Deck = Seq[Card]
 
 object Deck:

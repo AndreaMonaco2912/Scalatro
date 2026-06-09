@@ -3,7 +3,7 @@ package model.round
 
 import model.commons.{Card, HandScoreCalculator}
 import model.commons.Score.Score
-import model.commons.Score.calculateScore
+import model.commons.Score.calculateHandScore
 
 import cats.data.State
 
@@ -32,9 +32,11 @@ object TurnActions:
       _ <- drawCards(cards.size)
     yield ()
 
-  def playCards(using calculator : HandScoreCalculator)(cards: Seq[Card]): TurnState[Unit] =
+  def playCards(using
+      calculator: HandScoreCalculator
+  )(cards: Seq[Card]): TurnState[Unit] =
     for
-      score = calculateScore(cards)
+      score = calculateHandScore(cards)
       _ <- increaseScore(score)
       _ <- discardCards(cards)
     yield ()
