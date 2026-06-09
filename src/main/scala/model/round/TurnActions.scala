@@ -1,15 +1,16 @@
 package scalatro
 package model.round
 
-import model.commons.Card
-import model.round.Score.Score
+import model.commons.{Card, HandScoreCalculator}
+import model.commons.Score.Score
+import model.commons.Score.calculateScore
 
 import cats.data.State
 
 object TurnActions:
   type TurnState[A] = State[Round, A]
 
-  def calculateScore(cards: Seq[Card]): Score = Score(cards.map(_.rank).sum)
+//  def calculateScore(cards: Seq[Card]): Score.Score = Score(cards.map(_.rank).sum)
 
   def removeCards(cards: Seq[Card]): TurnState[Unit] =
     State.modify(state =>
@@ -31,7 +32,7 @@ object TurnActions:
       _ <- drawCards(cards.size)
     yield ()
 
-  def playCards(cards: Seq[Card]): TurnState[Unit] =
+  def playCards(using calculator : HandScoreCalculator)(cards: Seq[Card]): TurnState[Unit] =
     for
       score = calculateScore(cards)
       _ <- increaseScore(score)

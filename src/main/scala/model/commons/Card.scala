@@ -19,7 +19,7 @@ enum Rank(val chips: Chips.Chips):
   case King extends Rank(10)
   case Ace extends Rank(11)
 
-case class Card(suit: Suit, rank: Rank):
+case class Card(rank: Rank, suit: Suit):
     def onScored(prevHandScore: HandScore.HandScore): HandScore.HandScore =
       HandScore(this.rank.chips + prevHandScore.chips, prevHandScore.mult)  
       

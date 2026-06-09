@@ -8,10 +8,10 @@ import scala.util.Random
 //
 //case class Card(rank: Int, suit: Suit)
 
-//def score(card: Card): Int = card.rank match
-//  case 11 | 12 | 13 => 10
-//  case 1            => 11
-//  case n            => n
+def score(card: Card): Int = card.rank match
+  case Rank.Jack | Rank.Queen | Rank.King => 10
+  case Rank.Ace            => 11
+  case n            => n.ordinal
 
 opaque type Deck = Seq[Card]
 
@@ -20,7 +20,7 @@ object Deck:
     for
       suit <- Suit.values.toSeq
       rank <- Rank.values.toSeq
-    yield Card(suit, rank)
+    yield Card(rank, suit)
 
   def apply(cards: Seq[Card]): Deck =
     cards

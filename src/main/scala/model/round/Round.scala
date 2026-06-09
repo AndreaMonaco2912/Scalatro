@@ -2,23 +2,7 @@ package scalatro
 package model.round
 
 import model.commons.{Card, Deck}
-import model.round.Score.*
-
-object Score:
-  opaque type Score = Double
-  def apply(d: Double): Score =
-    require(d >= 0.0, "Score must be positive")
-    d
-  extension (s: Score)
-    def +(other: Score): Score = s + other
-    def -(other: Score): Score = s - other
-    def *(other: Score): Score = s * other
-    def >(other: Score): Boolean = s > other
-    def <(other: Score): Boolean = s < other
-    def >=(other: Score): Boolean = s >= other
-    def <=(other: Score): Boolean = s >= other
-
-  val zero: Score = Score(0.0)
+import model.commons.Score.Score
 
 object Hand:
   opaque type Hand = Seq[Card]

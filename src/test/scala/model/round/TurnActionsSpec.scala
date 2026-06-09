@@ -1,7 +1,7 @@
 package scalatro
 package model.round
 
-import model.commons.{Card, Deck, Suit}
+import model.commons.{BasicHandScoreCalculator, Card, Deck, HandScoreCalculator, Rank, Score, Suit}
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
@@ -9,12 +9,14 @@ import org.scalatest.matchers.should.Matchers
 class TurnActionsSpec extends AnyFlatSpec with Matchers:
   import TurnActions.*
 
-  private val c1 = Card(1, Suit.Clubs)
-  private val c2 = Card(2, Suit.Hearts)
-  private val c3 = Card(3, Suit.Diamonds)
-  private val c4 = Card(4, Suit.Spades)
-  private val c5 = Card(5, Suit.Clubs)
-  private val c6 = Card(6, Suit.Hearts)
+  given calculator: HandScoreCalculator = BasicHandScoreCalculator
+
+  private val c1 = Card(Rank.Ace, Suit.Clubs)
+  private val c2 = Card(Rank.Two, Suit.Hearts)
+  private val c3 = Card(Rank.Three, Suit.Diamonds)
+  private val c4 = Card(Rank.Four, Suit.Spades)
+  private val c5 = Card(Rank.Five, Suit.Clubs)
+  private val c6 = Card(Rank.Six, Suit.Hearts)
 
   private val initialHand: Seq[Card] = Seq(c1, c2, c3)
   private val initialDeck: Deck = Deck(Seq(c4, c5, c6))

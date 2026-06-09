@@ -45,18 +45,25 @@ object HandScore:
 object Score:
   import HandScore.HandScore
   opaque type Score = Double
+
   def apply(d: Double): Score =
     require(d >= 0.0, "Score must be positive")
     d
   def apply(using calculator : HandScoreCalculator)(handScore: HandScore) : Score =
     calculator.calculate(handScore.chips, handScore.mult)
+
   extension (s: Score)
     def +(other: Score): Score = s + other
-//    def -(other: Score): Score = s - other
+    def -(other: Score): Score = s - other
     def *(other: Score): Score = s * other
-//    def >(other: Score): Boolean = s > other
+    def >(other: Score): Boolean = s > other
     def <(other: Score): Boolean = s < other
     def >=(other: Score): Boolean = s >= other
-//    def <=(other: Score): Boolean = s >= other
+    def <=(other: Score): Boolean = s >= other
+  
+  def calculateScore(using calculator : HandScoreCalculator)(cards : Seq[Card]): Score =
+    val handType : HandType = HandType.detect(cards)
+    val handScore : HandScore = cards.foldLeft(handType.baseScore)((acc,card) => card.onScored(acc))
+    Score(handScore)
 
   val zero: Score = Score(0.0)

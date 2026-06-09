@@ -7,6 +7,7 @@ import org.scalatest.matchers.should.Matchers
 
 class DeckTest extends AnyFlatSpec, Matchers:
   import Deck.*
+  import Rank.*
   given Random = Random(0L)
   val pokerDeckFullSize = 52
 
@@ -38,11 +39,11 @@ class DeckTest extends AnyFlatSpec, Matchers:
     an[IllegalArgumentException] should be thrownBy Deck().draw(-1)
 
   "score" should "count face cards as 10" in:
-    score(Card(11, Suit.Spades)) shouldBe 10
-    score(Card(13, Suit.Hearts)) shouldBe 10
+    score(Card(Jack, Suit.Spades)) shouldBe 10
+    score(Card(King, Suit.Hearts)) shouldBe 10
 
   it should "count an ace as 11" in:
-    score(Card(1, Suit.Clubs)) shouldBe 11
+    score(Card(Ace, Suit.Clubs)) shouldBe 11
 
   it should "count number cards at face value" in:
-    score(Card(7, Suit.Diamonds)) shouldBe 7
+    score(Card(Seven, Suit.Diamonds)) shouldBe 7

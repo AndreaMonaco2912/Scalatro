@@ -4,8 +4,8 @@ package model.game
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
-import model.round.Score
-import model.round.Score.Score
+import model.commons.Score
+import model.commons.Score.Score
 
 class BlindTest extends AnyFlatSpec, Matchers:
 
@@ -17,4 +17,4 @@ class BlindTest extends AnyFlatSpec, Matchers:
   it should "scale the score by the increaseAmount" in:
     val start = Blind.firstBlind
     val (result, _) = Blind.nextBlind.run(start).value
-    result.score shouldBe start.score * Blind.increaseAmount
+    result.score shouldBe start.score * Score(Blind.increaseAmount)

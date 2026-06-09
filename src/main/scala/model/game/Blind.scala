@@ -1,8 +1,8 @@
 package scalatro
 package model.game
 
-import model.round.Score
-import model.round.Score.Score
+import model.commons.Score
+import model.commons.Score.Score
 
 import cats.data.State
 
