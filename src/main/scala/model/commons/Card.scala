@@ -4,7 +4,7 @@ package model.commons
 enum Suit:
   case Spades, Hearts, Clubs, Diamonds
 
-enum Rank(val chips: Int):
+enum Rank(val chips: Chips.Chips):
   case Two extends Rank(2)
   case Three extends Rank(3)
   case Four extends Rank(4)
@@ -19,4 +19,7 @@ enum Rank(val chips: Int):
   case King extends Rank(10)
   case Ace extends Rank(11)
 
-case class Card(suit: Suit, rank: Rank)
+case class Card(suit: Suit, rank: Rank):
+    def onScored(prevHandScore: HandScore.HandScore): HandScore.HandScore =
+      HandScore(this.rank.chips + prevHandScore.chips, prevHandScore.mult)  
+      

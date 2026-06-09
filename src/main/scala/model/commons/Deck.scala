@@ -3,15 +3,15 @@ package model.commons
 
 import scala.util.Random
 
-enum Suit:
-  case Spades, Hearts, Clubs, Diamonds
+//enum Suit:
+//  case Spades, Hearts, Clubs, Diamonds
+//
+//case class Card(rank: Int, suit: Suit)
 
-case class Card(rank: Int, suit: Suit)
-
-def score(card: Card): Int = card.rank match
-  case 11 | 12 | 13 => 10
-  case 1            => 11
-  case n            => n
+//def score(card: Card): Int = card.rank match
+//  case 11 | 12 | 13 => 10
+//  case 1            => 11
+//  case n            => n
 
 opaque type Deck = Seq[Card]
 
@@ -19,8 +19,8 @@ object Deck:
   def apply(): Deck =
     for
       suit <- Suit.values.toSeq
-      rank <- 1 to 13
-    yield Card(rank, suit)
+      rank <- Rank.values.toSeq
+    yield Card(suit, rank)
 
   def apply(cards: Seq[Card]): Deck =
     cards
