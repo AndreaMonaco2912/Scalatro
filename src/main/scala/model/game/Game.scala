@@ -16,7 +16,8 @@ class Game(val seed: Long):
   def play(): GameResult =
     @tailrec
     def loop(blind: Blind): GameResult =
-      val achieved: Score = Placeholder.playRound.runA((deck.shuffle, blind)).value
+      val achieved: Score =
+        Placeholder.playRound.runA((deck.shuffle, blind)).value
       if !blind.isBeaten(achieved) then GameResult(blind, achieved)
       else loop(Blind.nextBlind.runS(blind).value)
 
