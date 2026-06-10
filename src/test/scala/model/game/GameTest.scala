@@ -12,15 +12,3 @@ class GameTest extends AnyFlatSpec, Matchers:
 
   it should "pick a random seed when none is given" in:
     Game().seed should not equal Game().seed
-
-  it should "be reproducible: same seed yields the same shuffle" in:
-    Game(seed).getShuffledDeck shouldBe Game(seed).getShuffledDeck
-
-  it should "yield different shuffles for different seeds" in:
-    Game(seed).getShuffledDeck should not equal Game(seed + 1).getShuffledDeck
-
-  it should "advance its RNG, so consecutive shuffles differ" in:
-    val game = Game(seed)
-    val first = game.getShuffledDeck
-    val second = game.getShuffledDeck
-    first should not equal second

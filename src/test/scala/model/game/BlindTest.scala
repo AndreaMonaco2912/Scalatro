@@ -9,12 +9,18 @@ import model.commons.Score.Score
 
 class BlindTest extends AnyFlatSpec, Matchers:
 
+  val start: Blind = Blind.first
+
   "nextBlind" should "increment the round number by one" in:
-    val start = Blind.firstBlind
-    val (result, _) = Blind.nextBlind.run(start).value
+    val result = Blind.nextBlind.runS(start).value
     result.roundNum shouldBe start.roundNum + 1
 
   it should "scale the score by the increaseAmount" in:
-    val start = Blind.firstBlind
-    val (result, _) = Blind.nextBlind.run(start).value
-    result.score shouldBe start.score * Score(Blind.increaseAmount)
+    val result = Blind.nextBlind.runS(start).value
+    result.targetScore shouldBe start.targetScore * Score(Blind.increaseAmount)
+
+  "isBeaten" should "be true if the achieved score meets the target" in:
+    Blind.first.isBeaten(Score(300)) shouldBe true
+
+  it should "fail when the achieved score is below the target" in:
+    Blind.first.isBeaten(Score(299)) shouldBe false
