@@ -2,26 +2,29 @@ package scalatro
 package model.game
 
 import scala.util.Random
-import model.commons.Deck
 import model.commons.Score.Score
 import model.round.Placeholder
 
-import scala.annotation.tailrec
+import cats.data.State
+import cats.syntax.all.*
 
 class Game(val seed: Long):
   private val rng: Random = Random(seed)
-  given Random = rng
-  private val deck: Deck = Deck()
+  private given Random = rng
 
   def play(): GameResult =
-    @tailrec
-    def loop(blind: Blind): GameResult =
-      val achieved: Score =
-        Placeholder.playRound.runA((deck.shuffle, blind)).value
-      if !blind.isBeaten(achieved) then GameResult(blind, achieved)
-      else loop(Blind.nextBlind.runS(blind).value)
+    gameLoop.runA(GameState.initial).value
 
-    loop(Blind.first)
+  private def gameLoop: State[GameState, GameResult] =
+    for
+      blind <- State.inspect[GameState, Blind](_.blind)
+      _ <- GameState.shuffleDeck
+      score <- Placeholder.playRound
+      result <-
+        if blind.isBeaten(score)
+        then GameState.advanceBlind >> gameLoop
+        else State.pure[GameState, GameResult](GameResult(blind, score))
+    yield result
 
 case class GameResult(blind: Blind, finalScore: Score):
   def isGameLost: Boolean = !blind.isBeaten(finalScore)
