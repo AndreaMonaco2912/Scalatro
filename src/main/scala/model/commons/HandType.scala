@@ -1,10 +1,6 @@
 package scalatro
 package model.commons
 
-import model.commons.Rank.Ace
-
-import scala.{+:, ::}
-
 enum HandType(val baseScore: HandScore.HandScore):
   case HighCard extends HandType(HandScore(5, 1))
   case Pair extends HandType(HandScore(10, 2))
