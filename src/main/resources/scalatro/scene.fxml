@@ -81,28 +81,20 @@
             <VBox alignment="CENTER" spacing="10.0">
                 <HBox alignment="CENTER" spacing="8.0">
                     <ImageView fx:id="card1" fitHeight="130.0" fitWidth="90.0" preserveRatio="true" pickOnBounds="true">
-                        <image><Image url="@cards/2_of_Clubs.png"/></image>
                     </ImageView>
                     <ImageView fx:id="card2" fitHeight="130.0" fitWidth="90.0" preserveRatio="true" pickOnBounds="true">
-                        <image><Image url="@cards/3_of_Clubs.png"/></image>
                     </ImageView>
                     <ImageView fx:id="card3" fitHeight="130.0" fitWidth="90.0" preserveRatio="true" pickOnBounds="true">
-                        <image><Image url="@cards/Jack_of_Spades.png"/></image>
                     </ImageView>
                     <ImageView fx:id="card4" fitHeight="130.0" fitWidth="90.0" preserveRatio="true" pickOnBounds="true">
-                        <image><Image url="@cards/Queen_of_Hearts.png"/></image>
                     </ImageView>
                     <ImageView fx:id="card5" fitHeight="130.0" fitWidth="90.0" preserveRatio="true" pickOnBounds="true">
-                        <image><Image url="@cards/Ace_of_Hearts.png"/></image>
                     </ImageView>
                     <ImageView fx:id="card6" fitHeight="130.0" fitWidth="90.0" preserveRatio="true" pickOnBounds="true">
-                        <image><Image url="@cards/Jack_of_Diamonds.png"/></image>
                     </ImageView>
                     <ImageView fx:id="card7" fitHeight="130.0" fitWidth="90.0" preserveRatio="true" pickOnBounds="true">
-                        <image><Image url="@cards/Jack_of_Diamonds.png"/></image>
                     </ImageView>
                     <ImageView fx:id="card8" fitHeight="130.0" fitWidth="90.0" preserveRatio="true" pickOnBounds="true">
-                        <image><Image url="@cards/Jack_of_Diamonds.png"/></image>
                     </ImageView>
                 </HBox>
                 <!-- Label under the cards, modified by the controller -->
