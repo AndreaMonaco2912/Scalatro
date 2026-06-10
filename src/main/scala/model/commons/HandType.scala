@@ -26,18 +26,18 @@ object HandType:
       cards.sizeIs == 5 && cards.map(_.rank.ordinal).sorted.sliding(2).forall {
         case Seq(a, b) => b - a == 1
       }
-    val lowStraight = cards.sizeIs == 5 && containsAce && (-1 +: cards
+    val aceLowStraight = cards.sizeIs == 5 && containsAce && (-1 +: cards
       .map(_.rank.ordinal)
       .sorted
       .dropRight(1)).sliding(2).forall { case Seq(a, b) => b - a == 1 }
-    val isStraight = normalStraight || lowStraight
+    val isStraight = normalStraight || aceLowStraight
     val numRanks = ranks.values.map(_.size).toSeq.sorted.reverse
 
     handType match
       case FlushFive     => numRanks.contains(5) && isFlush
       case FlushHouse    => numRanks.take(2) == Seq(3, 2) && isFlush
       case FiveOfAKind   => numRanks.contains(5)
-      case RoyalFlush    => isStraight && isFlush && containsAce
+      case RoyalFlush    => normalStraight && isFlush && containsAce
       case StraightFlush => isStraight && isFlush
       case FourOfAKind   => numRanks.contains(4)
       case FullHouse     => numRanks.take(2) == Seq(3, 2)
