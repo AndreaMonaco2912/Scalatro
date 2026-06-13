@@ -18,7 +18,7 @@
             style="-fx-background-color: #1a6b3a;"
             stylesheets="@styles.css"
             xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-            fx:controller="scalatro.ScalatroController">
+            fx:controller="scalatro.view.FxController">
 
     <!-- ============================================================ -->
     <!-- LEFT COLUMN: Blind info / Goal score / Round score / Chips×Mult -->
