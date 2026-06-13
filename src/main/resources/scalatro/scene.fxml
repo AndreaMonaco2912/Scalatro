@@ -1,67 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="600.0" prefWidth="1000.0"
+<BorderPane prefHeight="680.0" prefWidth="1100.0"
             style="-fx-background-color: #1a6b3a;"
+            stylesheets="@styles.css"
             xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
             fx:controller="scalatro.ScalatroController">
 
     <!-- ============================================================ -->
-    <!-- LEFT COLUMN: Gray sidebar with Score + Chips × Mult           -->
+    <!-- LEFT COLUMN: Blind info / Goal score / Round score / Chips×Mult -->
     <!-- ============================================================ -->
     <left>
-        <VBox alignment="TOP_CENTER" prefWidth="220.0" spacing="25.0"
-              style="-fx-background-color: #5a5a5a;">
+        <VBox alignment="TOP_CENTER" prefWidth="230.0" spacing="16.0"
+              style="-fx-background-color: #2c5f45; -fx-border-color: #1a4a30; -fx-border-width: 0 2 0 0;">
             <padding>
-                <Insets top="40" right="15" bottom="30" left="15"/>
+                <Insets top="30" right="15" bottom="30" left="15"/>
             </padding>
 
-            <!-- Big white bold label at the top of the column -->
-            <Label fx:id="scoreLabel" text="SCORE" textFill="WHITE">
-                <font>
-                    <Font name="System Bold" size="32.0"/>
-                </font>
+            <!-- Current blind name -->
+            <Label text="SMALL BLIND" textFill="#f5c842">
+                <font><Font name="System Bold" size="15.0"/></font>
             </Label>
 
-            <!-- Blue rectangle  ×  Red rectangle, white labels inside -->
-            <HBox alignment="CENTER" spacing="12.0">
+            <!-- Score to beat -->
+            <VBox alignment="CENTER" spacing="5.0" styleClass="score-box">
+                <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
+                <Label text="Score at least" textFill="#aaaaaa">
+                    <font><Font size="12.0"/></font>
+                </Label>
+                <Label fx:id="goalLabel" text="300" textFill="white">
+                    <font><Font name="System Bold" size="28.0"/></font>
+                </Label>
+            </VBox>
 
-                <!-- Blue rectangle (chips) -->
+            <!-- Current round score -->
+            <VBox alignment="CENTER" spacing="5.0" styleClass="score-box">
+                <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
+                <Label text="Round Score" textFill="#aaaaaa">
+                    <font><Font size="12.0"/></font>
+                </Label>
+                <Label fx:id="roundScoreLabel" text="0" textFill="#f5e642">
+                    <font><Font name="System Bold" size="28.0"/></font>
+                </Label>
+            </VBox>
+
+            <!-- Push chips×mult to the bottom -->
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <!-- Chips × Mult -->
+            <HBox alignment="CENTER" spacing="10.0">
+                <!-- Blue chips rectangle -->
                 <StackPane>
                     <Rectangle arcHeight="12.0" arcWidth="12.0"
                                fill="#2a82d8" height="60.0" width="75.0"/>
                     <Label fx:id="chipsLabel" text="0" textFill="WHITE">
-                        <font>
-                            <Font name="System Bold" size="24.0"/>
-                        </font>
+                        <font><Font name="System Bold" size="24.0"/></font>
                     </Label>
                 </StackPane>
 
-                <!-- White × between the two rectangles -->
-                <Label text="X" textFill="WHITE">
-                    <font>
-                        <Font name="System Bold" size="26.0"/>
-                    </font>
+                <Label text="×" textFill="WHITE">
+                    <font><Font name="System Bold" size="26.0"/></font>
                 </Label>
 
-                <!-- Red rectangle (mult) -->
+                <!-- Red mult rectangle -->
                 <StackPane>
                     <Rectangle arcHeight="12.0" arcWidth="12.0"
                                fill="#d84a4a" height="60.0" width="75.0"/>
                     <Label fx:id="multLabel" text="0" textFill="WHITE">
-                        <font>
-                            <Font name="System Bold" size="24.0"/>
-                        </font>
+                        <font><Font name="System Bold" size="24.0"/></font>
                     </Label>
                 </StackPane>
             </HBox>
@@ -69,52 +88,135 @@
     </left>
 
     <!-- ============================================================ -->
-    <!-- BOTTOM AREA: 8 cards + deck, each with a label underneath     -->
+    <!-- RIGHT COLUMN: Play / Discard buttons with counters            -->
     <!-- ============================================================ -->
-    <bottom>
-        <HBox alignment="BOTTOM_CENTER" spacing="40.0">
+    <right>
+        <VBox alignment="TOP_CENTER" prefWidth="175.0" spacing="14.0"
+              style="-fx-background-color: #2c5f45; -fx-border-color: #1a4a30; -fx-border-width: 0 0 0 2;">
             <padding>
-                <Insets top="20" right="40" bottom="40" left="40"/>
+                <Insets top="50" right="15" bottom="30" left="15"/>
             </padding>
 
-            <!-- The 8 selectable cards + label under them -->
-            <VBox alignment="CENTER" spacing="10.0">
-                <HBox alignment="CENTER" spacing="8.0">
-                    <ImageView fx:id="card1" fitHeight="130.0" fitWidth="90.0" preserveRatio="true" pickOnBounds="true">
-                    </ImageView>
-                    <ImageView fx:id="card2" fitHeight="130.0" fitWidth="90.0" preserveRatio="true" pickOnBounds="true">
-                    </ImageView>
-                    <ImageView fx:id="card3" fitHeight="130.0" fitWidth="90.0" preserveRatio="true" pickOnBounds="true">
-                    </ImageView>
-                    <ImageView fx:id="card4" fitHeight="130.0" fitWidth="90.0" preserveRatio="true" pickOnBounds="true">
-                    </ImageView>
-                    <ImageView fx:id="card5" fitHeight="130.0" fitWidth="90.0" preserveRatio="true" pickOnBounds="true">
-                    </ImageView>
-                    <ImageView fx:id="card6" fitHeight="130.0" fitWidth="90.0" preserveRatio="true" pickOnBounds="true">
-                    </ImageView>
-                    <ImageView fx:id="card7" fitHeight="130.0" fitWidth="90.0" preserveRatio="true" pickOnBounds="true">
-                    </ImageView>
-                    <ImageView fx:id="card8" fitHeight="130.0" fitWidth="90.0" preserveRatio="true" pickOnBounds="true">
-                    </ImageView>
-                </HBox>
-                <!-- Label under the cards, modified by the controller -->
-                <Label fx:id="handLabel" text="Hand" textFill="WHITE">
-                    <font>
-                        <Font name="System Bold" size="16.0"/>
-                    </font>
+            <!-- Play Hand -->
+            <Button fx:id="playButton" text="Play Hand" maxWidth="Infinity"
+                    styleClass="play-button">
+                <font><Font name="System Bold" size="15.0"/></font>
+            </Button>
+            <HBox alignment="CENTER" spacing="5.0">
+                <Label fx:id="handsRemainingLabel" text="3" textFill="WHITE">
+                    <font><Font name="System Bold" size="15.0"/></font>
                 </Label>
-            </VBox>
+                <Label text="hands left" textFill="#aaaaaa">
+                    <font><Font size="13.0"/></font>
+                </Label>
+            </HBox>
 
-            <!-- The deck + label under it -->
-            <VBox alignment="CENTER" spacing="10.0">
-                <ImageView fx:id="deckImage" fitHeight="130.0" fitWidth="90.0" preserveRatio="true">
+            <Region prefHeight="20.0"/>
+
+            <!-- Discard -->
+            <Button fx:id="discardButton" text="Discard" maxWidth="Infinity"
+                    styleClass="discard-button">
+                <font><Font name="System Bold" size="15.0"/></font>
+            </Button>
+            <HBox alignment="CENTER" spacing="5.0">
+                <Label fx:id="discardsRemainingLabel" text="3" textFill="WHITE">
+                    <font><Font name="System Bold" size="15.0"/></font>
+                </Label>
+                <Label text="discards left" textFill="#aaaaaa">
+                    <font><Font size="13.0"/></font>
+                </Label>
+            </HBox>
+        </VBox>
+    </right>
+
+    <!-- ============================================================ -->
+    <!-- CENTER: Detected hand name + level                            -->
+    <!-- ============================================================ -->
+    <center>
+        <VBox alignment="CENTER" spacing="6.0">
+            <!-- fx:id="handLabel" preserved from the original for controller compat -->
+            <Label fx:id="handLabel" text="High Card" textFill="WHITE">
+                <font><Font name="System Bold" size="26.0"/></font>
+            </Label>
+            <Label fx:id="handLevelLabel" text="lvl. 1" textFill="#aaaaaa">
+                <font><Font size="14.0"/></font>
+            </Label>
+        </VBox>
+    </center>
+
+    <!-- ============================================================ -->
+    <!-- BOTTOM: 8 card ToggleButtons + deck                           -->
+    <!--                                                               -->
+    <!-- Each ToggleButton wraps the ImageView as its graphic.         -->
+    <!-- The fx:id on the ImageView (card1..8) keeps the controller    -->
+    <!-- @FXML bindings intact. The fx:id on each ToggleButton         -->
+    <!-- (cardBtn1..8) is for toggling logic in the controller.        -->
+    <!-- ============================================================ -->
+    <bottom>
+        <HBox alignment="BOTTOM_CENTER" spacing="22.0">
+            <padding>
+                <Insets top="10" right="20" bottom="28" left="20"/>
+            </padding>
+
+            <!-- The 8 selectable card slots -->
+            <HBox alignment="BOTTOM_CENTER" spacing="5.0">
+                <ToggleButton fx:id="cardBtn1" styleClass="card-button">
+                    <graphic>
+                        <ImageView fx:id="card1" fitHeight="125.0" fitWidth="85.0"
+                                   preserveRatio="true" pickOnBounds="true"/>
+                    </graphic>
+                </ToggleButton>
+                <ToggleButton fx:id="cardBtn2" styleClass="card-button">
+                    <graphic>
+                        <ImageView fx:id="card2" fitHeight="125.0" fitWidth="85.0"
+                                   preserveRatio="true" pickOnBounds="true"/>
+                    </graphic>
+                </ToggleButton>
+                <ToggleButton fx:id="cardBtn3" styleClass="card-button">
+                    <graphic>
+                        <ImageView fx:id="card3" fitHeight="125.0" fitWidth="85.0"
+                                   preserveRatio="true" pickOnBounds="true"/>
+                    </graphic>
+                </ToggleButton>
+                <ToggleButton fx:id="cardBtn4" styleClass="card-button">
+                    <graphic>
+                        <ImageView fx:id="card4" fitHeight="125.0" fitWidth="85.0"
+                                   preserveRatio="true" pickOnBounds="true"/>
+                    </graphic>
+                </ToggleButton>
+                <ToggleButton fx:id="cardBtn5" styleClass="card-button">
+                    <graphic>
+                        <ImageView fx:id="card5" fitHeight="125.0" fitWidth="85.0"
+                                   preserveRatio="true" pickOnBounds="true"/>
+                    </graphic>
+                </ToggleButton>
+                <ToggleButton fx:id="cardBtn6" styleClass="card-button">
+                    <graphic>
+                        <ImageView fx:id="card6" fitHeight="125.0" fitWidth="85.0"
+                                   preserveRatio="true" pickOnBounds="true"/>
+                    </graphic>
+                </ToggleButton>
+                <ToggleButton fx:id="cardBtn7" styleClass="card-button">
+                    <graphic>
+                        <ImageView fx:id="card7" fitHeight="125.0" fitWidth="85.0"
+                                   preserveRatio="true" pickOnBounds="true"/>
+                    </graphic>
+                </ToggleButton>
+                <ToggleButton fx:id="cardBtn8" styleClass="card-button">
+                    <graphic>
+                        <ImageView fx:id="card8" fitHeight="125.0" fitWidth="85.0"
+                                   preserveRatio="true" pickOnBounds="true"/>
+                    </graphic>
+                </ToggleButton>
+            </HBox>
+
+            <!-- Deck -->
+            <VBox alignment="CENTER" spacing="6.0">
+                <ImageView fx:id="deckImage" fitHeight="125.0" fitWidth="85.0" preserveRatio="true">
                     <image><Image url="@cards/Jack_of_Diamonds.png"/></image>
                 </ImageView>
-                <!-- Label under the deck, modified by the controller -->
                 <Label fx:id="deckLabel" text="Deck" textFill="WHITE">
-                    <font>
-                        <Font name="System Bold" size="16.0"/>
-                    </font>
+                    <font><Font name="System Bold" size="14.0"/></font>
                 </Label>
             </VBox>
         </HBox>

@@ -1,3 +1,88 @@
+/* ── General ─────────────────────────────────────────────────────── */
 .label {
     -fx-text-fill: white;
+}
+
+/* ── Score boxes (goal + round score panels) ─────────────────────── */
+.score-box {
+    -fx-background-color: #111827;
+    -fx-background-radius: 8;
+    -fx-min-width: 190;
+}
+
+/* ── Card toggle buttons ─────────────────────────────────────────── */
+/*
+ * Cards sit in ToggleButtons with transparent background.
+ * :selected  → card lifts up (negative translateY) + golden glow.
+ * :hover     → subtle lift preview so the cursor feels responsive.
+ * The translateY moves the whole button, so the card image rises
+ * visually while the bottom of the slot stays anchored.
+ */
+.card-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 6;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-padding: 4 2 4 2;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.55), 8, 0, 0, 4);
+    -fx-translate-y: 0;
+}
+
+.card-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.06);
+    -fx-translate-y: -6;
+    -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.25), 10, 0.2, 0, 0);
+}
+
+.card-button:selected {
+    -fx-background-color: transparent;
+    -fx-translate-y: -20;
+    -fx-effect: dropshadow(gaussian, rgba(255, 210, 0, 0.95), 18, 0.65, 0, 0);
+}
+
+/* Suppress the default focused ring that ToggleButton shows */
+.card-button:focused {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+/* ── Play Hand button ────────────────────────────────────────────── */
+.play-button {
+    -fx-background-color: #1e4fc2;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-padding: 12 18 12 18;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.45), 6, 0, 0, 2);
+}
+
+.play-button:hover {
+    -fx-background-color: #2d60d8;
+}
+
+.play-button:pressed {
+    -fx-background-color: #163aa8;
+    -fx-translate-y: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 3, 0, 0, 1);
+}
+
+/* ── Discard button ──────────────────────────────────────────────── */
+.discard-button {
+    -fx-background-color: #c24a10;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-padding: 12 18 12 18;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.45), 6, 0, 0, 2);
+}
+
+.discard-button:hover {
+    -fx-background-color: #d85a1a;
+}
+
+.discard-button:pressed {
+    -fx-background-color: #a03a08;
+    -fx-translate-y: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 3, 0, 0, 1);
 }
