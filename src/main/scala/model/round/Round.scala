@@ -8,8 +8,11 @@ import model.game.Blind
 type Hand = Seq[Card]
 
 enum RoundAction:
-  case PlayCard
-  case Discard
+  case PlayCards(cards: Seq[Card])
+  case DiscardCards(cards: Seq[Card])
+
+enum RoundResult:
+  case Victory, Defeat
 
 trait Round:
   def score: Score
@@ -21,6 +24,7 @@ trait Round:
       hand: Hand = hand,
       deck: Deck = deck
   ): Round
+  def isFinished: Boolean
 
 object Round:
   def apply(score: Score, hand: Hand, deck: Deck, blind: Blind): Round =
@@ -34,3 +38,5 @@ object Round:
   ) extends Round:
     override def modify(score: Score, hand: Hand, deck: Deck): Round =
       RoundImpl(score, hand, deck, blind)
+      
+    override def isFinished: Boolean = blind.isBeaten(score)

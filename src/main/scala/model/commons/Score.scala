@@ -62,6 +62,7 @@ object Score:
     def <(other: Score): Boolean = s < other
     def >=(other: Score): Boolean = s >= other
     def <=(other: Score): Boolean = s >= other
+    def asDouble: Double = s
 
   def calculateHandScore(using
       calculator: HandScoreCalculator
