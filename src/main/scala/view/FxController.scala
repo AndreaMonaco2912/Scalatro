@@ -85,7 +85,7 @@ class FxController extends Initializable:
   /** Update all UI nodes to reflect the new Round state. */
   def update(round: Round): Unit =
     Platform.runLater { () =>
-      // Scores
+      goalLabel.setText(round.blind.targetScore.asDouble.toString)
       roundScoreLabel.setText(round.score.asDouble.toString)
       deckLabel.setText(s"${round.deck.size} left")
 

@@ -11,6 +11,7 @@ import scala.util.Random
 class GameStateTest extends AnyFlatSpec, Matchers:
 
   val start: GameState = GameState.initial
+  given Random = new Random(0L)
 
   "initial" should "start at the first blind" in:
     start.blind shouldBe Blind.first
@@ -19,10 +20,13 @@ class GameStateTest extends AnyFlatSpec, Matchers:
     start.deck.cards should contain theSameElementsAs Deck().cards
 
   "advanceBlind" should "replace the blind with its next" in:
-    val result = GameState.advanceBlind.runS(start).value
+    val result = start.advanceBlind
     result.blind shouldBe start.blind.next
 
-  it should "preserve the multiset of cards" in:
-    given Random = new Random(0L)
-    val result = GameState.shuffleDeck.runS(start).value
+  "shuffle" should "preserve all the cards" in:
+    val result = start.shuffleDeck
     result.deck.cards should contain theSameElementsAs start.deck.cards
+
+  "shuffle" should "change the card order" in:
+    val result = start.shuffleDeck
+    result.deck should not equal start.deck

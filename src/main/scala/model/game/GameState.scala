@@ -4,16 +4,13 @@ package model.game
 import scala.util.Random
 import model.commons.Deck
 
-import cats.data.State
+case class GameState(deck: Deck, blind: Blind):
+  def shuffleDeck(using Random): GameState =
+    this.copy(deck = deck.shuffle)
 
-case class GameState(deck: Deck, blind: Blind)
+  def advanceBlind: GameState =
+    this.copy(blind = blind.next)
 
 object GameState:
   def initial: GameState =
     GameState(Deck(), Blind.first)
-
-  def shuffleDeck(using Random): State[GameState, Unit] =
-    State.modify[GameState](s => s.copy(deck = s.deck.shuffle))
-
-  val advanceBlind: State[GameState, Unit] =
-    State.modify[GameState](s => s.copy(blind = s.blind.next))

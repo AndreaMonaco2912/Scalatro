@@ -1,6 +1,6 @@
 package scalatro
 
-import controller.SingleRoundController
+import controller.{GameController, GameViews, SingleRoundController}
 import model.round.RoundAction
 import view.{FxController, FxView}
 
@@ -36,7 +36,7 @@ object MainApp extends JFXApp3:
       for
         queue <- Queue.unbounded[IO, RoundAction]
         view = FxView(fxController, queue) // injects queue into fxController
-        ctrl = SingleRoundController(view, queue)
+        ctrl = GameController(GameViews(view), queue)
         _ <- ctrl.start()
       yield ()
 
