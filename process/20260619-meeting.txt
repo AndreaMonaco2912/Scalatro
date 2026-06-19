@@ -1,0 +1,5 @@
+Conclusioni della riunione:
+- Completata (e testata) la realizzazione di una versione semplificata del gioco
+- Demo live dello stato attuale
+- Definizione comune dei termini del modello
+- Discussione su tecnologie da utilizzare nel futuro del progetto

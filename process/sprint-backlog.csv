@@ -1,11 +1,36 @@
+Sprint 1,,,,,,,,,
 Product backlog item,Sprint task,Volunteer,Initial estimate of effort,1,2,3,4,5,6
-I would like to be able to play a round,Define card,Samorì,10,,,,,,
-,Define effects,Samorì,5,,,,,,
-,Detect hand,Ronchi,4,,,,,,
-,Calculate hand score,Ronchi,11,,,,,,
-,Play card,Baldazzi,5,,,,,,
-,Discard card,Baldazzi,1,,,,,,
-,Calculate total score,Baldazzi,7,,,,,,
-,Win and loss,Baldazzi/Monaco,2,,,,,,
-I would like to be able to play multiple rounds,Define match with multiple rounds,Monaco,10,,,,,,
-,Get next round,Monaco,5,,,,,,
+I would like to be able to play a round,Define card,Samorì,5,5,5,2,0,0,0
+,Define effects,Samorì,5,5,5,5,3,2,0
+,Detect hand,Ronchi,4,4,2,2,2,0,0
+,Calculate hand score,Ronchi,11,11,5,5,5,3,3
+,Play card,Baldazzi,10,7,3,0,0,0,0
+,Discard card,Baldazzi,1,1,1,1,0,0,0
+,Calculate total score,Baldazzi,3,3,3,2,1,0,0
+,Define round logic,Baldazzi,10,10,10,10,7,3,0
+,Win and loss,Baldazzi/Monaco,2,2,2,1,1,1,1
+I would like to be able to play multiple rounds,Define match with multiple rounds,Monaco,9,9,9,9,9,5,0
+,Get next round,Monaco,6,6,2,0,0,0,0
+,,,,,,,,,
+Sprint 2,,,,,,,,,
+Product backlog item,Sprint task,Volunteer,Initial estimate of effort,1,2,3,4,5,6
+Joker cards,Define joker concept,Ronchi,5,,,,,,
+,Define joker effects,Ronchi,3,,,,,,
+,Implement different joker cards,Ronchi,3,,,,,,
+Planet cards,Define hand type levels,Ronchi,2,,,,,,
+,Define planet card,Ronchi,2,,,,,,
+,DSL for defining combo,???,???,,,,,,
+Card packs,Define card pack,Samorì,5,,,,,,
+,Implement cards blacklist,Samorì,1,,,,,,
+Shop with default packs (free),Define shop,Monaco,5,,,,,,
+After round screen,Win and loss,Monaco,1,,,,,,
+,Implement round win screen,Monaco,1,,,,,,
+,Implement loss screen,Monaco,2,,,,,,
+Game menu for informations,Implement hand levels screen,Monaco,2,,,,,,
+,Implement deck screen,Monaco,4,,,,,,
+Playing hand animations,Implement score preview,Baldazzi,3,,,,,,
+,Real-time hand score update,Samorì,9,,,,,,
+Sorting hand cards,Sort hand by suit,Baldazzi,2,,,,,,
+,Sort hand by rank,Baldazzi,1,,,,,,
+,Custom rearrange (all kinds of cards),Baldazzi,3,,,,,,
+Advanced testing techniques,Implement mockito,Baldazzi,6,,,,,,

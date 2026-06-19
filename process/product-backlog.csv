@@ -1,1 +1,16 @@
-"Priority","Item","Estimated initial size",0,1,2,3,4
+Sprint 1,,,
+Priority,Item,Estimated initial size,Residual size
+1,Play basic round,50,5
+2,Play multiple rounds,15,0
+,,,
+Sprint 2,,,
+Priority,Item,Estimated initial size,Residual size
+1,After round screen,4,
+2,Joker cards,11,
+3,Planet cards,4+???,
+4,Card packs,6,
+5,Shop with default packs,5,
+6,Playing hand animations,12,
+7,Game menu,6,
+8,Sorting hand cards,6,
+9,Advanced testing techniques,6,
