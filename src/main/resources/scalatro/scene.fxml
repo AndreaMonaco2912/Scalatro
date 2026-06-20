@@ -213,7 +213,7 @@
             <!-- Deck -->
             <VBox alignment="CENTER" spacing="6.0">
                 <ImageView fx:id="deckImage" fitHeight="125.0" fitWidth="85.0" preserveRatio="true">
-                    <image><Image url="@cards/Jack_of_Diamonds.png"/></image>
+                    <image><Image url="@decks/Red_Deck.png"/></image>
                 </ImageView>
                 <Label fx:id="deckLabel" text="Deck" textFill="WHITE">
                     <font><Font name="System Bold" size="14.0"/></font>
