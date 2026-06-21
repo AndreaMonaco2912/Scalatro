@@ -42,6 +42,10 @@ object HandScore:
   def apply(chips: Chips, mult: Mult): HandScore =
     HandScore(chips, mult)
 
+  extension (hs : HandScore)
+    def +(other : HandScore) : HandScore = HandScore(hs.chips+other.chips, hs.mult+hs.mult)
+    def *(mult: Int) : HandScore = HandScore(hs.chips*mult, hs.mult*mult)
+
 object Score:
   import HandScore.HandScore
   opaque type Score = Double
@@ -68,8 +72,9 @@ object Score:
       calculator: HandScoreCalculator
   )(cards: Seq[Card]): Score =
     val handType: HandType = HandType.detect(cards)
+    val scoringCards = HandType.getScoringCards(cards)
     val handScore: HandScore =
-      cards.foldLeft(handType.baseScore)((acc, card) => card.onScored(acc))
+      scoringCards.foldLeft(handType.baseScore)((acc, card) => card.onScored(acc))
     Score(handScore)
 
   val zero: Score = Score(0.0)

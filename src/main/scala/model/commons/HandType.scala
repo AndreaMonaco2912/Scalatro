@@ -11,7 +11,6 @@ enum HandType(val baseScore: HandScore.HandScore):
   case FullHouse extends HandType(HandScore(40, 4))
   case FourOfAKind extends HandType(HandScore(60, 7))
   case StraightFlush extends HandType(HandScore(100, 8))
-  case RoyalFlush extends HandType(HandScore(100, 8))
   case FiveOfAKind extends HandType(HandScore(120, 12))
   case FlushHouse extends HandType(HandScore(140, 14))
   case FlushFive extends HandType(HandScore(160, 16))
@@ -37,7 +36,6 @@ object HandType:
       case FlushFive     => numRanks.contains(5) && isFlush
       case FlushHouse    => numRanks.take(2) == Seq(3, 2) && isFlush
       case FiveOfAKind   => numRanks.contains(5)
-      case RoyalFlush    => normalStraight && isFlush && containsAce
       case StraightFlush => isStraight && isFlush
       case FourOfAKind   => numRanks.contains(4)
       case FullHouse     => numRanks.take(2) == Seq(3, 2)
@@ -52,3 +50,17 @@ object HandType:
     HandType.values
       .findLast(handType => contains(cards, handType))
       .getOrElse(HighCard)
+
+  def getScoringCards(cards : Seq[Card]) : Seq[Card] =
+    val handType : HandType = detect(cards)
+    val ranks = cards.groupBy(_.rank)
+
+    handType match
+      case FlushFive | FlushHouse | FiveOfAKind | FullHouse | StraightFlush | Straight | Flush => cards
+      case FourOfAKind => ranks.values.find(_.sizeIs == 4).getOrElse(Seq.empty)
+      case ThreeOfAKind => ranks.values.find(_.sizeIs == 3).getOrElse(Seq.empty)
+      case TwoPair => ranks.values.filter(_.sizeIs == 2).flatten.toSeq
+      case Pair => ranks.values.find(_.sizeIs == 2).getOrElse(Seq.empty)
+      case HighCard => cards.maxByOption(_.rank.ordinal) match
+        case None => Seq.empty
+        case Some(c) => Seq(c)

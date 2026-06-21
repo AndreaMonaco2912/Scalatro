@@ -24,7 +24,7 @@ class HandTypeTest extends AnyFlatSpec, Matchers:
     val cards: Seq[Card] = Seq(c1, c2, c3, c4, c5)
     HandType.detect(cards) shouldBe HandType.FlushHouse
 
-  "Flush five" should "be detected with 5 cards of the same rank but not of the same suit" in:
+  "Five of a kind" should "be detected with 5 cards of the same rank but not of the same suit" in:
     val c1: Card = Card(Rank.Six, Suit.Clubs)
     val c2: Card = Card(Rank.Six, Suit.Clubs)
     val c3: Card = Card(Rank.Six, Suit.Clubs)
@@ -32,15 +32,6 @@ class HandTypeTest extends AnyFlatSpec, Matchers:
     val c5: Card = Card(Rank.Six, Suit.Diamonds)
     val cards: Seq[Card] = Seq(c1, c2, c3, c4, c5)
     HandType.detect(cards) shouldBe HandType.FiveOfAKind
-
-  "Royal flush" should "be detected with cards from ace to 10 of the same suit" in:
-    val c1: Card = Card(Rank.Ace, Suit.Hearts)
-    val c2: Card = Card(Rank.King, Suit.Hearts)
-    val c3: Card = Card(Rank.Queen, Suit.Hearts)
-    val c4: Card = Card(Rank.Jack, Suit.Hearts)
-    val c5: Card = Card(Rank.Ten, Suit.Hearts)
-    val cards: Seq[Card] = Seq(c1, c2, c3, c4, c5)
-    HandType.detect(cards) shouldBe HandType.RoyalFlush
 
   "Straight flush" should "be detected with 5 cards in a straight of the same suit" in:
     val c1: Card = Card(Rank.Nine, Suit.Hearts)
