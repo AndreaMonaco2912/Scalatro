@@ -20,10 +20,10 @@ enum Rank(val value: Int):
   case Ace extends Rank(14)
 
 case class Card(rank: Rank, suit: Suit):
-  def onScored(prevHandScore: HandScore.HandScore): HandScore.HandScore =
+  def onScored(prevHandScore: HandScore): HandScore =
     HandScore(this.getBaseChips + prevHandScore.chips, prevHandScore.mult)
 
   def getBaseChips: Chips.Chips = this.rank match
     case Rank.Jack | Rank.Queen | Rank.King => 10
-    case Rank.Ace => 11
-    case r => r.value
+    case Rank.Ace                           => 11
+    case r                                  => r.value

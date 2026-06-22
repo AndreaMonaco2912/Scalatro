@@ -1,9 +1,7 @@
 package scalatro
 package model.commons
 
-import model.commons.HandType.HighCard
-
-enum Planet(val handType: HandType, val increase: HandScore.HandScore):
+enum Planet(val handType: HandType, val increase: HandScore):
   case Pluto extends Planet(HandType.HighCard, HandScore(10, 1))
   case Mercury extends Planet(HandType.Pair, HandScore(15, 1))
   case Uranus extends Planet(HandType.TwoPair, HandScore(20, 1))
@@ -18,8 +16,8 @@ enum Planet(val handType: HandType, val increase: HandScore.HandScore):
   case Eris extends Planet(HandType.FlushFive, HandScore(50, 3))
 
 object Planet:
-  private val handTypeToIncrease: Map[HandType, HandScore.HandScore] =
+  private val handTypeToIncrease: Map[HandType, HandScore] =
     Planet.values.map(p => p.handType -> p.increase).toMap
 
-  def getIncrease(handType : HandType) : HandScore.HandScore =
+  def getIncrease(handType: HandType): HandScore =
     handTypeToIncrease(handType)

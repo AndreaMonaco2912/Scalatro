@@ -1,7 +1,7 @@
 package scalatro
 package model.commons
 
-enum HandType(val baseScore: HandScore.HandScore):
+enum HandType(val baseScore: HandScore):
   case HighCard extends HandType(HandScore(5, 1))
   case Pair extends HandType(HandScore(10, 2))
   case TwoPair extends HandType(HandScore(20, 2))
@@ -51,16 +51,19 @@ object HandType:
       .findLast(handType => contains(cards, handType))
       .getOrElse(HighCard)
 
-  def getScoringCards(cards : Seq[Card]) : Seq[Card] =
-    val handType : HandType = detect(cards)
+  def getScoringCards(cards: Seq[Card]): Seq[Card] =
+    val handType: HandType = detect(cards)
     val ranks = cards.groupBy(_.rank)
 
     handType match
-      case FlushFive | FlushHouse | FiveOfAKind | FullHouse | StraightFlush | Straight | Flush => cards
-      case FourOfAKind => ranks.values.find(_.sizeIs == 4).getOrElse(Seq.empty)
+      case FlushFive | FlushHouse | FiveOfAKind | FullHouse | StraightFlush |
+          Straight | Flush =>
+        cards
+      case FourOfAKind  => ranks.values.find(_.sizeIs == 4).getOrElse(Seq.empty)
       case ThreeOfAKind => ranks.values.find(_.sizeIs == 3).getOrElse(Seq.empty)
-      case TwoPair => ranks.values.filter(_.sizeIs == 2).flatten.toSeq
-      case Pair => ranks.values.find(_.sizeIs == 2).getOrElse(Seq.empty)
-      case HighCard => cards.maxByOption(_.rank.ordinal) match
-        case None => Seq.empty
-        case Some(c) => Seq(c)
+      case TwoPair      => ranks.values.filter(_.sizeIs == 2).flatten.toSeq
+      case Pair         => ranks.values.find(_.sizeIs == 2).getOrElse(Seq.empty)
+      case HighCard     =>
+        cards.maxByOption(_.rank.ordinal) match
+          case None    => Seq.empty
+          case Some(c) => Seq(c)
