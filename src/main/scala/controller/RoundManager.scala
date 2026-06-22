@@ -1,13 +1,7 @@
 package scalatro
 package controller
 
-import model.commons.{
-  BasicHandScoreCalculator,
-  Deck,
-  HandScoreCalculator,
-  Score
-}
-import model.game.Blind
+import model.commons.{BasicHandScoreCalculator, HandScoreCalculator}
 import model.round.RoundAction.*
 import model.round.{Round, RoundAction, TurnActions}
 
@@ -22,9 +16,6 @@ object RoundManager:
       render: Round => IO[Unit],
       getAction: IO[RoundAction]
   ): RoundManager = RoundManagerImpl(render, getAction)
-
-  private val placeholderRound =
-    Round(Score.zero, Seq(), Deck(Seq()), Blind.first)
 
   private class RoundManagerImpl(
       render: Round => IO[Unit],
