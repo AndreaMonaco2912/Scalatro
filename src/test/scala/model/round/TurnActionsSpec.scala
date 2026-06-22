@@ -24,38 +24,32 @@ class TurnActionsSpec extends AnyFlatSpec with Matchers:
   private val initialRound: Round =
     Round(Score.zero, initialHand, initialDeck, Blind.first)
 
-  "removeCards" should "remove the given cards from the hand without changing deck" in:
-    val expectedHand = Seq(c2)
-    val expectedDeck = initialDeck
-    val result = removeCards(Seq(c1, c3)).runS(initialRound).value
-    result.hand shouldBe expectedHand
-    result.deck shouldBe expectedDeck
-
-  "increaseScore" should "increase the round score by the given amount" in:
-    val delta = Score(7.0)
-    val expectedScore = initialRound.score + delta
-    val result = increaseScore(delta).runS(initialRound).value
-    result.score shouldBe expectedScore
-
-  "drawCards" should "draw the requested number of cards from the deck into the hand" in:
-    val expectedHand = initialHand ++ Seq(c4, c5)
-    val expectedDeck = Deck(Seq(c6))
-    val result = drawCards(2).runS(initialRound).value
-    result.hand shouldBe expectedHand
-    result.deck shouldBe expectedDeck
-
-  "discardCards" should "remove the cards from the hand and replace them with cards from the deck" in:
-    val expectedHand = Seq(c2, c3, c4)
-    val expectedDeck = Deck(Seq(c5, c6))
+  "discardCards" should "remove discarded cards and add drawn replacements to hand" in:
     val result = discardCards(Seq(c1)).runS(initialRound).value
-    result.hand shouldBe expectedHand
-    result.deck shouldBe expectedDeck
+    result.hand shouldBe Seq(c2, c3, c4)
 
-  "playCards" should "discard the cards, draw replacements, and increase the score" in:
-    val expectedHand = Seq(c2, c3, c4)
-    val expectedDeck = Deck(Seq(c5, c6))
-    val expectedScore = initialRound.score + Score(1.0)
+  it should "remove the drawn cards from the deck" in:
+    val result = discardCards(Seq(c1)).runS(initialRound).value
+    result.deck shouldBe Deck(Seq(c5, c6))
+
+  it should "decrease remaining discards by 1" in:
+    val result = discardCards(Seq(c1)).runS(initialRound).value
+    result.remainingDiscards shouldBe initialRound.remainingDiscards - 1
+
+  "playCards" should "remove played cards and add drawn replacements to hand" in:
     val result = playCards(Seq(c1)).runS(initialRound).value
-    result.hand shouldBe expectedHand
-    result.deck shouldBe expectedDeck
-    result.score shouldBe expectedScore
+    result.hand shouldBe Seq(c2, c3, c4)
+
+  it should "remove the drawn cards from the deck" in:
+    val result = playCards(Seq(c1)).runS(initialRound).value
+    result.deck shouldBe Deck(Seq(c5, c6))
+
+  it should "decrease remaining plays by 1" in:
+    val result = playCards(Seq(c1)).runS(initialRound).value
+    result.remainingPlays shouldBe initialRound.remainingPlays - 1
+
+  it should "increase the round score based on the played cards" in:
+    val cardsToPlay = Seq(c1)
+    val result = playCards(cardsToPlay).runS(initialRound).value
+    result.score shouldBe initialRound.score
+      + Score.calculateHandScore(using BasicHandScoreCalculator)(cardsToPlay)

@@ -23,6 +23,10 @@
                 <font><Font name="System Bold" size="15.0" /></font>
             </Label>
 
+            <Label fx:id="roundNumLabel" textFill="#f5c842">
+                <font><Font name="System Bold" size="15.0" /></font>
+            </Label>
+
             <!-- Score to beat -->
             <VBox alignment="CENTER" spacing="5.0" styleClass="score-box">
                 <padding><Insets bottom="12" left="12" right="12" top="12" /></padding>

@@ -41,6 +41,7 @@ class FxController extends Initializable:
   @FXML private var cardBtn8: ToggleButton = uninitialized
 
   // Info labels
+  @FXML private var roundNumLabel: Label = uninitialized
   @FXML private var roundScoreLabel: Label = uninitialized
   @FXML private var goalLabel: Label = uninitialized
   @FXML private var chipsLabel: Label = uninitialized
@@ -74,6 +75,9 @@ class FxController extends Initializable:
 
   private var handSlots: List[(ToggleButton, Card)] = List()
 
+  private var playAvailable: Boolean = false
+  private var discardAvailable: Boolean = false
+
   override def initialize(url: URL, rb: ResourceBundle): Unit =
     playButton.setOnAction(_ => onPlay())
     discardButton.setOnAction(_ => onDiscard())
@@ -96,15 +100,27 @@ class FxController extends Initializable:
     private def customToString: String =
       if d % 1 == 0 then d.toInt.toString else d.toString
 
+  private def disableButtons(): Unit =
+    playButton.setDisable(true)
+    discardButton.setDisable(true)
+
+  private def enableButtons(): Unit =
+    playButton.setDisable(true)
+    discardButton.setDisable(true)
+
   private def setHandType(handType: Option[HandType]): Unit = handType match
     case Some(handType) =>
       chipsLabel.setText(handType.baseScore.chips.customToString)
       multLabel.setText(handType.baseScore.mult.customToString)
       handLabel.setText(handType.toString)
+      playButton.setDisable(!playAvailable || selectedCards.isEmpty)
+      discardButton.setDisable(!discardAvailable || selectedCards.isEmpty)
     case _ =>
       chipsLabel.setText("0")
       multLabel.setText("0")
       handLabel.setText("")
+      playButton.setDisable(true)
+      discardButton.setDisable(true)
 
   /** Update all UI nodes to reflect the new Round state. */
   def update(round: Round): Unit =
@@ -112,6 +128,14 @@ class FxController extends Initializable:
       goalLabel.setText(round.blind.targetScore.asDouble.customToString)
       roundScoreLabel.setText(round.score.asDouble.customToString)
       deckLabel.setText(s"${round.deck.size} left")
+      handsRemainingLabel.setText(round.remainingPlays.toString)
+      discardsRemainingLabel.setText(round.remainingDiscards.toString)
+      roundNumLabel.setText(s"Round ${round.blind.roundNum}")
+
+      playAvailable = round.remainingPlays > 0
+      playButton.setDisable(round.remainingPlays <= 0)
+      discardAvailable = round.remainingDiscards > 0
+      discardButton.setDisable(round.remainingDiscards <= 0)
 
       // Reset all card slots, then repopulate from the current hand
       cardViews.foreach(_.setImage(null))
