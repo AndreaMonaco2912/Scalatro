@@ -1,7 +1,7 @@
 package scalatro
 package view
 
-import model.commons.{Card, Deck, Rank}
+import model.commons.{Card, Deck, HandType, Rank}
 import model.round.{Round, RoundAction}
 
 import cats.effect.IO
@@ -77,16 +77,40 @@ class FxController extends Initializable:
   override def initialize(url: URL, rb: ResourceBundle): Unit =
     playButton.setOnAction(_ => onPlay())
     discardButton.setOnAction(_ => onDiscard())
+    cardButtons.foreach(
+      _.setOnAction(_ =>
+        setHandType(selectedCards match
+          case h :: _ => Some(HandType.detect(selectedCards))
+          case _      => None)
+      )
+    )
 
-  /** Inject the action queue. Must be called the first render. */
+  /** Inject the action queue. Must be called before the first render. */
   def setActionQueue(queue: Queue[IO, RoundAction]): Unit =
     actionQueue = Some(queue)
+
+  private def selectedCards: Seq[Card] =
+    handSlots.collect { case (btn, card) if btn.isSelected => card }
+
+  extension (d: Double)
+    private def customToString: String =
+      if d % 1 == 0 then d.toInt.toString else d.toString
+
+  private def setHandType(handType: Option[HandType]): Unit = handType match
+    case Some(handType) =>
+      chipsLabel.setText(handType.baseScore.chips.customToString)
+      multLabel.setText(handType.baseScore.mult.customToString)
+      handLabel.setText(handType.toString)
+    case _ =>
+      chipsLabel.setText("0")
+      multLabel.setText("0")
+      handLabel.setText("")
 
   /** Update all UI nodes to reflect the new Round state. */
   def update(round: Round): Unit =
     Platform.runLater { () =>
-      goalLabel.setText(round.blind.targetScore.asDouble.toString)
-      roundScoreLabel.setText(round.score.asDouble.toString)
+      goalLabel.setText(round.blind.targetScore.asDouble.customToString)
+      roundScoreLabel.setText(round.score.asDouble.customToString)
       deckLabel.setText(s"${round.deck.size} left")
 
       // Reset all card slots, then repopulate from the current hand
@@ -101,10 +125,9 @@ class FxController extends Initializable:
         btn.setVisible(true)
         (btn, card)
       }
-    }
 
-  private def selectedCards: Seq[Card] =
-    handSlots.collect { case (btn, card) if btn.isSelected => card }
+      setHandType(None)
+    }
 
   private def onPlay(): Unit =
     actionQueue.foreach(
