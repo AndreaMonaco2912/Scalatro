@@ -11,20 +11,26 @@ import cats.effect.unsafe.implicits.global
 class GameTest extends AnyFlatSpec, Matchers:
   val seed = 0L
   val blind: Blind = Blind.first
-  val playRoundPlaceHolder: GameState => IO[Score] = a =>
-    IO.pure(blind.targetScore)
-  val onRoundWonPlaceHolder: Blind => IO[Unit] = a => IO.unit
-  
+
+  def handler(
+      onPlay: GameState => IO[Score],
+      onWon: Blind => IO[Unit] = _ => IO.unit,
+      onLost: Blind => IO[Unit] = _ => IO.unit
+  ): GameHandler = new GameHandler:
+    def playRound(state: GameState): IO[Score] = onPlay(state)
+    def onRoundWon(b: Blind): IO[Unit] = onWon(b)
+    def onRoundLost(b: Blind): IO[Unit] = onLost(b)
+
+  val alwaysHitsFirstTarget: GameState => IO[Score] =
+    _ => IO.pure(blind.targetScore)
+
   "A Game" should "store the seed it was created with" in:
-    Game(playRoundPlaceHolder, onRoundWonPlaceHolder, seed).seed shouldBe seed
+    Game(handler(alwaysHitsFirstTarget), seed).seed shouldBe seed
 
   it should "pick a random seed when none is given" in:
-    Game(playRoundPlaceHolder).seed should not equal Game(
-      playRoundPlaceHolder
-    ).seed
+    Game(handler(alwaysHitsFirstTarget)).seed should not equal
+      Game(handler(alwaysHitsFirstTarget)).seed
 
-  it should "loose against the second blind" in:
-    Game(playRoundPlaceHolder).play().unsafeRunSync() shouldBe GameResult(
-      blind.next,
-      blind.targetScore
-    )
+  it should "lose against the second blind" in:
+    Game(handler(alwaysHitsFirstTarget)).play().unsafeRunSync() shouldBe
+      GameResult(blind.next, blind.targetScore)

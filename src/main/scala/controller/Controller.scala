@@ -3,7 +3,15 @@ package controller
 
 import model.commons.{Deck, Score}
 import model.commons.Score.Score
-import model.game.{Blind, Game, GameResult, GameState, RoundLostAction, RoundWonAction}
+import model.game.{
+  Blind,
+  Game,
+  GameHandler,
+  GameResult,
+  GameState,
+  RoundLostAction,
+  RoundWonAction
+}
 import model.round.{Round, RoundAction}
 import view.{FxRoundEndController, FxView, RoundEndView, View}
 
@@ -35,9 +43,10 @@ class SingleRoundController(
     yield finalRound
 
 class GameController(gameViews: GameViews)
-    extends Controller[GameResult, RoundAction]:
+    extends Controller[GameResult, RoundAction]
+    with GameHandler:
 
-  private def playRound(gameState: GameState): IO[Score] =
+  override def playRound(gameState: GameState): IO[Score] =
     for
       queue <- Queue.unbounded[IO, RoundAction]
       ctrl <- gameViews.gameplay
@@ -46,7 +55,15 @@ class GameController(gameViews: GameViews)
       finalRound <- src.start()
     yield finalRound.score
 
-  private def showOutcome[A](getController: IO[FxRoundEndController[A]]): IO[Unit] =
+  override def onRoundWon(blind: Blind): IO[Unit] =
+    showOutcome[RoundWonAction](gameViews.roundWon)
+
+  override def onRoundLost(blind: Blind): IO[Unit] =
+    showOutcome[RoundLostAction](gameViews.roundLost)
+
+  private def showOutcome[A](
+      getController: IO[FxRoundEndController[A]]
+  ): IO[Unit] =
     for
       queue <- Queue.unbounded[IO, A]
       ctrl <- getController
@@ -54,12 +71,4 @@ class GameController(gameViews: GameViews)
       _ <- queue.take
     yield ()
 
-  private def showRoundWon(blind: Blind): IO[Unit] =
-    showOutcome[RoundWonAction](gameViews.roundWon)
-
-  private def showRoundLost(blind: Blind): IO[Unit] =
-    showOutcome[RoundLostAction](gameViews.roundLost)
-
-  val game = Game(state => playRound(state), showRoundWon, showRoundLost)
-
-  override def start(): IO[GameResult] = game.play()
+  override def start(): IO[GameResult] = Game(this).play()
