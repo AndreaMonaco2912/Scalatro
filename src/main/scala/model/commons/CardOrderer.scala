@@ -5,7 +5,7 @@ package model.commons
   * implementations to define various ways of reordering a sequence of cards.
   */
 trait CardOrderer:
-  /** Orders the cards according to some rule defined by the implementing
+  /** Orders the cards according to a rule defined by the implementing
     * CardOrderer.
     *
     * @param cards
@@ -15,52 +15,62 @@ trait CardOrderer:
     */
   def order(cards: Seq[Card]): Seq[Card]
 
+/** A collection of predefined [[CardOrderer]]s or templates to create them
+  */
 object CardOrderer:
-  private given Ordering[Rank] = (r1, r2) => r2.value compare r1.value
-  private given Ordering[Suit] = _.ordinal compare _.ordinal
+  /** An [[scala.math.Ordering]] for [[Rank]] in decreasing order by their
+    * numeric value
+    */
+  given rankOrdering: Ordering[Rank] = (r1, r2) => r2.value compare r1.value
 
-  /** Maintains the same card order
+  /** An [[scala.math.Ordering]] for [[Suit]], based on their ordinal position
+    * Suit
+    */
+  given suitOrdering: Ordering[Suit] = _.ordinal compare _.ordinal
+
+  /** Maintains the original card order
     * @return
-    *   the CardOrder
+    *   the card orderer
     */
   val identity: CardOrderer = cards => cards
 
-  /** Sort cards by increasing rank
+  /** Sorts cards by increasing [[Rank]], then sorts each rank group by [[Suit]]
     * @return
-    *   the CardOrder
+    *   the card orderer
     */
   val sortByRank: CardOrderer = _.sortBy(c => (c.rank, c.suit))
 
-  /** Sort cards by suit, following [[Suit.values]] order, then sort each suite
-    * group by rank.
+  /** Sorts cards by [[Suit]] according to the suit ordering, then sorts each
+    * suit group by rank.
     * @return
-    *   the CardOrder
+    *   the card orderer
     */
   val sortBySuit: CardOrderer = _.sortBy(c => (c.suit, c.rank))
 
-  /** Swap 2 cards. Indexes must be positive numbers and inside the Seq size.
+  /** Swaps two cards at the given positions. Both indexes must be within the
+    * sequence bounds.
     *
     * @param i
     *   the index of the first card to swap
     * @param j
     *   the index of the second card to swap
     * @return
-    *   the CardOrder
+    *   the card orderer
     */
   def swapCards(i: Int, j: Int): CardOrderer = cards =>
     require(i >= 0 && i < cards.size, s"i must be in [0, ${cards.size})")
     require(j >= 0 && j < cards.size, s"j must be in [0, ${cards.size})")
     cards.updated(i, cards(j)).updated(j, cards(i))
 
-  /** Moves a card from one position to another, shifting the remaining cards.
-    * Indexes must be positive numbers and inside the Seq size.
+  /** Moves a card from one position to another, shifting other cards to fill
+    * the gap. Both indexes must be within the sequence bounds.
     *
     * @param from
     *   the initial index of the card
     * @param to
     *   the target index of the card
     * @return
-    *   the CardOrder
+    *   the card orderer
     */
   def moveCard(from: Int, to: Int): CardOrderer = cards =>
     require(
