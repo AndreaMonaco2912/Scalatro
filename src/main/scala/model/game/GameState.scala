@@ -3,8 +3,10 @@ package model.game
 
 import scala.util.Random
 import model.commons.Deck
+import model.commons.Joker
+import model.commons.HandType
 
-case class GameState(deck: Deck, blind: Blind):
+case class GameState(deck: Deck, blind: Blind, jokers : Seq[Joker], levels : Map[HandType,Int]):
   def shuffleDeck(using Random): GameState =
     this.copy(deck = deck.shuffle)
 
@@ -13,4 +15,4 @@ case class GameState(deck: Deck, blind: Blind):
 
 object GameState:
   def initial: GameState =
-    GameState(Deck(), Blind.first)
+    GameState(Deck(), Blind.first, Seq.empty, HandType.values.map(ht => ht -> 1).toMap)

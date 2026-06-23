@@ -1,6 +1,8 @@
 package scalatro
 package model.commons
 
+import model.game.GameState
+
 enum Planet(val handType: HandType, val increase: HandScore):
   case Pluto extends Planet(HandType.HighCard, HandScore(10, 1))
   case Mercury extends Planet(HandType.Pair, HandScore(15, 1))
@@ -21,3 +23,8 @@ object Planet:
 
   def getIncrease(handType: HandType): HandScore =
     handTypeToIncrease(handType)
+
+  def update(state : GameState)(handType : HandType): GameState =
+    val levels = state.levels
+    val currentLevel = levels.getOrElse(handType, 1)
+    GameState(state.deck, state.blind, state.jokers, levels + (handType -> (currentLevel+1)))

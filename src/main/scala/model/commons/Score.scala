@@ -4,22 +4,21 @@ package model.commons
 import model.commons.Chips.Chips
 import model.commons.Mult.Mult
 import model.commons.Score.Score
+import model.game.GameState
 
 object Chips:
   type Chips = Double
 
-  object Chips:
-    def apply(d: Double): Chips =
-      require(d >= 0.0, "Chips must be positive")
-      d
+  def apply(d: Double): Chips =
+    require(d >= 0.0, "Chips must be positive")
+    d
 
 object Mult:
   type Mult = Double
 
-  object Mult:
-    def apply(d: Double): Mult =
-      require(d >= 0.0, "Mult must be positive")
-      d
+  def apply(d: Double): Mult =
+    require(d >= 0.0, "Mult must be positive")
+    d
 
 trait HandScoreCalculator:
   import Chips.Chips, Mult.Mult
@@ -72,6 +71,10 @@ object Score:
   )(cards: Seq[Card]): Score =
     val handType: HandType = HandType.detect(cards)
     val scoringCards = HandType.getScoringCards(cards)
+//    val handTypeLevel = gameState.levels.getOrElse(handType, 1)
+//    val handTypeIncreaseScore: HandScore = Planet.getIncrease(handType)
+//    val handTypeBaseScore: HandScore =
+//      handType.baseScore + handTypeIncreaseScore * handTypeLevel
     val handScore: HandScore =
       scoringCards.foldLeft(handType.baseScore)((acc, card) =>
         card.onScored(acc)

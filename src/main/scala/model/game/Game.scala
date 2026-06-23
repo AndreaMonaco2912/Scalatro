@@ -17,11 +17,13 @@ class Game(val seed: Long, playRound: GameState => IO[Score]):
     val blind = gameState.blind
     val deck = gameState.deck
     val shuffledDeck = deck.shuffle
+    val jokers = gameState.jokers
+    val levels = gameState.levels
 
     for {
-      result <- playRound(GameState(shuffledDeck, blind))
+      result <- playRound(GameState(shuffledDeck, blind, jokers, levels))
       outcome <-
-        if blind.isBeaten(result) then gameLoop(GameState(deck, blind.next))
+        if blind.isBeaten(result) then gameLoop(GameState(deck, blind.next, jokers, levels))
         else IO.pure(GameResult(blind, result))
     } yield outcome
 
