@@ -53,3 +53,23 @@ object CardOrderer:
     require(i >= 0 && i < cards.size, s"i must be in [0, ${cards.size})")
     require(j >= 0 && j < cards.size, s"j must be in [0, ${cards.size})")
     cards.updated(i, cards(j)).updated(j, cards(i))
+
+  /** Moves a card from one position to another, shifting the remaining cards.
+    * Indexes must be positive numbers and inside the Seq size.
+    *
+    * @param from
+    *   the initial index of the card
+    * @param to
+    *   the target index of the card
+    * @return
+    *   the CardOrder
+    */
+  def moveCard(from: Int, to: Int): CardOrderer = cards =>
+    require(
+      from >= 0 && from < cards.size,
+      s"from must be in [0, ${cards.size})"
+    )
+    require(to >= 0 && to < cards.size, s"to must be in [0, ${cards.size})")
+    val card = cards(from)
+    val withoutCard = cards.take(from) ++ cards.drop(from + 1)
+    withoutCard.take(to) ++ Seq(card) ++ withoutCard.drop(to)

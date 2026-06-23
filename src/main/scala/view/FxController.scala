@@ -12,6 +12,7 @@ import javafx.application.Platform
 import javafx.fxml.{FXML, Initializable}
 import javafx.scene.control.{Button, Label, TextField, ToggleButton}
 import javafx.scene.image.{Image, ImageView}
+import javafx.scene.input.{ClipboardContent, TransferMode}
 import scalafx.scene.control.{Label as SfxLabel, TextField as SfxTextField}
 
 import java.net.URL
@@ -91,6 +92,34 @@ class FxController extends Initializable:
           case _      => None)
       )
     )
+
+    cardButtons.zipWithIndex.foreach { case (btn, index) =>
+      btn.setOnDragDetected { event =>
+        val db = btn.startDragAndDrop(TransferMode.MOVE)
+        val content = new ClipboardContent()
+        content.putString(index.toString)
+        db.setContent(content)
+        event.consume()
+      }
+      btn.setOnDragOver { event =>
+        if event.getGestureSource != btn && event.getDragboard.hasString then
+          event.acceptTransferModes(TransferMode.MOVE)
+        event.consume()
+      }
+      btn.setOnDragDropped { event =>
+        val db = event.getDragboard
+        val success = if db.hasString then
+          val draggedIdx = db.getString.toInt
+          val targetIdx = index
+          onOrder(CardOrderer.moveCard(draggedIdx, targetIdx))
+          true
+        else false
+
+        event.setDropCompleted(success)
+        event.consume()
+      }
+    }
+
     sortRankButton.setOnAction(_ => onOrder(CardOrderer.sortByRank))
     sortSuitButton.setOnAction(_ => onOrder(CardOrderer.sortBySuit))
 
@@ -117,7 +146,7 @@ class FxController extends Initializable:
     case Some(handType) =>
       chipsLabel.setValue(handType.baseScore.chips.toInt)
       multLabel.setValue(handType.baseScore.mult.toInt)
-      handLabel.setText(handType.toString)
+      handLabel.setText(handType.productPrefix)
       playButton.setDisable(!playAvailable || selectedCards.isEmpty)
       discardButton.setDisable(!discardAvailable || selectedCards.isEmpty)
     case _ =>
