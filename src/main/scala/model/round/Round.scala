@@ -12,9 +12,6 @@ enum RoundAction:
   case DiscardCards(cards: Seq[Card])
   case OrderHand(orderer: CardOrderer)
 
-enum RoundResult:
-  case Victory, Defeat
-
 trait Round:
   def score: Score
   def hand: Hand
@@ -52,4 +49,5 @@ object Round:
     ): Round =
       RoundImpl(score, hand, deck, remainingPlays, remainingDiscards, blind)
 
-    override def isFinished: Boolean = blind.isBeaten(score)
+    override def isFinished: Boolean =
+      blind.isBeaten(score) || remainingPlays == 0
