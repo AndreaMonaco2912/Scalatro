@@ -4,6 +4,7 @@ package model.commons
 import model.game.GameState
 
 type Level = Int
+
 /** The level of a poker hand */
 object Level:
   def apply(l: Int): Level =
@@ -14,9 +15,12 @@ object Level:
   def initial: Level = 1
 
 /** The association between hand types and their level */
-type HandTypeLevels = Map[HandType,Level]
+type HandTypeLevels = Map[HandType, Level]
 
 object HandTypeLevels:
+  /** @return
+    *   the initial level of the hand types
+    */
   def initial: HandTypeLevels = HandType.values.map(ht => ht -> 1).toMap
 
 /** A planet card which can be used to increase the base score of a poker hand
@@ -55,19 +59,13 @@ object Planet:
   def getIncrease(handType: HandType): HandScore =
     increaseByHandType(handType)
 
-  /** Use the planet card, which increases the hand type by 1 level
-    * @param state
-    *   game state
-    * @param handType
-    *   hand type to be upgraded
-    * @return
-    */
-  def use(state: GameState)(handType: HandType): GameState =
-    val levels = state.levels
-    val currentLevel: Level = levels.getOrElse(handType, Level.initial)
-    GameState(
-      state.deck,
-      state.blind,
-      state.jokers,
-      levels + (handType -> (currentLevel + 1))
-    )
+  extension (planet: Planet)
+    /** Use the planet card, which increases the associated hand type by 1 level
+      * @param levels
+      *   the hand type levels
+      * @return
+      *   the new hand type levels
+      */
+    def use(levels: HandTypeLevels): HandTypeLevels =
+      val currentLevel: Level = levels.getOrElse(planet.handType, Level.initial)
+      levels.updated(planet.handType, currentLevel + 1)
