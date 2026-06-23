@@ -18,9 +18,9 @@ class CardOrdererSpec extends AnyFlatSpec, Matchers:
 
   "sortByRank" should "order cards by rank" in:
     CardOrderer.sortByRank.order(testCards) shouldBe Seq(
-      Card(Rank.Three, Suit.Hearts),
+      Card(Rank.Eight, Suit.Spades),
       Card(Rank.Four, Suit.Clubs),
-      Card(Rank.Eight, Suit.Spades)
+      Card(Rank.Three, Suit.Hearts)
     )
 
   "sortBySuit" should "follow Suit.values order" in:
@@ -41,9 +41,9 @@ class CardOrdererSpec extends AnyFlatSpec, Matchers:
     )
 
     CardOrderer.sortBySuit.order(cards) shouldBe Seq(
-      Card(Rank.Two, Suit.Spades),
+      Card(Rank.Five, Suit.Spades),
       Card(Rank.Three, Suit.Spades),
-      Card(Rank.Five, Suit.Spades)
+      Card(Rank.Two, Suit.Spades)
     )
 
   "swapCards" should "swap two positions" in:
