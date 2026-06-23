@@ -3,6 +3,30 @@ package model.commons
 
 import model.game.GameState
 
+type Level = Int
+/** The level of a poker hand */
+object Level:
+  def apply(l: Int): Level =
+    require(l >= 1, "Level must be at least 1")
+    l
+
+  /** The initial level for every poker hand */
+  def initial: Level = 1
+
+/** The association between hand types and their level */
+type HandTypeLevels = Map[HandType,Level]
+
+object HandTypeLevels:
+  def initial: HandTypeLevels = HandType.values.map(ht => ht -> 1).toMap
+
+/** A planet card which can be used to increase the base score of a poker hand
+  * by a certain amount
+  * @param handType
+  *   the hand type associated with the planet card
+  * @param increase
+  *   the hand score which gets added to the base score of the hand for each
+  *   level
+  */
 enum Planet(val handType: HandType, val increase: HandScore):
   case Pluto extends Planet(HandType.HighCard, HandScore(10, 1))
   case Mercury extends Planet(HandType.Pair, HandScore(15, 1))
@@ -18,13 +42,32 @@ enum Planet(val handType: HandType, val increase: HandScore):
   case Eris extends Planet(HandType.FlushFive, HandScore(50, 3))
 
 object Planet:
-  private val handTypeToIncrease: Map[HandType, HandScore] =
+
+  private val increaseByHandType: Map[HandType, HandScore] =
     Planet.values.map(p => p.handType -> p.increase).toMap
 
+  /** Get the increase score given by the planet card associated with the given
+    * hand type
+    * @param handType
+    *   the hand type
+    * @return
+    */
   def getIncrease(handType: HandType): HandScore =
-    handTypeToIncrease(handType)
+    increaseByHandType(handType)
 
-  def update(state : GameState)(handType : HandType): GameState =
+  /** Use the planet card, which increases the hand type by 1 level
+    * @param state
+    *   game state
+    * @param handType
+    *   hand type to be upgraded
+    * @return
+    */
+  def use(state: GameState)(handType: HandType): GameState =
     val levels = state.levels
-    val currentLevel = levels.getOrElse(handType, 1)
-    GameState(state.deck, state.blind, state.jokers, levels + (handType -> (currentLevel+1)))
+    val currentLevel: Level = levels.getOrElse(handType, Level.initial)
+    GameState(
+      state.deck,
+      state.blind,
+      state.jokers,
+      levels + (handType -> (currentLevel + 1))
+    )

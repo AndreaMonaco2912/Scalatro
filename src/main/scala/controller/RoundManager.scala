@@ -1,7 +1,7 @@
 package scalatro
 package controller
 
-import model.commons.{BasicHandScoreCalculator, HandScoreCalculator}
+import model.commons.{BasicHandScoreCalculator, HandScoreCalculator, ScoreConfig}
 import model.round.RoundAction.*
 import model.round.{Round, RoundAction, TurnActions}
 
@@ -21,7 +21,8 @@ object RoundManager:
       render: Round => IO[Unit],
       getAction: IO[RoundAction]
   ) extends RoundManager:
-    private given HandScoreCalculator = BasicHandScoreCalculator
+//    private given HandScoreCalculator = BasicHandScoreCalculator
+    private given ScoreConfig = ScoreConfig.default
 
     override def startRound(initialRound: Round): IO[Round] =
       def processAction(round: Round, action: RoundAction): IO[Round] =

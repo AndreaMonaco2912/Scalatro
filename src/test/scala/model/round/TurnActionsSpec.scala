@@ -11,7 +11,8 @@ import org.scalatest.matchers.should.Matchers
 class TurnActionsSpec extends AnyFlatSpec with Matchers:
   import TurnActions.*
 
-  private given calculator: HandScoreCalculator = BasicHandScoreCalculator
+  private given scoreConfig : ScoreConfig = ScoreConfig.default
+  private given calculator: HandScoreCalculator = scoreConfig.calculator
   private given cardOrderer: CardOrderer = CardOrderer.sortByRank
 
   private val c1 = Card(Rank.Ace, Suit.Clubs)
@@ -54,7 +55,7 @@ class TurnActionsSpec extends AnyFlatSpec with Matchers:
     val cardsToPlay = Seq(c1)
     val result = playCards(cardsToPlay).runS(initialRound).value
     result.score shouldBe initialRound.score
-      + Score.calculateHandScore(using BasicHandScoreCalculator)(cardsToPlay)
+      + Score.calculateHandScore(cardsToPlay)
 
   "orderCards" should "order the cards in hand using a given CardOrderer" in:
     val result = orderCards.runS(initialRound).value

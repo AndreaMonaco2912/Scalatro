@@ -6,7 +6,8 @@ import org.scalatest.matchers.should.Matchers
 
 class ScoreTest extends AnyFlatSpec, Matchers:
 
-  given basicHandScoreCalculator: HandScoreCalculator = BasicHandScoreCalculator
+  private given scoreConfig: ScoreConfig = ScoreConfig.default
+  private given calculator: HandScoreCalculator = scoreConfig.calculator
 
   def getExpectedScore(cards : Seq[Card], handType : HandType) : Score.Score =
     val baseScore = handType.baseScore

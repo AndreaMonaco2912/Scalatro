@@ -2,7 +2,7 @@ package scalatro
 package model.round
 
 import model.commons.Score.{Score, calculateHandScore}
-import model.commons.{Card, CardOrderer, HandScoreCalculator}
+import model.commons.{Card, CardOrderer, HandScoreCalculator, ScoreConfig}
 
 import cats.data.State
 
@@ -44,7 +44,7 @@ object TurnActions:
     yield ()
 
   def playCards(using
-      calculator: HandScoreCalculator
+      scoreConfig : ScoreConfig
   )(cards: Seq[Card]): TurnState[Unit] =
     for
       score = calculateHandScore(cards)
