@@ -4,8 +4,10 @@ package model.commons
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
-class PackTest extends AnyFlatSpec, Matchers:
+import scala.util.Random
 
+class PackTest extends AnyFlatSpec, Matchers:
+  given Random = Random(0L)
   "A pack with 3 cards" should "contain exactly 3 cards" in:
     val plainCardsPack = CardsPack(3)
     plainCardsPack.cards.length shouldBe 3

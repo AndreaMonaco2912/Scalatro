@@ -7,8 +7,8 @@ case class Pack(cards: Seq[Card])
 
 trait PackFactory[A]:
   def pool: Seq[A]
-  def apply(n: Int): Pack//TODO should take random form outside
-  def apply(n: Int, externalPool: Seq[A]): Pack//TODO should take random form outside
+  def apply(n: Int)(using rng: Random): Pack
+  def apply(n: Int, externalPool: Seq[A])(using rng: Random): Pack
 
 object CardsPack extends PackFactory[Card]:
   val pool: Seq[Card] =
@@ -17,9 +17,9 @@ object CardsPack extends PackFactory[Card]:
       rank <- Rank.values.toSeq
     yield Card(rank, suit)
 
-  def apply(n: Int): Pack =//TODO should take random form outside apply(using rng: Random, n: Int)
+  def apply(n: Int)(using rng: Random): Pack =
     require(n >= 0, s"cannot present a pack with a negative amount of cards")
-    Pack(Random.shuffle(pool).take(n))
-  def apply(n: Int, externalPool: Seq[Card]): Pack =//TODO should take random form outside
+    Pack(rng.shuffle(pool).take(n))
+  def apply(n: Int, externalPool: Seq[Card])(using rng: Random): Pack =
     require(n >= 0, s"cannot present a pack with a negative amount of cards")
-    Pack(Random.shuffle(externalPool).take(n))
+    Pack(rng.shuffle(externalPool).take(n))
