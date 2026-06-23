@@ -1,7 +1,12 @@
 package scalatro
 
 import controller.GameController
-import view.{FxController, FxRoundWonController}
+import view.{
+  FxController,
+  FxRoundEndController,
+  FxRoundLostController,
+  FxRoundWonController
+}
 
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
@@ -58,5 +63,7 @@ class GameViews(scene: Scene):
   def roundWon: IO[FxRoundWonController] =
     SceneRouter.switchTo[FxRoundWonController](scene)("/scalatro/roundWon.fxml")
 
-//  def roundLost: IO[FxRoundLostController] =
-//    SceneRouter.switchTo[FxRoundLostController](scene)("/scalatro/roundLost.fxml")
+  def roundLost: IO[FxRoundLostController] =
+    SceneRouter.switchTo[FxRoundLostController](scene)(
+      "/scalatro/roundLost.fxml"
+    )

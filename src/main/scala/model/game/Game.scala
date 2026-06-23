@@ -3,42 +3,36 @@ package model.game
 
 import scala.util.Random
 import model.commons.Score.Score
-
 import cats.effect.IO
 
-class Game(
-    val seed: Long,
-    playRound: GameState => IO[Score],
-    onRoundWon: Blind => IO[Unit] = _ => IO.unit
-):
+trait GameHandler:
+  def playRound(state: GameState): IO[Score]
+  def onRoundWon(blind: Blind): IO[Unit]
+  def onRoundLost(blind: Blind): IO[Unit]
+
+class Game(handler: GameHandler, val seed: Long = Random.nextLong()):
   private val rng: Random = Random(seed)
   private given Random = rng
 
-  def play(): IO[GameResult] =
-    gameLoop(GameState.initial)
+  def play(): IO[GameResult] = gameLoop(GameState.initial)
 
   private def gameLoop(gameState: GameState): IO[GameResult] =
-    val blind = gameState.blind
-    val deck = gameState.deck
-    val shuffledDeck = deck.shuffle
-    val jokers = gameState.jokers
-    val levels = gameState.levels
-
     for
-      result <- playRound(gameState.shuffleDeck)
+      result <- handler.playRound(gameState.shuffleDeck)
       outcome <-
-        if blind.isBeaten(result) then
-          onRoundWon(blind) *> gameLoop(
-            gameState.advanceBlind
-          )
-        else IO.pure(GameResult(blind, result))
+        if gameState.blind.isBeaten(result) then handleWin(gameState)
+        else handleLoss(gameState, result)
     yield outcome
 
-case class GameResult(blind: Blind, finalScore: Score)
+  private def handleWin(gameState: GameState): IO[GameResult] =
+    for
+      _ <- handler.onRoundWon(gameState.blind)
+      result <- gameLoop(gameState.advanceBlind)
+    yield result
 
-object Game:
-  def apply(
-      playRound: GameState => IO[Score],
-      onRoundWon: Blind => IO[Unit] = _ => IO.unit,
-      seed: Long = Random.nextLong()
-  ): Game = new Game(seed, playRound, onRoundWon)
+  private def handleLoss(gameState: GameState, result: Score): IO[GameResult] =
+    handler.onRoundLost(gameState.blind) >> IO.pure(
+      GameResult(gameState.blind, result)
+    )
+
+case class GameResult(blind: Blind, finalScore: Score)
