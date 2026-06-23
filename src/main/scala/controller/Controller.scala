@@ -10,8 +10,6 @@ import view.View
 import cats.effect.IO
 import cats.effect.std.Queue
 
-import scala.util.Random
-
 trait Controller[S, A]:
   def start(): IO[S]
 
@@ -21,7 +19,6 @@ class SingleRoundController(
     gameState: GameState
 ) extends Controller[Round, RoundAction]:
 
-  given Random = new Random()
   private val (hand, deck) = gameState.deck.draw(8)
 
   private val initialRound = Round(
