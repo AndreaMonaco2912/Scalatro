@@ -1,17 +1,33 @@
 package scalatro
 package controller
 
-import model.commons.{BasicHandScoreCalculator, HandScoreCalculator, ScoreConfig}
+import model.commons.ScoreConfig
 import model.round.RoundAction.*
 import model.round.{Round, RoundAction, TurnActions}
 
 import cats.effect.IO
 
+/** A trait representing a functional round manager */
 trait RoundManager:
+  /** Creates a template for starting the round in a functional way
+    * @param initialRound
+    *   the initial round
+    * @return
+    *   an IO representing the computation
+    */
   def startRound(initialRound: Round): IO[Round]
 
 object RoundManager:
   import TurnActions.*
+
+  /** Creates a [[RoundManager]] with the default implementation
+    * @param render
+    *   a lambda to receive the IO for the rendering action
+    * @param getAction
+    *   an IO for getting the next action of the round
+    * @return
+    *   the round manager
+    */
   def apply(
       render: Round => IO[Unit],
       getAction: IO[RoundAction]
@@ -21,7 +37,6 @@ object RoundManager:
       render: Round => IO[Unit],
       getAction: IO[RoundAction]
   ) extends RoundManager:
-//    private given HandScoreCalculator = BasicHandScoreCalculator
     private given ScoreConfig = ScoreConfig.default
 
     override def startRound(initialRound: Round): IO[Round] =

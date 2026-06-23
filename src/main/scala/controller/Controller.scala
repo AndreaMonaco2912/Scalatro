@@ -15,7 +15,7 @@ import cats.effect.std.Queue
   *   the type of the results of the actions
   */
 trait Controller[S]:
-  /** Creates a template for running the computation ina functional way
+  /** Creates a template for running the computation in a functional way
     * @return
     *   an IO representing the computation
     */
