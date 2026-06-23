@@ -2,12 +2,71 @@ package scalatro
 package model.round
 
 import model.commons.Score.{Score, calculateHandScore}
-import model.commons.{Card, CardOrderer, HandScoreCalculator, ScoreConfig}
+import model.commons.{Card, CardOrderer, ScoreConfig}
 
 import cats.data.State
 
+/** A collection of methods for [[Round]] state changes */
 object TurnActions:
+  /** A convenience type alias to represent a [[State]] of [[Round]]
+    * @tparam A
+    *   the type of the value returned after the state change
+    */
   type TurnState[A] = State[Round, A]
+
+  /** Updates the [[Round]] state after playing the given cards.
+    *
+    * The played cards are scored, removed from the hand, replaced by drawing
+    * the same number of cards from the deck, and the number of remaining plays
+    * is reduced by one.
+    *
+    * @param cards
+    *   the cards to play
+    * @param scoreConfig
+    *   the configuration needed to compute the score of the hand
+    * @return
+    *   a [[State]] that applies the changes to the current [[Round]]
+    */
+  def playCards(
+      cards: Seq[Card]
+  )(using scoreConfig: ScoreConfig): TurnState[Unit] =
+    for
+      score = calculateHandScore(cards)
+      _ <- increaseScore(score)
+      _ <- removeCards(cards)
+      _ <- drawCards(cards.size)
+      _ <- decreaseRemainingPlays
+    yield ()
+
+  /** Updates the [[Round]] state after discarding the given cards.
+    *
+    * The discarded cards are removed from the hand, replaced by drawing the
+    * same number of cards from the deck, and the number of remaining discards
+    * is reduced by one.
+    *
+    * @param cards
+    *   the cards to discard
+    * @return
+    *   a [[State]] that applies the changes to the current [[Round]]
+    */
+  def discardCards(cards: Seq[Card]): TurnState[Unit] =
+    for
+      _ <- removeCards(cards)
+      _ <- drawCards(cards.size)
+      _ <- decreaseRemainingDiscards
+    yield ()
+
+  /** Updates the [[Round]] state after ordering the cards in the hand.
+    *
+    * The new order of the cards is computed by a specified card orderer.
+    *
+    * @param ord
+    *   the card orderer
+    * @return
+    *   a [[State]] that applies the changes to the current [[Round]]
+    */
+  def orderCards(using ord: CardOrderer): TurnState[Unit] =
+    State.modify(state => state.modify(hand = ord.order(state.hand)))
 
   private def removeCards(cards: Seq[Card]): TurnState[Unit] =
     State.modify(state =>
@@ -32,24 +91,3 @@ object TurnActions:
     State.modify(state =>
       state.modify(remainingDiscards = state.remainingDiscards - 1)
     )
-
-  def orderCards(using ord: CardOrderer): TurnState[Unit] =
-    State.modify(state => state.modify(hand = ord.order(state.hand)))
-
-  def discardCards(cards: Seq[Card]): TurnState[Unit] =
-    for
-      _ <- removeCards(cards)
-      _ <- drawCards(cards.size)
-      _ <- decreaseRemainingDiscards
-    yield ()
-
-  def playCards(using
-      scoreConfig : ScoreConfig
-  )(cards: Seq[Card]): TurnState[Unit] =
-    for
-      score = calculateHandScore(cards)
-      _ <- increaseScore(score)
-      _ <- removeCards(cards)
-      _ <- drawCards(cards.size)
-      _ <- decreaseRemainingPlays
-    yield ()
