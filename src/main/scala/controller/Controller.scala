@@ -1,31 +1,39 @@
 package scalatro
 package controller
 
-import model.commons.{Deck, Score}
 import model.commons.Score.Score
-import model.game.{
-  Blind,
-  Game,
-  GameHandler,
-  GameResult,
-  GameState,
-  RoundLostAction,
-  RoundWonAction
-}
+import model.commons.{Deck, Score}
+import model.game.*
 import model.round.{Round, RoundAction}
 import view.{FxRoundEndController, FxView, RoundEndView, View}
 
 import cats.effect.IO
 import cats.effect.std.Queue
 
-trait Controller[S, A]:
+/** A trait representing a functional controller
+  * @tparam S
+  *   the type of the object to render
+  */
+trait Controller[S]:
+  /** Creates a template for running the functional computation
+    * @return
+    *   an IO representing the computation
+    */
   def start(): IO[S]
 
+/** A controller for a single round
+  * @param view
+  *   the view
+  * @param actionQueue
+  *   the queue of events coming from the view
+  * @param gameState
+  *   the initial configuration of the round
+  */
 class SingleRoundController(
     view: View[Round],
     actionQueue: Queue[IO, RoundAction],
     gameState: GameState
-) extends Controller[Round, RoundAction]:
+) extends Controller[Round]:
 
   private val (hand, deck) = gameState.deck.draw(8)
 
@@ -43,7 +51,7 @@ class SingleRoundController(
     yield finalRound
 
 class GameController(gameViews: GameViews)
-    extends Controller[GameResult, RoundAction]
+    extends Controller[GameResult]
     with GameHandler:
 
   override def playRound(gameState: GameState): IO[Score] =
