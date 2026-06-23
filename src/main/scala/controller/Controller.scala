@@ -1,11 +1,11 @@
 package scalatro
 package controller
 
-import model.commons.Score.Score
 import model.commons.{Deck, Score}
-import model.game.{Game, GameResult, GameState}
+import model.commons.Score.Score
+import model.game.{Blind, Game, GameResult, GameState, RoundWonAction}
 import model.round.{Round, RoundAction}
-import view.View
+import view.{FxRoundWonView, FxView, View}
 
 import cats.effect.IO
 import cats.effect.std.Queue
@@ -34,21 +34,26 @@ class SingleRoundController(
       finalRound <- roundManager.startRound(initialRound)
     yield finalRound
 
-case class GameViews(roundView: View[Round])
-
-class GameController(gameViews: GameViews, actionQueue: Queue[IO, RoundAction])
+class GameController(gameViews: GameViews)
     extends Controller[GameResult, RoundAction]:
 
   private def playRound(gameState: GameState): IO[Score] =
     for
-      singleRoundController = SingleRoundController(
-        gameViews.roundView,
-        actionQueue,
-        gameState
-      )
-      finalRound <- singleRoundController.start()
+      queue <- Queue.unbounded[IO, RoundAction]
+      ctrl <- gameViews.gameplay
+      view = FxView(ctrl, queue)
+      src = SingleRoundController(view, queue, gameState)
+      finalRound <- src.start()
     yield finalRound.score
 
-  val game = Game(state => playRound(state))
+  private def showRoundWon(blind: Blind): IO[Unit] =
+    for
+      queue <- Queue.unbounded[IO, RoundWonAction]
+      ctrl <- gameViews.roundWon
+      view = FxRoundWonView(ctrl, queue)
+      action <- queue.take
+    yield ()
+
+  val game = Game(state => playRound(state), showRoundWon)
 
   override def start(): IO[GameResult] = game.play()

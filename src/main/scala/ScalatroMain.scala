@@ -1,12 +1,11 @@
 package scalatro
 
-import controller.{GameController, GameViews, SingleRoundController}
-import model.round.RoundAction
-import view.{FxController, FxView}
+import controller.GameController
+import view.{FxController, FxRoundWonController}
 
 import cats.effect.IO
-import cats.effect.std.Queue
 import cats.effect.unsafe.implicits.global
+import javafx.application.Platform
 import javafx.fxml.FXMLLoader
 import javafx.scene.{Parent, Scene}
 import scalafx.application.JFXApp3
@@ -31,20 +30,33 @@ object MainApp extends JFXApp3:
 
     val fxController: FxController = loader.getController
 
-    // Functional program bootstrapping
     val program: IO[Unit] =
-      for
-        queue <- Queue.unbounded[IO, RoundAction]
-        view = FxView(fxController, queue) // injects queue into fxController
-        ctrl = GameController(GameViews(view), queue)
-        _ <- ctrl.start()
+      for ctrl <- GameController(GameViews(scene)).start()
       yield ()
 
-    // This instruction must be the last one, since we are at top-level entry-point
     program.unsafeRunAndForget()
 
 object SceneRouter:
 
-  def switchTo(scene: Scene)(fxml: String): Unit =
-    val root: Parent = FXMLLoader.load(getClass.getResource(fxml))
-    scene.setRoot(root)
+  def switchTo[C](scene: Scene)(fxml: String): IO[C] =
+    IO.async_ { cb =>
+      Platform.runLater { () =>
+        try
+          val loader = new FXMLLoader(getClass.getResource(fxml))
+          val root: Parent = loader.load()
+          scene.setRoot(root)
+          cb(Right(loader.getController[C]))
+        catch case t: Throwable => cb(Left(t))
+      }
+    }
+
+class GameViews(scene: Scene):
+
+  def gameplay: IO[FxController] =
+    SceneRouter.switchTo[FxController](scene)("/scalatro/scene.fxml")
+
+  def roundWon: IO[FxRoundWonController] =
+    SceneRouter.switchTo[FxRoundWonController](scene)("/scalatro/roundWon.fxml")
+
+//  def roundLost: IO[FxRoundLostController] =
+//    SceneRouter.switchTo[FxRoundLostController](scene)("/scalatro/roundLost.fxml")

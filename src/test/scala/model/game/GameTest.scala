@@ -13,9 +13,10 @@ class GameTest extends AnyFlatSpec, Matchers:
   val blind: Blind = Blind.first
   val playRoundPlaceHolder: GameState => IO[Score] = a =>
     IO.pure(blind.targetScore)
-
+  val onRoundWonPlaceHolder: Blind => IO[Unit] = a => IO.unit
+  
   "A Game" should "store the seed it was created with" in:
-    Game(playRoundPlaceHolder, seed).seed shouldBe seed
+    Game(playRoundPlaceHolder, onRoundWonPlaceHolder, seed).seed shouldBe seed
 
   it should "pick a random seed when none is given" in:
     Game(playRoundPlaceHolder).seed should not equal Game(
