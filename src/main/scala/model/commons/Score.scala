@@ -4,7 +4,6 @@ package model.commons
 import model.commons.Chips.Chips
 import model.commons.Mult.Mult
 import model.commons.Score.Score
-import model.game.GameState
 
 object Chips:
   type Chips = Double
@@ -45,6 +44,7 @@ object BasicHandScoreCalculator extends HandScoreCalculator:
   * the chips and the multiplier
   */
 object AvgSquaredHandScoreCalculator extends HandScoreCalculator:
+
   override def calculate(chips: Chips, mult: Mult): Score =
     val avg = (chips + mult) / 2
     Score(avg * avg)
@@ -121,6 +121,15 @@ object Score:
     val handTypeIncreaseScore: HandScore = Planet.getIncrease(handType)
     handType.baseScore + handTypeIncreaseScore * handTypeLevel
 
+  def calculateHandScore(cards: Seq[Card])(using
+      scoreConfig: ScoreConfig
+  ): HandScore =
+    val handType: HandType = HandType.detect(cards)
+    val scoringCards = HandType.getScoringCards(cards)
+    val handTypeBaseScore: HandScore =
+      getLevelledHandTypeBaseScore(scoreConfig.levels, handType)
+    scoringCards.foldLeft(handType.baseScore)((acc, card) => card.onScored(acc))
+
   /** A method that calculates the score given by a hand
     * @param cards
     *   the cards played
@@ -129,17 +138,9 @@ object Score:
     * @return
     *   the score
     */
-  def calculateHandScore(cards: Seq[Card])(using
+  def calculateScore(cards: Seq[Card])(using
       scoreConfig: ScoreConfig
   ): Score =
-    val handType: HandType = HandType.detect(cards)
-    val scoringCards = HandType.getScoringCards(cards)
-    val handTypeBaseScore: HandScore =
-      getLevelledHandTypeBaseScore(scoreConfig.levels, handType)
-    val handScore: HandScore =
-      scoringCards.foldLeft(handType.baseScore)((acc, card) =>
-        card.onScored(acc)
-      )
-    Score(handScore)
+    Score(calculateHandScore(cards))
 
   val zero: Score = Score(0.0)

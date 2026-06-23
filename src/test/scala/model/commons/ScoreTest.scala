@@ -3,13 +3,14 @@ package model.commons
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
+import model.commons.Score.Score
 
 class ScoreTest extends AnyFlatSpec, Matchers:
 
   private given scoreConfig: ScoreConfig = ScoreConfig.default
   private given calculator: HandScoreCalculator = scoreConfig.calculator
 
-  def getExpectedScore(cards : Seq[Card], handType : HandType) : Score.Score =
+  def getExpectedScore(cards : Seq[Card], handType : HandType) : Score =
     val baseScore = handType.baseScore
     val scoringCards = HandType.getScoringCards(cards)
     val chipsSum = scoringCards.map(_.getBaseChips).sum
@@ -23,7 +24,7 @@ class ScoreTest extends AnyFlatSpec, Matchers:
       Card(Rank.Three, Suit.Spades),
       Card(Rank.Nine, Suit.Spades)
     )
-    val score: Score.Score = Score.calculateHandScore(cards)
+    val score: Score.Score = Score.calculateScore(cards)
     val expectedScore = getExpectedScore(cards, HandType.HighCard)
     score shouldBe expectedScore
 
@@ -35,7 +36,7 @@ class ScoreTest extends AnyFlatSpec, Matchers:
       Card(Rank.Jack, Suit.Spades),
       Card(Rank.Nine, Suit.Spades)
     )
-    val score: Score.Score = Score.calculateHandScore(cards)
+    val score: Score.Score = Score.calculateScore(cards)
     val expectedScore = getExpectedScore(cards, HandType.Pair)
     score shouldBe expectedScore
 
@@ -47,7 +48,7 @@ class ScoreTest extends AnyFlatSpec, Matchers:
       Card(Rank.Queen, Suit.Clubs),
       Card(Rank.King, Suit.Spades)
     )
-    val score: Score.Score = Score.calculateHandScore(cards)
+    val score: Score.Score = Score.calculateScore(cards)
     val expectedScore = getExpectedScore(cards, HandType.TwoPair)
     score shouldBe expectedScore
 
@@ -58,7 +59,7 @@ class ScoreTest extends AnyFlatSpec, Matchers:
       Card(Rank.Jack, Suit.Hearts),
       Card(Rank.Queen, Suit.Hearts)
     )
-    val score: Score.Score = Score.calculateHandScore(cards)
+    val score: Score.Score = Score.calculateScore(cards)
     val expectedScore = getExpectedScore(cards, HandType.ThreeOfAKind)
     score shouldBe expectedScore
 
@@ -70,7 +71,7 @@ class ScoreTest extends AnyFlatSpec, Matchers:
       Card(Rank.Four, Suit.Spades),
       Card(Rank.Five, Suit.Clubs)
     )
-    val score: Score.Score = Score.calculateHandScore(cards)
+    val score: Score.Score = Score.calculateScore(cards)
     val expectedScore = getExpectedScore(cards, HandType.Straight)
     score shouldBe expectedScore
 
@@ -82,7 +83,7 @@ class ScoreTest extends AnyFlatSpec, Matchers:
       Card(Rank.Seven, Suit.Spades),
       Card(Rank.Jack, Suit.Spades),
     )
-    val score: Score.Score = Score.calculateHandScore(cards)
+    val score: Score.Score = Score.calculateScore(cards)
     val expectedScore = getExpectedScore(cards, HandType.Flush)
     score shouldBe expectedScore
 
@@ -94,7 +95,7 @@ class ScoreTest extends AnyFlatSpec, Matchers:
       Card(Rank.Seven, Suit.Spades),
       Card(Rank.Seven, Suit.Clubs),
     )
-    val score: Score.Score = Score.calculateHandScore(cards)
+    val score: Score.Score = Score.calculateScore(cards)
     val expectedScore = getExpectedScore(cards, HandType.FullHouse)
     score shouldBe expectedScore
 
@@ -106,7 +107,7 @@ class ScoreTest extends AnyFlatSpec, Matchers:
       Card(Rank.Two, Suit.Spades),
       Card(Rank.Seven, Suit.Clubs),
     )
-    val score: Score.Score = Score.calculateHandScore(cards)
+    val score: Score.Score = Score.calculateScore(cards)
     val expectedScore = getExpectedScore(cards, HandType.FourOfAKind)
     score shouldBe expectedScore
 
@@ -118,7 +119,7 @@ class ScoreTest extends AnyFlatSpec, Matchers:
       Card(Rank.Four, Suit.Hearts),
       Card(Rank.Five, Suit.Hearts)
     )
-    val score: Score.Score = Score.calculateHandScore(cards)
+    val score: Score.Score = Score.calculateScore(cards)
     val expectedScore = getExpectedScore(cards, HandType.StraightFlush)
     score shouldBe expectedScore
 
@@ -130,7 +131,7 @@ class ScoreTest extends AnyFlatSpec, Matchers:
       Card(Rank.Ace, Suit.Clubs),
       Card(Rank.Ace, Suit.Spades)
     )
-    val score: Score.Score = Score.calculateHandScore(cards)
+    val score: Score.Score = Score.calculateScore(cards)
     val expectedScore = getExpectedScore(cards, HandType.FiveOfAKind)
     score shouldBe expectedScore
 
@@ -142,7 +143,7 @@ class ScoreTest extends AnyFlatSpec, Matchers:
       Card(Rank.Seven, Suit.Spades),
       Card(Rank.Seven, Suit.Spades),
     )
-    val score: Score.Score = Score.calculateHandScore(cards)
+    val score: Score.Score = Score.calculateScore(cards)
     val expectedScore = getExpectedScore(cards, HandType.FlushHouse)
     score shouldBe expectedScore
 
@@ -154,6 +155,6 @@ class ScoreTest extends AnyFlatSpec, Matchers:
       Card(Rank.Two, Suit.Spades),
       Card(Rank.Two, Suit.Spades),
     )
-    val score: Score.Score = Score.calculateHandScore(cards)
+    val score: Score.Score = Score.calculateScore(cards)
     val expectedScore = getExpectedScore(cards, HandType.FlushFive)
     score shouldBe expectedScore

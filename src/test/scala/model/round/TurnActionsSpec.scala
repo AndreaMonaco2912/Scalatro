@@ -55,7 +55,7 @@ class TurnActionsSpec extends AnyFlatSpec with Matchers:
     val cardsToPlay = Seq(c1)
     val result = playCards(cardsToPlay).runS(initialRound).value
     result.score shouldBe initialRound.score
-      + Score.calculateHandScore(cardsToPlay)
+      + Score.calculateScore(cardsToPlay)
 
   "orderCards" should "order the cards in hand using a given CardOrderer" in:
     val result = orderCards.runS(initialRound).value

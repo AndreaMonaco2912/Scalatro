@@ -1,7 +1,7 @@
 package scalatro
 package model.round
 
-import model.commons.Score.{Score, calculateHandScore}
+import model.commons.Score.{Score, calculateScore}
 import model.commons.{Card, CardOrderer, ScoreConfig}
 
 import cats.data.State
@@ -31,7 +31,7 @@ object TurnActions:
       cards: Seq[Card]
   )(using scoreConfig: ScoreConfig): TurnState[Unit] =
     for
-      score = calculateHandScore(cards)
+      score = calculateScore(cards)
       _ <- increaseScore(score)
       _ <- removeCards(cards)
       _ <- drawCards(cards.size)
