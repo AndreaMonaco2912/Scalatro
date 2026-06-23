@@ -7,6 +7,8 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
+<?import eu.iamgio.animated.binding.AnimationSettings?>
+<?import eu.iamgio.animated.binding.value.AnimatedIntValueLabel?>
 <BorderPane prefHeight="680.0" prefWidth="1100.0" style="-fx-background-color: #1a6b3a;" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="scalatro.view.FxController">
 
     <!-- ============================================================ -->
@@ -64,9 +66,14 @@
                 <!-- Blue chips rectangle -->
                 <StackPane>
                     <Rectangle arcHeight="12.0" arcWidth="12.0" fill="#2a82d8" height="60.0" width="75.0" />
-                    <Label fx:id="chipsLabel" text="0" textFill="WHITE">
-                        <font><Font name="System Bold" size="24.0" /></font>
-                    </Label>
+                    <AnimatedIntValueLabel fx:id="chipsLabel" value="0" textFill="WHITE">
+                        <font>
+                            <Font name="System Bold" size="24.0"/>
+                        </font>
+                        <settings>
+                            <AnimationSettings duration="200ms" curve="EASE_OUT"/>
+                        </settings>
+                    </AnimatedIntValueLabel>
                 </StackPane>
 
                 <Label text="×" textFill="WHITE">
@@ -76,9 +83,14 @@
                 <!-- Red mult rectangle -->
                 <StackPane>
                     <Rectangle arcHeight="12.0" arcWidth="12.0" fill="#d84a4a" height="60.0" width="75.0" />
-                    <Label fx:id="multLabel" text="0" textFill="WHITE">
-                        <font><Font name="System Bold" size="24.0" /></font>
-                    </Label>
+                    <AnimatedIntValueLabel fx:id="multLabel" value="0" textFill="WHITE">
+                        <font>
+                            <Font name="System Bold" size="24.0"/>
+                        </font>
+                        <settings>
+                            <AnimationSettings duration="200ms" curve="EASE_OUT"/>
+                        </settings>
+                    </AnimatedIntValueLabel>
                 </StackPane>
             </HBox>
         </VBox>

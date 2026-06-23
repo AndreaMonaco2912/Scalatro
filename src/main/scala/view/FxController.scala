@@ -7,6 +7,7 @@ import model.round.{Round, RoundAction}
 import cats.effect.IO
 import cats.effect.std.Queue
 import cats.effect.unsafe.implicits.global
+import eu.iamgio.animated.binding.value.AnimatedIntValueLabel
 import javafx.application.Platform
 import javafx.fxml.{FXML, Initializable}
 import javafx.scene.control.{Button, Label, TextField, ToggleButton}
@@ -44,8 +45,8 @@ class FxController extends Initializable:
   @FXML private var roundNumLabel: Label = uninitialized
   @FXML private var roundScoreLabel: Label = uninitialized
   @FXML private var goalLabel: Label = uninitialized
-  @FXML private var chipsLabel: Label = uninitialized
-  @FXML private var multLabel: Label = uninitialized
+  @FXML private var chipsLabel: AnimatedIntValueLabel = uninitialized
+  @FXML private var multLabel: AnimatedIntValueLabel = uninitialized
   @FXML private var handLabel: Label = uninitialized
   @FXML private var handLevelLabel: Label = uninitialized
   @FXML private var deckLabel: Label = uninitialized
@@ -110,14 +111,14 @@ class FxController extends Initializable:
 
   private def setHandType(handType: Option[HandType]): Unit = handType match
     case Some(handType) =>
-      chipsLabel.setText(handType.baseScore.chips.customToString)
-      multLabel.setText(handType.baseScore.mult.customToString)
+      chipsLabel.setValue(handType.baseScore.chips.toInt)
+      multLabel.setValue(handType.baseScore.mult.toInt)
       handLabel.setText(handType.toString)
       playButton.setDisable(!playAvailable || selectedCards.isEmpty)
       discardButton.setDisable(!discardAvailable || selectedCards.isEmpty)
     case _ =>
-      chipsLabel.setText("0")
-      multLabel.setText("0")
+      chipsLabel.setValue(0)
+      multLabel.setValue(0)
       handLabel.setText("")
       playButton.setDisable(true)
       discardButton.setDisable(true)
