@@ -1,9 +1,7 @@
 package scalatro
 package model.commons
 
-/** A trait that defines a strategy for ordering a sequence of cards. Different
-  * implementations to define various ways of reordering a sequence of cards.
-  */
+/** A trait that defines a strategy for ordering a sequence of cards. */
 trait CardOrderer:
   /** Orders the cards according to a rule defined by the implementing
     * CardOrderer.
@@ -15,8 +13,7 @@ trait CardOrderer:
     */
   def order(cards: Seq[Card]): Seq[Card]
 
-/** A collection of predefined [[CardOrderer]]s or templates to create them
-  */
+/** A collection of predefined [[CardOrderer]]s or templates to create them */
 object CardOrderer:
   /** An [[scala.math.Ordering]] for [[Rank]] in decreasing order by their
     * numeric value
@@ -47,8 +44,9 @@ object CardOrderer:
     */
   val sortBySuit: CardOrderer = _.sortBy(c => (c.suit, c.rank))
 
-  /** Swaps two cards at the given positions. Both indexes must be within the
-    * sequence bounds.
+  /** Swaps two cards at the given positions.
+    *
+    * Both indexes must be within the sequence bounds.
     *
     * @param i
     *   the index of the first card to swap
@@ -63,7 +61,9 @@ object CardOrderer:
     cards.updated(i, cards(j)).updated(j, cards(i))
 
   /** Moves a card from one position to another, shifting other cards to fill
-    * the gap. Both indexes must be within the sequence bounds.
+    * the gap.
+    *
+    * Both indexes must be within the sequence bounds.
     *
     * @param from
     *   the initial index of the card

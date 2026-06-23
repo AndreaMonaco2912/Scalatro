@@ -7,8 +7,7 @@ import model.game.Blind
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
-/** A test spec for [[TurnActions]]
-  */
+/** A test spec for [[TurnActions]] */
 class TurnActionsSpec extends AnyFlatSpec with Matchers:
   import TurnActions.*
 
