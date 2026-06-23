@@ -25,11 +25,11 @@ class Game(
     val levels = gameState.levels
 
     for
-      result <- playRound(GameState(shuffledDeck, blind, jokers, levels))
+      result <- playRound(gameState.shuffleDeck)
       outcome <-
         if blind.isBeaten(result) then
           onRoundWon(blind) *> gameLoop(
-            GameState(deck, blind.next, jokers, levels)
+            gameState.advanceBlind
           )
         else IO.pure(GameResult(blind, result))
     yield outcome
