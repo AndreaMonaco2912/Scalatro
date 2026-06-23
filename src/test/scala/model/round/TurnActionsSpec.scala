@@ -7,11 +7,13 @@ import model.game.Blind
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
+/** A test spec for [[TurnActions]]
+  */
 class TurnActionsSpec extends AnyFlatSpec with Matchers:
   import TurnActions.*
 
-  given calculator: HandScoreCalculator = BasicHandScoreCalculator
-  given cardOrderer: CardOrderer = CardOrderer.sortByRank
+  private given calculator: HandScoreCalculator = BasicHandScoreCalculator
+  private given cardOrderer: CardOrderer = CardOrderer.sortByRank
 
   private val c1 = Card(Rank.Ace, Suit.Clubs)
   private val c2 = Card(Rank.Two, Suit.Hearts)
