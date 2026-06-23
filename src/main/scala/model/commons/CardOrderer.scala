@@ -16,7 +16,8 @@ trait CardOrderer:
   def order(cards: Seq[Card]): Seq[Card]
 
 object CardOrderer:
-  private val descendingInt: Ordering[Int] = (n, m) => m compare n
+  private given Ordering[Rank] = (r1, r2) => r2.value compare r1.value
+  private given Ordering[Suit] = _.ordinal compare _.ordinal
 
   /** Maintains the same card order
     * @return
@@ -28,22 +29,14 @@ object CardOrderer:
     * @return
     *   the CardOrder
     */
-  val sortByRank: CardOrderer =
-    given Ordering[Int] = descendingInt
-    _.sortBy(_.rank.value)
+  val sortByRank: CardOrderer = _.sortBy(c => (c.rank, c.suit))
 
   /** Sort cards by suit, following [[Suit.values]] order, then sort each suite
     * group by rank.
     * @return
     *   the CardOrder
     */
-  val sortBySuit: CardOrderer = cards =>
-    given Ordering[Int] = descendingInt
-    val bySuit = cards.groupBy(_.suit)
-    for
-      suit <- Suit.values.toSeq
-      card <- bySuit.getOrElse(suit, Nil).sortBy(_.rank.value)
-    yield card
+  val sortBySuit: CardOrderer = _.sortBy(c => (c.suit, c.rank))
 
   /** Swap 2 cards. Indexes must be positive numbers and inside the Seq size.
     *

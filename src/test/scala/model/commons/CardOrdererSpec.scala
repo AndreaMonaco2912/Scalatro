@@ -23,6 +23,16 @@ class CardOrdererSpec extends AnyFlatSpec, Matchers:
       Card(Rank.Three, Suit.Hearts)
     )
 
+  it should "sort suits within each rank" in:
+    val cards = Seq(
+      Card(Rank.Five, Suit.Hearts),
+      Card(Rank.Five, Suit.Spades),
+      Card(Rank.Five, Suit.Diamonds),
+      Card(Rank.Five, Suit.Clubs)
+    )
+
+    CardOrderer.sortByRank.order(cards).map(_.suit) shouldBe Suit.values.toSeq
+
   "sortBySuit" should "follow Suit.values order" in:
     val cards = Seq(
       Card(Rank.Five, Suit.Hearts),
