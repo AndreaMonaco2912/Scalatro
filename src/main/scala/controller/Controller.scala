@@ -3,9 +3,9 @@ package controller
 
 import model.commons.{Deck, Score}
 import model.commons.Score.Score
-import model.game.{Blind, Game, GameResult, GameState, RoundWonAction}
+import model.game.{Blind, Game, GameResult, GameState, RoundLostAction, RoundWonAction}
 import model.round.{Round, RoundAction}
-import view.{FxRoundWonView, FxView, View}
+import view.{FxRoundEndController, FxView, RoundEndView, View}
 
 import cats.effect.IO
 import cats.effect.std.Queue
@@ -46,14 +46,20 @@ class GameController(gameViews: GameViews)
       finalRound <- src.start()
     yield finalRound.score
 
-  private def showRoundWon(blind: Blind): IO[Unit] =
+  private def showOutcome[A](getController: IO[FxRoundEndController[A]]): IO[Unit] =
     for
-      queue <- Queue.unbounded[IO, RoundWonAction]
-      ctrl <- gameViews.roundWon
-      view = FxRoundWonView(ctrl, queue)
-      action <- queue.take
+      queue <- Queue.unbounded[IO, A]
+      ctrl <- getController
+      view = RoundEndView(ctrl, queue)
+      _ <- queue.take
     yield ()
 
-  val game = Game(state => playRound(state), showRoundWon)
+  private def showRoundWon(blind: Blind): IO[Unit] =
+    showOutcome[RoundWonAction](gameViews.roundWon)
+
+  private def showRoundLost(blind: Blind): IO[Unit] =
+    showOutcome[RoundLostAction](gameViews.roundLost)
+
+  val game = Game(state => playRound(state), showRoundWon, showRoundLost)
 
   override def start(): IO[GameResult] = game.play()

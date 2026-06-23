@@ -9,7 +9,8 @@ import cats.effect.IO
 class Game(
     val seed: Long,
     playRound: GameState => IO[Score],
-    onRoundWon: Blind => IO[Unit] = _ => IO.unit
+    onRoundWon: Blind => IO[Unit] = _ => IO.unit,
+    onRoundLost: Blind => IO[Unit] = _ => IO.unit
 ):
   private val rng: Random = Random(seed)
   private given Random = rng
@@ -28,10 +29,13 @@ class Game(
       result <- playRound(gameState.shuffleDeck)
       outcome <-
         if blind.isBeaten(result) then
-          onRoundWon(blind) *> gameLoop(
+          onRoundWon(blind) >> gameLoop(
             gameState.advanceBlind
           )
-        else IO.pure(GameResult(blind, result))
+        else
+          onRoundLost(blind) >> gameLoop(
+            GameState.initial
+          )
     yield outcome
 
 case class GameResult(blind: Blind, finalScore: Score)
@@ -40,5 +44,6 @@ object Game:
   def apply(
       playRound: GameState => IO[Score],
       onRoundWon: Blind => IO[Unit] = _ => IO.unit,
+      onRoundLost: Blind => IO[Unit] = _ => IO.unit,
       seed: Long = Random.nextLong()
-  ): Game = new Game(seed, playRound, onRoundWon)
+  ): Game = new Game(seed, playRound, onRoundWon, onRoundLost)
