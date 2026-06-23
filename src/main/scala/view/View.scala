@@ -6,17 +6,17 @@ import model.round.{Round, RoundAction}
 import cats.effect.IO
 import cats.effect.std.Queue
 
-trait View[S, A]:
+trait View[S]:
   def render(state: S): IO[Unit]
 
-class HeadlessView extends View[Round, RoundAction]:
+class HeadlessView extends View[Round]:
   override def render(round: Round): IO[Unit] =
     IO.println(s"[Test Render] Score is: ${round.score}, hand is ${round.hand}")
 
 class FxView(
-              controller: FxController,
-              actionQueue: Queue[IO, RoundAction]
-) extends View[Round, RoundAction]:
+    controller: FxController,
+    actionQueue: Queue[IO, RoundAction]
+) extends View[Round]:
 
   controller.setActionQueue(actionQueue)
 

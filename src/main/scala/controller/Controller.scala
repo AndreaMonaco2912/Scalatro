@@ -1,8 +1,8 @@
 package scalatro
 package controller
 
-import model.commons.{Deck, Score}
 import model.commons.Score.Score
+import model.commons.{Deck, Score}
 import model.game.{Game, GameResult, GameState}
 import model.round.{Round, RoundAction}
 import view.View
@@ -14,7 +14,7 @@ trait Controller[S, A]:
   def start(): IO[S]
 
 class SingleRoundController(
-    view: View[Round, RoundAction],
+    view: View[Round],
     actionQueue: Queue[IO, RoundAction],
     gameState: GameState
 ) extends Controller[Round, RoundAction]:
@@ -34,7 +34,7 @@ class SingleRoundController(
       finalRound <- roundManager.startRound(initialRound)
     yield finalRound
 
-case class GameViews(roundView: View[Round, RoundAction])
+case class GameViews(roundView: View[Round])
 
 class GameController(gameViews: GameViews, actionQueue: Queue[IO, RoundAction])
     extends Controller[GameResult, RoundAction]:
