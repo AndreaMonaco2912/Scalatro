@@ -11,6 +11,7 @@ class TurnActionsSpec extends AnyFlatSpec with Matchers:
   import TurnActions.*
 
   given calculator: HandScoreCalculator = BasicHandScoreCalculator
+  given cardOrderer: CardOrderer = CardOrderer.sortByRank
 
   private val c1 = Card(Rank.Ace, Suit.Clubs)
   private val c2 = Card(Rank.Two, Suit.Hearts)
@@ -53,3 +54,7 @@ class TurnActionsSpec extends AnyFlatSpec with Matchers:
     val result = playCards(cardsToPlay).runS(initialRound).value
     result.score shouldBe initialRound.score
       + Score.calculateHandScore(using BasicHandScoreCalculator)(cardsToPlay)
+
+  "orderCards" should "order the cards in hand using a given CardOrderer" in:
+    val result = orderCards.runS(initialRound).value
+    result.hand shouldBe cardOrderer.order(initialHand)

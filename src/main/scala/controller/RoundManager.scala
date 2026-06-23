@@ -28,6 +28,8 @@ object RoundManager:
         action match
           case PlayCards(cards)    => IO(playCards(cards).runS(round).value)
           case DiscardCards(cards) => IO(discardCards(cards).runS(round).value)
+          case OrderHand(orderer)  =>
+            IO(orderCards(using orderer).runS(round).value)
 
       def roundLoop(initialRound: Round): IO[Round] =
         if initialRound.isFinished

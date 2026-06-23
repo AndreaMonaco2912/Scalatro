@@ -2,7 +2,7 @@ package scalatro
 package model.round
 
 import model.commons.Score.{Score, calculateHandScore}
-import model.commons.{Card, HandScoreCalculator}
+import model.commons.{Card, CardOrderer, HandScoreCalculator}
 
 import cats.data.State
 
@@ -32,6 +32,9 @@ object TurnActions:
     State.modify(state =>
       state.modify(remainingDiscards = state.remainingDiscards - 1)
     )
+
+  def orderCards(using ord: CardOrderer): TurnState[Unit] =
+    State.modify(state => state.modify(hand = ord.order(state.hand)))
 
   def discardCards(cards: Seq[Card]): TurnState[Unit] =
     for

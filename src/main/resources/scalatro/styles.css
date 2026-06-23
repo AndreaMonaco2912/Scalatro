@@ -10,6 +10,15 @@
     -fx-min-width: 190;
 }
 
+/* ── Mini stat boxes (hands left / discards left) ────────────────── */
+/* Same dark panel look as .score-box but sized to sit two-up in the
+   narrow left column without forcing it wider. */
+.mini-stat-box {
+    -fx-background-color: #111827;
+    -fx-background-radius: 8;
+    -fx-min-width: 90;
+}
+
 /* ── Card toggle buttons ─────────────────────────────────────────── */
 /*
  * Cards sit in ToggleButtons with transparent background.
@@ -83,6 +92,35 @@
 
 .discard-button:pressed {
     -fx-background-color: #a03a08;
+    -fx-translate-y: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 3, 0, 0, 1);
+}
+
+/* ── Sort Hand panel (wraps the Rank / Suit buttons) ─────────────── */
+.sort-panel {
+    -fx-background-color: #163d28;
+    -fx-background-radius: 8;
+    -fx-border-color: #0e2a1c;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 8;
+}
+
+/* ── Sort buttons (Rank / Suit) ───────────────────────────────────── */
+.sort-button {
+    -fx-background-color: #d8941e;
+    -fx-text-fill: #2c1900;
+    -fx-background-radius: 6;
+    -fx-padding: 6 14 6 14;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.45), 5, 0, 0, 2);
+}
+
+.sort-button:hover {
+    -fx-background-color: #e8a82e;
+}
+
+.sort-button:pressed {
+    -fx-background-color: #b87814;
     -fx-translate-y: 1;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 3, 0, 0, 1);
 }

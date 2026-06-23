@@ -2,7 +2,7 @@ package scalatro
 package model.round
 
 import model.commons.Score.Score
-import model.commons.{Card, Deck}
+import model.commons.{Card, CardOrderer, Deck}
 import model.game.Blind
 
 type Hand = Seq[Card]
@@ -10,6 +10,7 @@ type Hand = Seq[Card]
 enum RoundAction:
   case PlayCards(cards: Seq[Card])
   case DiscardCards(cards: Seq[Card])
+  case OrderHand(orderer: CardOrderer)
 
 enum RoundResult:
   case Victory, Defeat

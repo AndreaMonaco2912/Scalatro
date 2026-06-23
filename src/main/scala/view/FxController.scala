@@ -1,7 +1,7 @@
 package scalatro
 package view
 
-import model.commons.{Card, Deck, HandType, Rank}
+import model.commons.*
 import model.round.{Round, RoundAction}
 
 import cats.effect.IO
@@ -56,6 +56,8 @@ class FxController extends Initializable:
   // Action buttons
   @FXML private var playButton: Button = uninitialized
   @FXML private var discardButton: Button = uninitialized
+  @FXML private var sortRankButton: Button = uninitialized
+  @FXML private var sortSuitButton: Button = uninitialized
 
   // Convenient grouped lists (order matters – matches FXML fx:id numbering)
   private def cardViews: List[ImageView] =
@@ -89,8 +91,10 @@ class FxController extends Initializable:
           case _      => None)
       )
     )
+    sortRankButton.setOnAction(_ => onOrder(CardOrderer.sortByRank))
+    sortSuitButton.setOnAction(_ => onOrder(CardOrderer.sortBySuit))
 
-  /** Inject the action queue. Must be called before the first render. */
+  /** Injects the action queue. Must be called before the first render. */
   def setActionQueue(queue: Queue[IO, RoundAction]): Unit =
     actionQueue = Some(queue)
 
@@ -162,6 +166,11 @@ class FxController extends Initializable:
   private def onDiscard(): Unit =
     actionQueue.foreach(
       _.offer(RoundAction.DiscardCards(selectedCards)).unsafeRunAndForget()
+    )
+
+  private def onOrder(cardOrderer: CardOrderer): Unit =
+    actionQueue.foreach(
+      _.offer(RoundAction.OrderHand(cardOrderer)).unsafeRunAndForget()
     )
 
   private def setCardImage(imageView: ImageView, card: Card): Unit =
