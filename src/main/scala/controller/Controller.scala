@@ -12,10 +12,10 @@ import cats.effect.std.Queue
 
 /** A trait representing a functional controller
   * @tparam S
-  *   the type of the object to render
+  *   the type of the results of the actions
   */
 trait Controller[S]:
-  /** Creates a template for running the functional computation
+  /** Creates a template for running the computation ina functional way
     * @return
     *   an IO representing the computation
     */
