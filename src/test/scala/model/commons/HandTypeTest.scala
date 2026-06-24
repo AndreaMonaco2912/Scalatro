@@ -107,3 +107,5 @@ class HandTypeTest extends AnyFlatSpec, Matchers:
     val c3: Card = Card(Rank.Eight, Suit.Clubs)
     val c4: Card = Card(Rank.Ace, Suit.Clubs)
     val c5: Card = Card(Rank.King, Suit.Diamonds)
+    val cards : Seq[Card] = Seq(c1,c2,c3,c4,c5)
+    HandType.detect(cards) shouldBe HandType.HighCard

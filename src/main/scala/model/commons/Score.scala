@@ -91,9 +91,9 @@ object Score:
   def apply(d: Double): Score =
     require(d >= 0.0, "Score must be positive")
     d
-  def apply(using
+  def apply(handScore: HandScore)(using
       scoreConfig: ScoreConfig
-  )(handScore: HandScore): Score =
+  ): Score =
     scoreConfig.calculator.calculate(handScore.chips, handScore.mult)
 
   extension (s: Score)
