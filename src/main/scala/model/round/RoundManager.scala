@@ -1,5 +1,5 @@
 package scalatro
-package controller
+package model.round
 
 import model.commons.ScoreConfig
 import model.round.RoundAction.*

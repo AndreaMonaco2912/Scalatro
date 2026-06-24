@@ -4,7 +4,7 @@ package controller
 import model.commons.Score.Score
 import model.commons.{Deck, Score}
 import model.game.*
-import model.round.{Round, RoundAction}
+import model.round.{Round, RoundAction, RoundManager}
 import model.shop.{Shop, ShopActions}
 import view.{FxRoundEndController, FxView, RoundEndView, ShopView, View}
 

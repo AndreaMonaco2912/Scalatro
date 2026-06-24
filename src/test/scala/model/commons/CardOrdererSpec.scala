@@ -5,7 +5,7 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
 /** A test spec for [[CardOrderer]] */
-class CardOrdererSpec extends AnyFlatSpec, Matchers:
+class CardOrdererSpec extends AnyFlatSpec with Matchers:
   private val testCards = Seq(
     Card(Rank.Eight, Suit.Spades),
     Card(Rank.Three, Suit.Hearts),
