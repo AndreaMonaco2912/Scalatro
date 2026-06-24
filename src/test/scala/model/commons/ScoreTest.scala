@@ -27,27 +27,21 @@ class ScoreTest extends AnyFlatSpec, Matchers:
     )
 
   "BasicHandScoreCalculator" should "multiply chips and mult together" in:
-    val scoreConfig: ScoreConfig = ScoreConfig(
-      defaultScoreConfig.jokers,
-      defaultScoreConfig.levels,
-      BasicHandScoreCalculator
-    )
     val chips: Chips = 50
     val mult: Mult = 20
-    Score(HandScore(chips, mult))(using scoreConfig) shouldBe Score(
+    Score(HandScore(chips, mult))(using
+      BasicHandScoreCalculator
+    ) shouldBe Score(
       chips * mult
     )
 
   "AvgSquaredHandScoreCalculator" should "square the average of chips and mult" in:
-    val scoreConfig: ScoreConfig = ScoreConfig(
-      defaultScoreConfig.jokers,
-      defaultScoreConfig.levels,
-      AvgSquaredHandScoreCalculator
-    )
     val chips: Chips = 50
     val mult: Mult = 20
     val avg = (chips + mult) / 2
-    Score(HandScore(chips, mult))(using scoreConfig) shouldBe Score(avg * avg)
+    Score(HandScore(chips, mult))(using
+      AvgSquaredHandScoreCalculator
+    ) shouldBe Score(avg * avg)
 
   "High Card" should "score base score + rank of the card" in:
     val cards = Seq(

@@ -7,19 +7,12 @@ import org.scalatest.matchers.should.Matchers
 class JokerTest extends AnyFlatSpec, Matchers:
 
   val defaultHandScore: HandScore = HandScore(50, 20)
-  val defaultJokerConfig: JokerConfig = JokerConfig(
-    Seq.empty,
-    Seq.empty,
-    HandTypeLevels.initial
-  )
+  val defaultJokerConfig: JokerConfig = JokerConfig.default
 
   "Default effect" should "not modify the hand score" in:
     val joker = new Joker
     val c = Card(Rank.Ace, Suit.Clubs)
     joker.independent(defaultHandScore)(using
-      defaultJokerConfig
-    ) shouldBe defaultHandScore
-    joker.onCardHeld(defaultHandScore, c)(using
       defaultJokerConfig
     ) shouldBe defaultHandScore
     joker.onCardScored(defaultHandScore, c)(using
@@ -34,7 +27,7 @@ class JokerTest extends AnyFlatSpec, Matchers:
     val c1 = Card(Rank.Ace, Suit.Clubs)
     val c2 = Card(Rank.Ten, Suit.Hearts)
     val jokerConfig =
-      JokerConfig(Seq(c1, c1, c2, c2), Seq.empty, HandTypeLevels.initial)
+      JokerConfig(Seq(c1, c1, c2, c2), HandTypeLevels.initial)
     joker.independent(defaultHandScore)(using
       jokerConfig
     ) shouldBe defaultHandScore + HandScore(80, 0)
@@ -46,7 +39,7 @@ class JokerTest extends AnyFlatSpec, Matchers:
     val c2 = Card(Rank.Four, suit)
     val c3 = Card(Rank.Six, suit)
     val jokerConfig =
-      JokerConfig(Seq(c1, c1, c2, c2, c3), Seq.empty, HandTypeLevels.initial)
+      JokerConfig(Seq(c1, c1, c2, c2, c3), HandTypeLevels.initial)
     joker.independent(defaultHandScore)(using
       jokerConfig
     ) shouldBe defaultHandScore + HandScore(80, 0)
@@ -59,7 +52,7 @@ class JokerTest extends AnyFlatSpec, Matchers:
     val c4 = Card(Rank.Five, Suit.Hearts)
     val c5 = Card(Rank.Six, Suit.Hearts)
     val jokerConfig =
-      JokerConfig(Seq(c1, c2, c3, c4, c5), Seq.empty, HandTypeLevels.initial)
+      JokerConfig(Seq(c1, c2, c3, c4, c5), HandTypeLevels.initial)
     joker.independent(defaultHandScore)(using
       jokerConfig
     ) shouldBe defaultHandScore + HandScore(0, 12)
@@ -72,7 +65,7 @@ class JokerTest extends AnyFlatSpec, Matchers:
     val c4 = Card(Rank.Five, Suit.Hearts)
     val c5 = Card(Rank.Six, Suit.Hearts)
     val jokerConfig =
-      JokerConfig(Seq(c1, c2, c3, c4, c5), Seq.empty, HandTypeLevels.initial)
+      JokerConfig(Seq(c1, c2, c3, c4, c5), HandTypeLevels.initial)
     joker.independent(defaultHandScore)(using
       jokerConfig
     ) shouldBe defaultHandScore + HandScore(100, 0)

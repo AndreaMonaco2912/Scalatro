@@ -6,16 +6,17 @@ import model.round.Hand
 /** The information needed to apply the effects of a joker
   * @param playedCards
   *   the cards played
-  * @param inHandCards
-  *   the cards held in hand
   * @param levels
   *   the level of the hand types
   */
 case class JokerConfig(
     playedCards: Seq[Card],
-    inHandCards: Seq[Card],
     levels: HandTypeLevels
 )
+
+object JokerConfig:
+
+  def default: JokerConfig = JokerConfig(Seq.empty, HandTypeLevels.initial)
 
 class Joker:
 
@@ -57,20 +58,6 @@ class Joker:
     *   the hand score after the effect is applied
     */
   def onHandPlayed(handScore: HandScore, hand: Hand)(using
-      jokerConfig: JokerConfig
-  ): HandScore = handScore
-
-  /** The effect applied on a card held in hand
-    * @param handScore
-    *   the hand score before the effect is applied
-    * @param card
-    *   the card held in hand
-    * @param jokerConfig
-    *   the joker effects configuration
-    * @return
-    *   the hand score after the effect is applied
-    */
-  def onCardHeld(handScore: HandScore, card: Card)(using
       jokerConfig: JokerConfig
   ): HandScore = handScore
 

@@ -92,9 +92,9 @@ object Score:
     require(d >= 0.0, "Score must be positive")
     d
   def apply(handScore: HandScore)(using
-      scoreConfig: ScoreConfig
+      calculator: HandScoreCalculator
   ): Score =
-    scoreConfig.calculator.calculate(handScore.chips, handScore.mult)
+    calculator.calculate(handScore.chips, handScore.mult)
 
   extension (s: Score)
     def +(other: Score): Score = s + other
@@ -141,6 +141,6 @@ object Score:
   def calculateScore(cards: Seq[Card])(using
       scoreConfig: ScoreConfig
   ): Score =
-    Score(calculateHandScore(cards))
+    Score(calculateHandScore(cards))(using scoreConfig.calculator)
 
   val zero: Score = Score(0.0)
