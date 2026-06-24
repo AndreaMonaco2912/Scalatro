@@ -88,15 +88,15 @@ object Joker:
 /** Trait which, if the hand played is of the specified type, increases the hand
   * score by the addition of a certain amount
   */
-trait FlatHandTypeContained(handType: HandType, val increase: HandScore)
+trait FlatHandTypeContained(handType: HandType, increase: HandScore)
     extends Joker:
 
   override def independent(
       handScore: HandScore
   )(using jokerConfig: JokerConfig): HandScore =
     if HandType.contains(jokerConfig.playedCards, handType) then
-      increase + handScore
-    else handScore
+      super.independent(handScore) + increase
+    else super.independent(handScore)
 
 /** Trait which, if the hand played is of the specified type, increases the hand
   * score multiplying the mult component by a certain amount
@@ -107,9 +107,12 @@ trait MultiplicativeHandTypeContained(handType: HandType, multiplier: Double)
   override def independent(handScore: HandScore)(using
       jokerConfig: JokerConfig
   ): HandScore =
-    (handScore, HandType.contains(jokerConfig.playedCards, handType)) match
+    (
+      super.independent(handScore),
+      HandType.contains(jokerConfig.playedCards, handType)
+    ) match
       case (HandScore(chips, mult), true) => HandScore(chips, mult * multiplier)
-      case (handScore, false)             => handScore
+      case (handScore, _)                 => handScore
 
 /** Trait which increases the score with an addition by a certain amount
   */
@@ -117,7 +120,7 @@ trait FlatScoreIncrease(increase: HandScore) extends Joker:
 
   override def independent(handScore: HandScore)(using
       jokerConfig: JokerConfig
-  ): HandScore = super.independent(handScore) + increase
+  ): HandScore = super.independent(handScore + increase)
 
 enum JokerType(val name: String, val description: String):
   case CleverJoker

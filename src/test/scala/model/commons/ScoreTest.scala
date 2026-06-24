@@ -42,7 +42,7 @@ class ScoreTest extends AnyFlatSpec, Matchers:
     val avg = (chips + mult) / 2
     Score(HandScore(chips, mult))(using scoreConfig) shouldBe Score(avg * avg)
 
-  "High card" should "score base score + rank of the card" in:
+  "High Card" should "score base score + rank of the card" in:
     val cards = Seq(
       Card(Rank.Jack, Suit.Clubs)
     )
@@ -60,7 +60,7 @@ class ScoreTest extends AnyFlatSpec, Matchers:
     val expectedScore = getExpectedScore(cards, HandType.Pair)
     score shouldBe expectedScore
 
-  "Two pair" should "score base score + rank of the 4 cards" in:
+  "Two Pair" should "score base score + rank of the 4 cards" in:
     val c1 = Card(Rank.Jack, Suit.Clubs)
     val c2 = Card(Rank.Queen, Suit.Clubs)
     val c3 = Card(Rank.King, Suit.Spades)
@@ -75,7 +75,7 @@ class ScoreTest extends AnyFlatSpec, Matchers:
     val expectedScore = getExpectedScore(cards, HandType.TwoPair)
     score shouldBe expectedScore
 
-  "Three of a kind" should "score base + rank of the 3 cards" in:
+  "Three of a Kind" should "score base + rank of the 3 cards" in:
     val c1 = Card(Rank.Jack, Suit.Clubs)
     val c2 = Card(Rank.Queen, Suit.Hearts)
     val cards = Seq(
@@ -125,7 +125,7 @@ class ScoreTest extends AnyFlatSpec, Matchers:
     val expectedScore = getExpectedScore(cards, HandType.Flush)
     score shouldBe expectedScore
 
-  "Full house" should "score base + rank of all cards" in:
+  "Full House" should "score base + rank of all cards" in:
     val c1 = Card(Rank.Two, Suit.Spades)
     val c2 = Card(Rank.Seven, Suit.Clubs)
     val cards = Seq(
@@ -139,7 +139,7 @@ class ScoreTest extends AnyFlatSpec, Matchers:
     val expectedScore = getExpectedScore(cards, HandType.FullHouse)
     score shouldBe expectedScore
 
-  "Four of a kind" should "score base + rank of the 4 cards" in:
+  "Four of a Kind" should "score base + rank of the 4 cards" in:
     val c1 = Card(Rank.Two, Suit.Spades)
     val c2 = Card(Rank.Seven, Suit.Clubs)
     val cards = Seq(
@@ -153,7 +153,7 @@ class ScoreTest extends AnyFlatSpec, Matchers:
     val expectedScore = getExpectedScore(cards, HandType.FourOfAKind)
     score shouldBe expectedScore
 
-  "Straight flush" should "score base + rank of all cards" in:
+  "Straight Flush" should "score base + rank of all cards" in:
     val suit = Suit.Hearts
     val c1 = Card(Rank.Ace, suit)
     val c2 = Card(Rank.Two, suit)
@@ -171,7 +171,7 @@ class ScoreTest extends AnyFlatSpec, Matchers:
     val expectedScore = getExpectedScore(cards, HandType.StraightFlush)
     score shouldBe expectedScore
 
-  "Five of a kind" should "score base + rank of all cards" in:
+  "Five of a Kind" should "score base + rank of all cards" in:
     val c1 = Card(Rank.Ace, Suit.Hearts)
     val c2 = Card(Rank.Ace, Suit.Diamonds)
     val cards = Seq(
@@ -185,7 +185,7 @@ class ScoreTest extends AnyFlatSpec, Matchers:
     val expectedScore = getExpectedScore(cards, HandType.FiveOfAKind)
     score shouldBe expectedScore
 
-  "Flush house" should "score base + rank of all cards" in:
+  "Flush House" should "score base + rank of all cards" in:
     val c1 = Card(Rank.Two, Suit.Spades)
     val c2 = Card(Rank.Seven, Suit.Spades)
     val cards = Seq(
@@ -199,7 +199,7 @@ class ScoreTest extends AnyFlatSpec, Matchers:
     val expectedScore = getExpectedScore(cards, HandType.FlushHouse)
     score shouldBe expectedScore
 
-  "Flush five" should "score base + rank of all cards" in:
+  "Flush Five" should "score base + rank of all cards" in:
     val c = Card(Rank.Two, Suit.Spades)
     val cards = Seq(
       c,
