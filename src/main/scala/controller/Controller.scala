@@ -5,7 +5,8 @@ import model.commons.Score.Score
 import model.commons.{Deck, Score}
 import model.game.*
 import model.round.{Round, RoundAction}
-import view.{FxRoundEndController, FxView, RoundEndView, View}
+import model.shop.{Shop, ShopActions}
+import view.{FxRoundEndController, FxView, RoundEndView, ShopView, View}
 
 import cats.effect.IO
 import cats.effect.std.Queue
@@ -78,5 +79,13 @@ class GameController(gameViews: GameViews)
       view = RoundEndView(ctrl, queue)
       _ <- queue.take
     yield ()
+
+  override def showShop(shop: Shop): IO[ShopActions] =
+    for
+      queue <- Queue.unbounded[IO, ShopActions]
+      controller <- gameViews.shop
+      _ <- IO(ShopView(controller, queue))
+      action <- queue.take
+    yield action  
 
   override def start(): IO[GameResult] = Game(this).play()
