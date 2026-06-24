@@ -31,19 +31,20 @@ object HandType:
       .dropRight(1)).sliding(2).forall { case Seq(a, b) => b - a == 1 }
     val isStraight = normalStraight || aceLowStraight
     val numRanks = ranks.values.map(_.size).toSeq.sorted.reverse
+    val isFullHouse = numRanks.take(2) == Seq(3, 2)
 
     handType match
       case FlushFive     => numRanks.contains(5) && isFlush
-      case FlushHouse    => numRanks.take(2) == Seq(3, 2) && isFlush
+      case FlushHouse    => isFullHouse && isFlush
       case FiveOfAKind   => numRanks.contains(5)
       case StraightFlush => isStraight && isFlush
-      case FourOfAKind   => numRanks.contains(4)
-      case FullHouse     => numRanks.take(2) == Seq(3, 2)
+      case FourOfAKind   => numRanks.exists(_ >= 4)
+      case FullHouse     => isFullHouse
       case Flush         => isFlush
       case Straight      => isStraight
-      case ThreeOfAKind  => numRanks.contains(3)
-      case TwoPair       => numRanks.take(2) == Seq(2, 2)
-      case Pair          => numRanks.contains(2)
+      case ThreeOfAKind  => numRanks.exists(_ >= 3)
+      case TwoPair       => isFullHouse || numRanks.take(2) == Seq(2, 2)
+      case Pair          => numRanks.exists(_ >= 2)
       case HighCard      => true
 
   def detect(cards: Seq[Card]): HandType =
