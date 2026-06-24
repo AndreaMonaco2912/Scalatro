@@ -69,3 +69,6 @@ object Planet:
     def use(levels: HandTypeLevels): HandTypeLevels =
       val currentLevel: Level = levels.getOrElse(planet.handType, Level.initial)
       levels.updated(planet.handType, currentLevel + 1)
+
+    def use(levels: HandTypeLevels, times : Int) : HandTypeLevels =
+      (1 to times).foldLeft(levels)((acc,_) => planet.use(acc))
