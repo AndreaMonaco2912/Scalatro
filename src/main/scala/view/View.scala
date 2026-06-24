@@ -2,6 +2,7 @@ package scalatro
 package view
 
 import model.round.{Round, RoundAction}
+import model.shop.{Shop, ShopActions}
 
 import cats.effect.IO
 import cats.effect.std.Queue
@@ -46,3 +47,10 @@ class RoundEndView[A](
 ) extends View[Round]:
   controller.setActionQueue(actionQueue)
   override def render(state: Round): IO[Unit] = IO.unit
+
+class ShopView(
+    controller: FxShopController,
+    actionQueue: Queue[IO, ShopActions]
+) extends View[Shop]:
+  controller.setActionQueue(actionQueue)
+  override def render(state: Shop): IO[Unit] = IO.unit

@@ -5,7 +5,8 @@ import view.{
   FxController,
   FxRoundEndController,
   FxRoundLostController,
-  FxRoundWonController
+  FxRoundWonController,
+  FxShopController
 }
 
 import cats.effect.IO
@@ -67,3 +68,6 @@ class GameViews(scene: Scene):
     SceneRouter.switchTo[FxRoundLostController](scene)(
       "/scalatro/roundLost.fxml"
     )
+
+  def shop: IO[FxShopController] =
+    SceneRouter.switchTo[FxShopController](scene)("/scalatro/shop.fxml")

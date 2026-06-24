@@ -13,3 +13,7 @@ object Shop:
 
   def default(using Random): Shop =
     Shop(CardsPack(cardPackSize), PlanetPack(planetPackSize))
+
+enum ShopActions:
+  case OpenPack(number: Int)
+  case SkipShop
