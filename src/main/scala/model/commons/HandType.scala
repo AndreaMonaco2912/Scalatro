@@ -1,19 +1,21 @@
 package scalatro
 package model.commons
 
-enum HandType(val baseScore: HandScore):
-  case HighCard extends HandType(HandScore(5, 1))
-  case Pair extends HandType(HandScore(10, 2))
-  case TwoPair extends HandType(HandScore(20, 2))
-  case ThreeOfAKind extends HandType(HandScore(30, 3))
-  case Straight extends HandType(HandScore(30, 4))
-  case Flush extends HandType(HandScore(35, 4))
-  case FullHouse extends HandType(HandScore(40, 4))
-  case FourOfAKind extends HandType(HandScore(60, 7))
-  case StraightFlush extends HandType(HandScore(100, 8))
-  case FiveOfAKind extends HandType(HandScore(120, 12))
-  case FlushHouse extends HandType(HandScore(140, 14))
-  case FlushFive extends HandType(HandScore(160, 16))
+enum HandType(val baseScore: HandScore, val name : String):
+  case HighCard extends HandType(HandScore(5, 1), "High Card")
+  case Pair extends HandType(HandScore(10, 2), "Pair")
+  case TwoPair extends HandType(HandScore(20, 2), "Two Pair")
+  case ThreeOfAKind extends HandType(HandScore(30, 3), "Three of a Kind")
+  case Straight extends HandType(HandScore(30, 4), "Straight")
+  case Flush extends HandType(HandScore(35, 4), "Flush")
+  case FullHouse extends HandType(HandScore(40, 4), "Full House")
+  case FourOfAKind extends HandType(HandScore(60, 7), "Four of a Kind")
+  case StraightFlush extends HandType(HandScore(100, 8), "Straight Flush")
+  case FiveOfAKind extends HandType(HandScore(120, 12), "Five of a Kind")
+  case FlushHouse extends HandType(HandScore(140, 14), "Flush House")
+  case FlushFive extends HandType(HandScore(160, 16), "Flush Five")
+
+  override def toString: String = name
 
 object HandType:
   def contains(cards: Seq[Card], handType: HandType): Boolean =

@@ -146,7 +146,7 @@ class FxController extends Initializable:
     case Some(handType) =>
       chipsLabel.setValue(handType.baseScore.chips.toInt)
       multLabel.setValue(handType.baseScore.mult.toInt)
-      handLabel.setText(handType.productPrefix)
+      handLabel.setText(handType.toString)
       playButton.setDisable(!playAvailable || selectedCards.isEmpty)
       discardButton.setDisable(!discardAvailable || selectedCards.isEmpty)
     case _ =>
