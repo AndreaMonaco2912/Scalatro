@@ -23,8 +23,8 @@ class FxShopController extends Initializable:
 
   override def initialize(url: URL, rb: ResourceBundle): Unit =
     // Index convention: 0 = cardPack, 1 = planetPack (matches Shop's field order)
-    cardPackButton.setOnAction(_ => offer(ShopActions.OpenPack(0)))
-    planetPackButton.setOnAction(_ => offer(ShopActions.OpenPack(1)))
+    cardPackButton.setOnAction(_ => offer(ShopActions.OpenCardPack))
+    planetPackButton.setOnAction(_ => offer(ShopActions.OpenPlanetPack))
     skipButton.setOnAction(_ => offer(ShopActions.SkipShop))
 
   /** Injects the action queue. Must be called before the screen is shown. */

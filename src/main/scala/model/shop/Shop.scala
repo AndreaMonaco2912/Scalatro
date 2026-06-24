@@ -15,5 +15,6 @@ object Shop:
     Shop(CardsPack(cardPackSize), PlanetPack(planetPackSize))
 
 enum ShopActions:
-  case OpenPack(number: Int)
+  case OpenCardPack
+  case OpenPlanetPack
   case SkipShop
