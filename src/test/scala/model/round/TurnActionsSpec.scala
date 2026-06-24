@@ -2,7 +2,7 @@ package scalatro
 package model.round
 
 import model.commons.*
-import model.game.{Blind, GameState}
+import model.game.GameState
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
@@ -11,7 +11,7 @@ import org.scalatest.matchers.should.Matchers
 class TurnActionsSpec extends AnyFlatSpec with Matchers:
   import TurnActions.*
 
-  private given scoreConfig : ScoreConfig = ScoreConfig.default
+  private given scoreConfig: ScoreConfig = ScoreConfig.default
   private given calculator: HandScoreCalculator = scoreConfig.calculator
   private given cardOrderer: CardOrderer = CardOrderer.sortByRank
 

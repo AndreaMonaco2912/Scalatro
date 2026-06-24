@@ -83,13 +83,25 @@ object Round:
     *   the hand
     * @param deck
     *   the deck
-    * @param blind
-    *   the blind
+    * @param gameState
+    *   the game state
     * @return
     *   the round
     */
-  def apply(score: Score, hand: Hand, deck: Deck, gs: GameState): Round =//TODO round should be created taking here only GameState, not in the Controller.scala
-    RoundImpl(score, hand, deck, gs.handInformation.handNum, gs.handInformation.discardNum, gs.blind)
+  def apply(
+      score: Score,
+      hand: Hand,
+      deck: Deck,
+      gameState: GameState
+  ): Round = // TODO: round should be created taking here only GameState, not in Controller.scala
+    RoundImpl(
+      score,
+      hand,
+      deck,
+      gameState.handInformation.handNum,
+      gameState.handInformation.discardNum,
+      gameState.blind
+    )
 
   private case class RoundImpl(
       score: Score,
