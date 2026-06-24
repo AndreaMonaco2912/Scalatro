@@ -6,7 +6,7 @@ import org.scalatest.matchers.should.Matchers
 
 class HandTypeTest extends AnyFlatSpec, Matchers:
 
-  "Flush five" should "be detected with 5 cards of the same rank and suit" in:
+  "Flush Five" should "be detected with 5 cards of the same rank and suit" in:
     val c1: Card = Card(Rank.Six, Suit.Clubs)
     val c2: Card = Card(Rank.Six, Suit.Clubs)
     val c3: Card = Card(Rank.Six, Suit.Clubs)
@@ -15,7 +15,7 @@ class HandTypeTest extends AnyFlatSpec, Matchers:
     val cards: Seq[Card] = Seq(c1, c2, c3, c4, c5)
     HandType.detect(cards) shouldBe HandType.FlushFive
 
-  "Flush house" should "be detected with both a full house and a flush" in:
+  "Flush House" should "be detected with both a full house and a flush" in:
     val c1: Card = Card(Rank.Six, Suit.Clubs)
     val c2: Card = Card(Rank.Six, Suit.Clubs)
     val c3: Card = Card(Rank.Six, Suit.Clubs)
@@ -24,7 +24,7 @@ class HandTypeTest extends AnyFlatSpec, Matchers:
     val cards: Seq[Card] = Seq(c1, c2, c3, c4, c5)
     HandType.detect(cards) shouldBe HandType.FlushHouse
 
-  "Five of a kind" should "be detected with 5 cards of the same rank but not of the same suit" in:
+  "Five of a Kind" should "be detected with 5 cards of the same rank but not of the same suit" in:
     val c1: Card = Card(Rank.Six, Suit.Clubs)
     val c2: Card = Card(Rank.Six, Suit.Clubs)
     val c3: Card = Card(Rank.Six, Suit.Clubs)
@@ -33,7 +33,7 @@ class HandTypeTest extends AnyFlatSpec, Matchers:
     val cards: Seq[Card] = Seq(c1, c2, c3, c4, c5)
     HandType.detect(cards) shouldBe HandType.FiveOfAKind
 
-  "Straight flush" should "be detected with 5 cards in a straight of the same suit" in:
+  "Straight Flush" should "be detected with 5 cards in a straight of the same suit" in:
     val c1: Card = Card(Rank.Nine, Suit.Hearts)
     val c2: Card = Card(Rank.King, Suit.Hearts)
     val c3: Card = Card(Rank.Queen, Suit.Hearts)
@@ -42,7 +42,7 @@ class HandTypeTest extends AnyFlatSpec, Matchers:
     val cards: Seq[Card] = Seq(c1, c2, c3, c4, c5)
     HandType.detect(cards) shouldBe HandType.StraightFlush
 
-  "Four of a kind" should "be detected with 4 cards of the same rank" in:
+  "Four of a Kind" should "be detected with 4 cards of the same rank" in:
     val c1: Card = Card(Rank.Six, Suit.Clubs)
     val c2: Card = Card(Rank.Six, Suit.Clubs)
     val c3: Card = Card(Rank.Six, Suit.Clubs)
@@ -51,7 +51,7 @@ class HandTypeTest extends AnyFlatSpec, Matchers:
     val cards: Seq[Card] = Seq(c1, c2, c3, c4, c5)
     HandType.detect(cards) shouldBe HandType.FourOfAKind
 
-  "Full house" should "be detected with 3 cards of a certain rank and 2 cards of another rank" in:
+  "Full House" should "be detected with 3 cards of a certain rank and 2 cards of another rank" in:
     val c1: Card = Card(Rank.Six, Suit.Clubs)
     val c2: Card = Card(Rank.Six, Suit.Spades)
     val c3: Card = Card(Rank.Six, Suit.Clubs)
@@ -78,14 +78,14 @@ class HandTypeTest extends AnyFlatSpec, Matchers:
     val cards: Seq[Card] = Seq(c1, c2, c3, c4, c5)
     HandType.detect(cards) shouldBe HandType.Straight
 
-  "Three of a kind" should "be detected with 3 cards of the same rank" in:
+  "Three of a Kind" should "be detected with 3 cards of the same rank" in:
     val c1: Card = Card(Rank.Ace, Suit.Spades)
     val c2: Card = Card(Rank.Ace, Suit.Hearts)
     val c3: Card = Card(Rank.Ace, Suit.Spades)
     val cards: Seq[Card] = Seq(c1, c2, c3)
     HandType.detect(cards) shouldBe HandType.ThreeOfAKind
 
-  "Two pair" should "be detected with 2 cards a certain rank and 2 cards of another rank" in:
+  "Two Pair" should "be detected with 2 cards a certain rank and 2 cards of another rank" in:
     val c1: Card = Card(Rank.Ace, Suit.Spades)
     val c2: Card = Card(Rank.Ace, Suit.Hearts)
     val c3: Card = Card(Rank.Two, Suit.Spades)
@@ -101,7 +101,7 @@ class HandTypeTest extends AnyFlatSpec, Matchers:
     val cards: Seq[Card] = Seq(c1, c2, c3, c4)
     HandType.detect(cards) shouldBe HandType.Pair
 
-  "High card" should "be detected when no other combination is possible" in:
+  "High Card" should "be detected when no other combination is possible" in:
     val c1: Card = Card(Rank.Six, Suit.Clubs)
     val c2: Card = Card(Rank.Seven, Suit.Clubs)
     val c3: Card = Card(Rank.Eight, Suit.Clubs)
@@ -156,7 +156,7 @@ class HandTypeTest extends AnyFlatSpec, Matchers:
       HandType.HighCard
     )
 
-  "Straight Flush" should "contain Straight Flush, Straight, Flush and HighCard" in :
+  "Straight Flush" should "contain Straight Flush, Straight, Flush and HighCard" in:
     val suit = Suit.Diamonds
     val c1 = Card(Rank.Six, suit)
     val c2 = Card(Rank.Seven, suit)
@@ -189,7 +189,7 @@ class HandTypeTest extends AnyFlatSpec, Matchers:
     val c1 = Card(Rank.Two, Suit.Hearts)
     val c2 = Card(Rank.Two, Suit.Clubs)
     val c3 = Card(Rank.Seven, Suit.Spades)
-    val cards = Seq(c1,c2,c3,c3,c3)
+    val cards = Seq(c1, c2, c3, c3, c3)
     HandType.values
       .filter(ht => HandType.contains(cards, ht))
       .toSet shouldBe Set(
@@ -207,14 +207,14 @@ class HandTypeTest extends AnyFlatSpec, Matchers:
     val c3 = Card(Rank.King, suit)
     val c4 = Card(Rank.Eight, suit)
     val c5 = Card(Rank.Three, suit)
-    val cardsNormalFlush = Seq(c1,c2,c3,c4,c5)
+    val cardsNormalFlush = Seq(c1, c2, c3, c4, c5)
     HandType.values
       .filter(ht => HandType.contains(cardsNormalFlush, ht))
       .toSet shouldBe Set(
       HandType.Flush,
       HandType.HighCard
     )
-    val cardsFlushWithPair = Seq(c1,c1,c2,c3,c4)
+    val cardsFlushWithPair = Seq(c1, c1, c2, c3, c4)
     HandType.values
       .filter(ht => HandType.contains(cardsFlushWithPair, ht))
       .toSet shouldBe Set(
@@ -222,7 +222,7 @@ class HandTypeTest extends AnyFlatSpec, Matchers:
       HandType.Pair,
       HandType.HighCard
     )
-    val cardsFlushWithTwoPair = Seq(c1,c1,c2,c2,c3)
+    val cardsFlushWithTwoPair = Seq(c1, c1, c2, c2, c3)
     HandType.values
       .filter(ht => HandType.contains(cardsFlushWithTwoPair, ht))
       .toSet shouldBe Set(
@@ -240,7 +240,7 @@ class HandTypeTest extends AnyFlatSpec, Matchers:
     val c3 = Card(Rank.Queen, suit1)
     val c4 = Card(Rank.King, suit2)
     val c5 = Card(Rank.Ace, suit2)
-    val cards = Seq(c1,c2,c3,c4,c5)
+    val cards = Seq(c1, c2, c3, c4, c5)
     HandType.values
       .filter(ht => HandType.contains(cards, ht))
       .toSet shouldBe Set(
@@ -250,7 +250,7 @@ class HandTypeTest extends AnyFlatSpec, Matchers:
 
   "Three of a Kind" should "contain Three of a Kind, Pair and High Card" in:
     val c = Card(Rank.Ace, Suit.Clubs)
-    val cards = Seq(c,c,c)
+    val cards = Seq(c, c, c)
     HandType.values
       .filter(ht => HandType.contains(cards, ht))
       .toSet shouldBe Set(
@@ -273,7 +273,7 @@ class HandTypeTest extends AnyFlatSpec, Matchers:
 
   "Pair" should "contain Pair and High Card" in:
     val c = Card(Rank.Queen, Suit.Diamonds)
-    val cards = Seq(c,c)
+    val cards = Seq(c, c)
     HandType.values
       .filter(ht => HandType.contains(cards, ht))
       .toSet shouldBe Set(
