@@ -10,9 +10,10 @@ trait PackFactory[A]:
   def apply(n: Int)(using rng: Random): Pack[A] =
     require(n >= 0, s"cannot present a pack with a negative amount of cards")
     Pack(rng.shuffle(pool).take(n))
-  def apply(n: Int, externalPool: Seq[A])(using rng: Random): Pack[A] =
+  def apply(n: Int, externalPool: Seq[A])(using rng: Random): Pack[A] =//TODO a black list would be better then a white list (pool - externalPool)
     require(n >= 0, s"cannot present a pack with a negative amount of cards")
     Pack(rng.shuffle(externalPool).take(n))
+  //TODO: add a factory for a small pack with 3 items
 
 object CardsPack extends PackFactory[Card]:
   val pool: Seq[Card] =
