@@ -13,11 +13,18 @@ class ScoreTest extends AnyFlatSpec, Matchers:
   private given defaultScoreConfig: ScoreConfig = ScoreConfig.default
   private given calculator: HandScoreCalculator = defaultScoreConfig.calculator
 
-  def getExpectedScore(cards: Seq[Card], handType: HandType, level: Level = Level.initial): HandScore =
+  def getExpectedScore(
+      cards: Seq[Card],
+      handType: HandType,
+      level: Level = Level.initial
+  ): HandScore =
     val baseScore = handType.baseScore
     val scoringCards = HandType.getScoringCards(cards)
     val chipsSum = scoringCards.map(_.getBaseChips).sum
-    baseScore + Planet.getIncrease(handType) * (level-1) + HandScore(chipsSum, 0)
+    baseScore + Planet.getIncrease(handType) * (level - 1) + HandScore(
+      chipsSum,
+      0
+    )
 
   "BasicHandScoreCalculator" should "multiply chips and mult together" in:
     val scoreConfig: ScoreConfig = ScoreConfig(
@@ -213,9 +220,13 @@ class ScoreTest extends AnyFlatSpec, Matchers:
     score shouldBe expectedScore
 
   "High Card level N" should "score base + N * score increase + chips of the card" in:
-    val level : Level = 5
-    val scoreConfig = ScoreConfig(Seq.empty, HandTypeLevels.initial.updated(HandType.HighCard, level), defaultScoreConfig.calculator)
-    val cards : Seq[Card] = Seq(Card(Rank.Ace, Suit.Clubs))
-    val score : HandScore = Score.calculateHandScore(cards)(using scoreConfig)
+    val level: Level = 5
+    val scoreConfig = ScoreConfig(
+      Seq.empty,
+      HandTypeLevels.initial.updated(HandType.HighCard, level),
+      defaultScoreConfig.calculator
+    )
+    val cards: Seq[Card] = Seq(Card(Rank.Ace, Suit.Clubs))
+    val score: HandScore = Score.calculateHandScore(cards)(using scoreConfig)
     val expectedScore = getExpectedScore(cards, HandType.HighCard, level)
     score shouldBe expectedScore

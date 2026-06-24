@@ -1,7 +1,7 @@
 package scalatro
 package model.commons
 
-enum HandType(val baseScore: HandScore, val name : String):
+enum HandType(val baseScore: HandScore, val name: String):
   case HighCard extends HandType(HandScore(5, 1), "High Card")
   case Pair extends HandType(HandScore(10, 2), "Pair")
   case TwoPair extends HandType(HandScore(20, 2), "Two Pair")
