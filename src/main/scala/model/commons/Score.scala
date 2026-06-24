@@ -65,7 +65,7 @@ object HandScore:
   extension (hs: HandScore)
     def +(other: HandScore): HandScore =
       HandScore(hs.chips + other.chips, hs.mult + hs.mult)
-    def *(mult: Mult): HandScore = HandScore(hs.chips * mult, hs.mult * mult)
+    def *(mult: Double): HandScore = HandScore(hs.chips * mult, hs.mult * mult)
 
 /** The configuration needed to calculate the score
   * @param jokers
