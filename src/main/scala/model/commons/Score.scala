@@ -119,7 +119,7 @@ object Score:
   ): HandScore =
     val handTypeLevel: Level = levels.getOrElse(handType, Level.initial)
     val handTypeIncreaseScore: HandScore = Planet.getIncrease(handType)
-    handType.baseScore + handTypeIncreaseScore * handTypeLevel
+    handType.baseScore + (handTypeIncreaseScore * (handTypeLevel-1))
 
   def calculateHandScore(cards: Seq[Card])(using
       scoreConfig: ScoreConfig
@@ -128,7 +128,7 @@ object Score:
     val scoringCards = HandType.getScoringCards(cards)
     val handTypeBaseScore: HandScore =
       getLevelledHandTypeBaseScore(scoreConfig.levels, handType)
-    scoringCards.foldLeft(handType.baseScore)((acc, card) => card.onScored(acc))
+    scoringCards.foldLeft(handTypeBaseScore)((acc, card) => card.onScored(acc))
 
   /** A method that calculates the score given by a hand
     * @param cards
