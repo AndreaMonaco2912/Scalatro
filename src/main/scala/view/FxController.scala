@@ -8,11 +8,21 @@ import cats.effect.IO
 import cats.effect.std.Queue
 import cats.effect.unsafe.implicits.global
 import eu.iamgio.animated.binding.value.AnimatedIntValueLabel
+import eu.iamgio.animated.transition.container.AnimatedHBox
+import javafx.animation.{
+  Animation,
+  FadeTransition,
+  PauseTransition,
+  ScaleTransition,
+  SequentialTransition
+}
 import javafx.application.Platform
 import javafx.fxml.{FXML, Initializable}
 import javafx.scene.control.{Button, Label, TextField, ToggleButton}
 import javafx.scene.image.{Image, ImageView}
 import javafx.scene.input.{ClipboardContent, TransferMode}
+import javafx.scene.layout.{HBox, StackPane}
+import javafx.util.Duration
 import scalafx.scene.control.{Label as SfxLabel, TextField as SfxTextField}
 
 import java.net.URL
@@ -60,6 +70,8 @@ class FxController extends Initializable:
   @FXML private var sortRankButton: Button = uninitialized
   @FXML private var sortSuitButton: Button = uninitialized
 
+  // Play area
+  @FXML private var playAreaBox: HBox = uninitialized
   // Convenient grouped lists (order matters – matches FXML fx:id numbering)
   private def cardViews: List[ImageView] =
     List(card1, card2, card3, card4, card5, card6, card7, card8)
@@ -189,7 +201,61 @@ class FxController extends Initializable:
       setHandType(None)
     }
 
+  private def moveCardsToPlayArea(cards: Seq[Card]): Seq[(Card, ImageView)] =
+    cards.map { card =>
+      val iv = new ImageView()
+      setCardImage(iv, card)
+      iv.setFitWidth(75)
+      iv.setFitHeight(110)
+      iv.setPreserveRatio(true)
+      playAreaBox.getChildren.add(iv)
+      (card, iv)
+    }
+  private def removeCardsFromPlayArea(): Unit =
+    playAreaBox.getChildren.clear()
+
+  private def getAnimation(
+      card: Card,
+      cardImage: ImageView,
+      scoringCards: Seq[Card]
+  ): Animation =
+    if scoringCards.contains(card) then
+      val scale = new ScaleTransition(Duration.millis(250), cardImage)
+      scale.setFromX(1.0)
+      scale.setFromY(1.0)
+      scale.setToX(1.25)
+      scale.setToY(1.25)
+      scale.setCycleCount(2)
+      scale.setAutoReverse(true)
+      scale
+    else
+      val fade = new FadeTransition(Duration.millis(500), cardImage)
+      fade.setFromValue(1.0)
+      fade.setToValue(0.3)
+      fade
+
+  private def playSequentially(
+      animations: Seq[Animation],
+      onComplete: () => Unit
+  ): Unit =
+    animations match
+      case Nil =>
+        val finalPause = PauseTransition(Duration.millis(500))
+        finalPause.setOnFinished(_ => onComplete())
+        finalPause.play()
+      case anim :: rest =>
+        val pause = PauseTransition(Duration.millis(200))
+        val sequence = SequentialTransition(pause, anim)
+        sequence.setOnFinished(_ => playSequentially(rest, onComplete))
+        sequence.play()
+
   private def onPlay(): Unit =
+    val animations = for
+      scoringCards = HandType.getScoringCards(selectedCards)
+      (card, cardImage) <- moveCardsToPlayArea(selectedCards)
+    yield getAnimation(card, cardImage, scoringCards)
+    playSequentially(animations, () => removeCardsFromPlayArea())
+
     actionQueue.foreach(
       _.offer(RoundAction.PlayCards(selectedCards)).unsafeRunAndForget()
     )
