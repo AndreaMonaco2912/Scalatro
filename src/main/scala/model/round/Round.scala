@@ -45,8 +45,8 @@ trait Round:
   /** The remaining discards */
   def remainingDiscards: Int
 
-  /** The blind of this round */
-  def blind: Blind
+  /** The game state of this round */
+  def gameState: GameState
 
   /** @param score
     *   the new score
@@ -100,7 +100,7 @@ object Round:
       deck,
       gameState.handInformation.handNum,
       gameState.handInformation.discardNum,
-      gameState.blind
+      gameState
     )
 
   private case class RoundImpl(
@@ -109,7 +109,7 @@ object Round:
       deck: Deck,
       remainingPlays: Int,
       remainingDiscards: Int,
-      blind: Blind
+      gameState: GameState
   ) extends Round:
     override def modify(
         score: Score,
@@ -118,7 +118,7 @@ object Round:
         remainingPlays: Int,
         remainingDiscards: Int
     ): Round =
-      RoundImpl(score, hand, deck, remainingPlays, remainingDiscards, blind)
+      RoundImpl(score, hand, deck, remainingPlays, remainingDiscards, gameState)
 
     override def isFinished: Boolean =
-      blind.isBeaten(score) || remainingPlays == 0
+      gameState.blind.isBeaten(score) || remainingPlays == 0
