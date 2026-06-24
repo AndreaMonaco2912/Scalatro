@@ -13,7 +13,8 @@ import cats.syntax.all.*
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
-class RoundManagerTest extends AnyFlatSpec with Matchers:
+/** A test spec for [[RoundManager]] */
+class RoundManagerSpec extends AnyFlatSpec with Matchers:
 
   private val c1 = Card(Rank.Jack, Suit.Clubs)
   private val c2 = Card(Rank.Jack, Suit.Diamonds)
