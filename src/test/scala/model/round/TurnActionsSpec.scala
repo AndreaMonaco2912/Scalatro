@@ -2,7 +2,7 @@ package scalatro
 package model.round
 
 import model.commons.*
-import model.game.Blind
+import model.game.{Blind, GameState}
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
@@ -25,7 +25,7 @@ class TurnActionsSpec extends AnyFlatSpec with Matchers:
   private val initialHand: Seq[Card] = Seq(c1, c2, c3)
   private val initialDeck: Deck = Deck(Seq(c4, c5, c6))
   private val initialRound: Round =
-    Round(Score.zero, initialHand, initialDeck, Blind.first)
+    Round(Score.zero, initialHand, initialDeck, GameState.initial)
 
   "discardCards" should "remove discarded cards and add drawn replacements to hand" in:
     val result = discardCards(Seq(c1)).runS(initialRound).value

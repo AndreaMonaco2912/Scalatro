@@ -3,7 +3,7 @@ package model.round
 
 import model.commons.Score.Score
 import model.commons.{Card, CardOrderer, Deck}
-import model.game.Blind
+import model.game.{Blind, GameState}
 
 /** The game's hand: the collection of cards the player can choose from */
 type Hand = Seq[Card]
@@ -88,8 +88,8 @@ object Round:
     * @return
     *   the round
     */
-  def apply(score: Score, hand: Hand, deck: Deck, blind: Blind): Round =
-    RoundImpl(score, hand, deck, blind.handNum, blind.discardNum, blind)
+  def apply(score: Score, hand: Hand, deck: Deck, gs: GameState): Round =//TODO round should be created taking here only GameState, not in the Controller.scala
+    RoundImpl(score, hand, deck, gs.handInformation.handNum, gs.handInformation.discardNum, gs.blind)
 
   private case class RoundImpl(
       score: Score,

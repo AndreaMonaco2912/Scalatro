@@ -5,9 +5,6 @@ import model.commons.Score
 import model.commons.Score.Score
 
 case class Blind(
-    handSize: Int,
-    handNum: Int,
-    discardNum: Int,
     roundNum: Int,
     targetScore: Score
 ):
@@ -21,18 +18,11 @@ case class Blind(
 
 object Blind:
   val increaseAmount = 1.5
-
-  private val initialHandSize = 5
-  private val initialHandNum = 4
-  private val initialDiscardNum = 3
   val initialScore: Score = Score(300)
   private val initialRound = 1
 
   def first: Blind =
     Blind(
-      initialHandSize,
-      initialHandNum,
-      initialDiscardNum,
       initialRound,
       initialScore
     )

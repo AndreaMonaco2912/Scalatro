@@ -42,7 +42,7 @@ class SingleRoundController(
     Score.zero,
     hand,
     deck,
-    gameState.blind
+    gameState
   )
 
   override def start(): IO[Round] =
