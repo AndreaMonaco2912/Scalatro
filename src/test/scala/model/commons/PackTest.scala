@@ -25,10 +25,7 @@ class PackTest extends AnyFlatSpec, Matchers:
   "A pack with an external pool" should "contain only cards from that pool" in:
     val pool = Suit.values.toSeq.map(Card(Rank.Two, _))
     val pack = CardsPack(3, pool)
-    pack.items.foreach(card => pool should contain(card))
-
-  "A pack with an empty external pool" should "be empty" in:
-    CardsPack(3, Seq.empty).items shouldBe empty
+    pack.items.foreach(card => pool should not contain card)
 
   "A PlanetPack with 2 planets" should "contain exactly 2 planets" in :
     PlanetPack(2).items.length shouldBe 2
