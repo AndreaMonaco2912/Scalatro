@@ -1,12 +1,9 @@
 package scalatro
 package model.game
 
+import model.commons.*
+
 import scala.util.Random
-import model.commons.Deck
-import model.commons.Joker
-import model.commons.HandType
-import model.commons.HandTypeLevels
-import model.commons.JokerType.*
 
 case class GameState(
     handInformation: HandInformation,
@@ -20,6 +17,9 @@ case class GameState(
 
   def advanceBlind: GameState =
     this.copy(blind = blind.next)
+
+  def scoreConfig: ScoreConfig =
+    ScoreConfig(jokers, levels, BasicHandScoreCalculator)
 
 case class HandInformation(handSize: Int, handNum: Int, discardNum: Int)
 

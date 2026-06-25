@@ -37,9 +37,8 @@ object RoundManager:
       render: Round => IO[Unit],
       getAction: IO[RoundAction]
   ) extends RoundManager:
-    private given ScoreConfig = ScoreConfig.default
-
     override def startRound(initialRound: Round): IO[Round] =
+      given ScoreConfig = initialRound.gameState.scoreConfig
       def processAction(round: Round, action: RoundAction): IO[Round] =
         action match
           case PlayCards(cards)    => IO(playCards(cards).runS(round).value)
