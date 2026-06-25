@@ -124,11 +124,26 @@ object Score:
   def calculateHandScore(cards: Seq[Card])(using
       scoreConfig: ScoreConfig
   ): HandScore =
+    val jokers = scoreConfig.jokers
+    val levels = scoreConfig.levels
+    val jokerConfig: JokerConfig = JokerConfig(cards, scoreConfig.levels)
     val handType: HandType = HandType.detect(cards)
     val scoringCards = HandType.getScoringCards(cards)
-    val handTypeBaseScore: HandScore =
-      getLevelledHandTypeBaseScore(scoreConfig.levels, handType)
-    scoringCards.foldLeft(handTypeBaseScore)((acc, card) => card.onScored(acc))
+    val initialScore: HandScore =
+      getLevelledHandTypeBaseScore(levels, handType)
+    val afterHandPlayed: HandScore = jokers.foldLeft(initialScore)(
+      (acc, joker) => joker.onHandPlayed(acc, cards)(using jokerConfig)
+    )
+    val afterCards: HandScore =
+      scoringCards.foldLeft(afterHandPlayed)((acc, card) =>
+        val afterCard: HandScore = card.onScored(acc)
+        jokers.foldLeft(afterCard)((acc, joker) =>
+          joker.onCardScored(afterCard, card)(using jokerConfig)
+        )
+      )
+    jokers.foldLeft(afterCards)((acc, joker) =>
+      joker.independent(acc)(using jokerConfig)
+    )
 
   /** A method that calculates the score given by a hand
     * @param cards
