@@ -25,6 +25,14 @@ class TurnActionsSpec extends AnyFlatSpec with Matchers with MockFactory:
     Round(Score.zero, initialHand, initialDeck, GameState.initial)
   private val simulatedScore = Score(123456)
 
+  /** Creates a [[ScoreConfig]] that has mocked [[HandScoreCalculator]].
+    *
+    * The calculator must calculate score exactly `usages` times
+    * @param usages
+    *   the number of times to calculate the score
+    * @return
+    *   the score config
+    */
   private def nUsagesScoreConfig(usages: Int): ScoreConfig =
     val simulatedScore = Score(123456)
     val scoreCalculator = mock[HandScoreCalculator]
@@ -34,6 +42,18 @@ class TurnActionsSpec extends AnyFlatSpec with Matchers with MockFactory:
       .repeated(usages)
     ScoreConfig.default.copy(calculator = scoreCalculator)
 
+  /** Creates a mocked [[CardOrderer]] with a simulated behavior (it reverses
+    * the order)
+    *
+    * The orderer must order the cards exactly `usages` time and expects
+    * `expectedHand` to be ordered
+    * @param expectedHand
+    *   the hand to order
+    * @param usages
+    *   the number of times to order cards
+    * @return
+    *   the card orderer
+    */
   private def nUsagesCardOrderer(expectedHand: Hand, usages: Int): CardOrderer =
     val cardOrderer = mock[CardOrderer]
     cardOrderer.order

@@ -31,7 +31,8 @@ class RoundSpec extends AnyFlatSpec with Matchers with MockFactory:
     updatedRound.gameState shouldBe initialRound.gameState
 
   "Modifying the hand" should "return a new Round with the updated hand" in:
-    val newHand = Seq(mock[Card])
+    val newHand =
+      Seq(mock[Card]) // mocking the card since its value is not important
     val updatedRound = initialRound.modify(hand = newHand)
 
     updatedRound.hand shouldBe newHand

@@ -67,6 +67,13 @@ class RoundManagerSpec extends AnyFlatSpec with Matchers with MockFactory:
     consumedCards.foreach(card => round.hand should not contain card)
     round.isFinished shouldBe true
 
+  /** A render mock function expecting to be called, in order, with exactly
+    * `rounds`
+    * @param rounds
+    *   the rounds, in order, to render
+    * @return
+    *   the render function
+    */
   private def mockRenderSequence(rounds: Round*): Round => IO[Unit] =
     val render = mockFunction[Round, IO[Unit]]
     inSequence:
