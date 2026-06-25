@@ -17,6 +17,18 @@ object Level:
 /** The association between hand types and their level */
 type HandTypeLevels = Map[HandType, Level]
 
+extension (htl: HandTypeLevels)
+
+  /** Get the level of a hand type
+    *
+    * @param handType
+    *   the hand type
+    * @return
+    *   the level
+    */
+  def getLevel(handType: HandType): Level =
+    htl.getOrElse(handType, Level.initial)
+
 object HandTypeLevels:
   /** @return
     *   the initial level of the hand types

@@ -113,11 +113,11 @@ object Score:
     *   the hand type
     * @return
     */
-  private def getLevelledHandTypeBaseScore(
-      levels: HandTypeLevels,
-      handType: HandType
+  def getHandTypeBaseScore(
+      handType: HandType,
+      levels: HandTypeLevels
   ): HandScore =
-    val handTypeLevel: Level = levels.getOrElse(handType, Level.initial)
+    val handTypeLevel: Level = levels.getLevel(handType)
     val handTypeIncreaseScore: HandScore = Planet.getIncrease(handType)
     handType.baseScore + (handTypeIncreaseScore * (handTypeLevel - 1))
 
@@ -130,7 +130,7 @@ object Score:
     val handType: HandType = HandType.detect(cards)
     val scoringCards = HandType.getScoringCards(cards)
     val initialScore: HandScore =
-      getLevelledHandTypeBaseScore(levels, handType)
+      getHandTypeBaseScore(handType, levels)
     val afterHandPlayed: HandScore = jokers.foldLeft(initialScore)(
       (acc, joker) => joker.onHandPlayed(acc, cards)(using jokerConfig)
     )

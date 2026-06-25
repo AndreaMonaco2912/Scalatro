@@ -6,6 +6,7 @@ import model.commons.Deck
 import model.commons.Joker
 import model.commons.HandType
 import model.commons.HandTypeLevels
+import model.commons.JokerType.*
 
 case class GameState(
     handInformation: HandInformation,
@@ -26,8 +27,15 @@ object GameState:
   private val initialHandSize = 5
   private val initialHandNum = 4
   private val initialDiscardNum = 3
-  
-  private def initialHand: HandInformation = HandInformation(initialHandSize, initialHandNum, initialDiscardNum)
-  
+
+  private def initialHand: HandInformation =
+    HandInformation(initialHandSize, initialHandNum, initialDiscardNum)
+
   def initial: GameState =
-    GameState(initialHand, Deck(), Blind.first, Seq.empty, HandTypeLevels.initial)
+    GameState(
+      initialHand,
+      Deck(),
+      Blind.first,
+      Seq.empty,
+      HandTypeLevels.initial
+    )

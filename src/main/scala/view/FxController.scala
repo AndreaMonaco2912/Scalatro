@@ -11,7 +11,7 @@ import eu.iamgio.animated.binding.value.AnimatedIntValueLabel
 import javafx.animation.*
 import javafx.application.Platform
 import javafx.fxml.{FXML, Initializable}
-import javafx.scene.control.{Button, Label, TextField, ToggleButton}
+import javafx.scene.control.{Button, Label, TextField, ToggleButton, Tooltip}
 import javafx.scene.image.{Image, ImageView}
 import javafx.scene.input.{ClipboardContent, TransferMode}
 import javafx.scene.layout.HBox
@@ -44,6 +44,20 @@ class FxController extends Initializable:
   @FXML private var cardBtn6: ToggleButton = uninitialized
   @FXML private var cardBtn7: ToggleButton = uninitialized
   @FXML private var cardBtn8: ToggleButton = uninitialized
+
+  // Joker graphics
+  @FXML private var joker1: ImageView = uninitialized
+  @FXML private var joker2: ImageView = uninitialized
+  @FXML private var joker3: ImageView = uninitialized
+  @FXML private var joker4: ImageView = uninitialized
+  @FXML private var joker5: ImageView = uninitialized
+
+  // Joker toggle buttons
+  @FXML private var jokerBtn1: ToggleButton = uninitialized
+  @FXML private var jokerBtn2: ToggleButton = uninitialized
+  @FXML private var jokerBtn3: ToggleButton = uninitialized
+  @FXML private var jokerBtn4: ToggleButton = uninitialized
+  @FXML private var jokerBtn5: ToggleButton = uninitialized
 
   // Info labels
   @FXML private var roundNumLabel: Label = uninitialized
@@ -80,9 +94,17 @@ class FxController extends Initializable:
     cardBtn8
   )
 
+  private def jokerViews: List[ImageView] =
+    List(joker1, joker2, joker3, joker4, joker5)
+
+  private def jokerButtons: List[ToggleButton] =
+    List(jokerBtn1, jokerBtn2, jokerBtn3, jokerBtn4, jokerBtn5)
+
   private var actionQueue: Option[Queue[IO, RoundAction]] = None
 
   private var handSlots: List[(ToggleButton, Card)] = List()
+
+  private var jokerSlots: List[(ToggleButton, Joker)] = List()
 
   private var lastKnownRound: Option[Round] = None
 
@@ -103,13 +125,11 @@ class FxController extends Initializable:
     extension (cards: Seq[Card])
       private def levelledHandType: LevelledHandType =
         val handType = HandType.detect(cards)
-        val handTypeLevel: Level = lastKnownRound match
-          case Some(round) =>
-            round.gameState.levels.getOrElse(handType, Level.initial)
-          case _ => Level.initial
-        val handTypeIncreaseScore: HandScore = Planet.getIncrease(handType)
-        val handScore =
-          handType.baseScore + (handTypeIncreaseScore * (handTypeLevel - 1))
+        val levels: HandTypeLevels = lastKnownRound match
+          case Some(round) => round.gameState.levels
+          case _           => HandTypeLevels.initial
+        val handTypeLevel = levels.getLevel(handType)
+        val handScore = Score.getHandTypeBaseScore(handType, levels)
         LevelledHandType(handType, handScore, handTypeLevel)
 
     playButton.setOnAction(_ => onPlay())
@@ -211,10 +231,24 @@ class FxController extends Initializable:
         btn.setVisible(false)
       }
 
+      jokerViews.foreach(_.setImage(null))
+      jokerButtons.foreach { btn =>
+        btn.setSelected(false)
+        btn.setVisible(false)
+      }
+
       handSlots = round.hand.toList.zip(cardButtons).map { case (card, btn) =>
         setCardImage(cardViews(cardButtons.indexOf(btn)), card)
         btn.setVisible(true)
         (btn, card)
+      }
+
+      jokerSlots = round.gameState.jokers.toList.zip(jokerButtons).map {
+        case (joker, btn) =>
+          setJokerImage(jokerViews(jokerButtons.indexOf(btn)), joker)
+          btn.setVisible(true)
+          btn.setTooltip(new Tooltip(joker.description))
+          (btn, joker)
       }
 
       setHandType(None)
@@ -288,6 +322,11 @@ class FxController extends Initializable:
     actionQueue.foreach(
       _.offer(RoundAction.OrderHand(cardOrderer)).unsafeRunAndForget()
     )
+
+  private def setJokerImage(imageView: ImageView, joker: Joker): Unit =
+    val imagePath = s"/scalatro/jokers/${joker.name.replace(" ", "_")}.png"
+    val image = new Image(getClass.getResourceAsStream(imagePath))
+    imageView.setImage(image)
 
   private def setCardImage(imageView: ImageView, card: Card): Unit =
     val rankString = card.rank match
