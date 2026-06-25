@@ -22,13 +22,12 @@ object HandType:
     val isFlush = cards.sizeIs == 5 && cards.map(_.suit).distinct.sizeIs == 1
     val ranks = cards.groupBy(_.rank)
     val containsAce = ranks.contains(Rank.Ace)
-    // da sostiture .ordinal con un .value o qualcosa di simile
     val normalStraight =
-      cards.sizeIs == 5 && cards.map(_.rank.ordinal).sorted.sliding(2).forall {
+      cards.sizeIs == 5 && cards.map(_.rank.value).sorted.sliding(2).forall {
         case Seq(a, b) => b - a == 1
       }
-    val aceLowStraight = cards.sizeIs == 5 && containsAce && (-1 +: cards
-      .map(_.rank.ordinal)
+    val aceLowStraight = cards.sizeIs == 5 && containsAce && (1 +: cards
+      .map(_.rank.value)
       .sorted
       .dropRight(1)).sliding(2).forall { case Seq(a, b) => b - a == 1 }
     val isStraight = normalStraight || aceLowStraight
