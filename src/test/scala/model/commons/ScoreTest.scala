@@ -81,7 +81,7 @@ class ScoreTest extends AnyFlatSpec, Matchers:
     forAll(HandType.values)(handType =>
       val cards = getCardsForHandType(handType)
       val score = Score.calculateHandScore(cards)
-      val expectedScore = expectedScore(cards, HandTypeLevels.initial)
+      val expectedScore = getExpectedScore(cards, HandTypeLevels.initial)
       score shouldBe expectedScore
     )
 
@@ -93,6 +93,6 @@ class ScoreTest extends AnyFlatSpec, Matchers:
       )
       val cards = getCardsForHandType(handType)
       val score = Score.calculateHandScore(cards)(using scoreConfig)
-      val expectedScore = expectedScore(cards, scoreConfig.levels)
+      val expectedScore = getExpectedScore(cards, scoreConfig.levels)
       score shouldBe expectedScore
     )
