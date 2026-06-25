@@ -9,21 +9,8 @@ class JokerTest extends AnyFlatSpec, Matchers:
   val defaultHandScore: HandScore = HandScore(50, 20)
   val defaultJokerConfig: JokerConfig = JokerConfig.default
 
-  "Default effect" should "not modify the hand score" in:
-    val joker = new Joker
-    val c = Card(Rank.Ace, Suit.Clubs)
-    joker.independent(defaultHandScore)(using
-      defaultJokerConfig
-    ) shouldBe defaultHandScore
-    joker.onCardScored(defaultHandScore, c)(using
-      defaultJokerConfig
-    ) shouldBe defaultHandScore
-    joker.onHandPlayed(defaultHandScore, Seq(c, c, c))(using
-      defaultJokerConfig
-    ) shouldBe defaultHandScore
-
   "Clever Joker" should "increase score by +80 chips if played hand contains Two Pair" in:
-    val joker: Joker = Joker(JokerType.CleverJoker)
+    val joker: Joker = JokerType.CleverJoker
     val c1 = Card(Rank.Ace, Suit.Clubs)
     val c2 = Card(Rank.Ten, Suit.Hearts)
     val jokerConfig =
@@ -33,7 +20,7 @@ class JokerTest extends AnyFlatSpec, Matchers:
     ) shouldBe defaultHandScore + HandScore(80, 0)
 
   "Crafty Joker" should "increase score by +80 Chips if played hand contains a Flush" in:
-    val joker: Joker = Joker(JokerType.CraftyJoker)
+    val joker: Joker = JokerType.CraftyJoker
     val suit = Suit.Hearts
     val c1 = Card(Rank.Two, suit)
     val c2 = Card(Rank.Four, suit)
@@ -45,7 +32,7 @@ class JokerTest extends AnyFlatSpec, Matchers:
     ) shouldBe defaultHandScore + HandScore(80, 0)
 
   "Crazy Joker" should "increase score by +12 Mult if played hand contains a Straight" in:
-    val joker: Joker = Joker(JokerType.CrazyJoker)
+    val joker: Joker = JokerType.CrazyJoker
     val c1 = Card(Rank.Two, Suit.Clubs)
     val c2 = Card(Rank.Three, Suit.Hearts)
     val c3 = Card(Rank.Four, Suit.Clubs)
@@ -58,7 +45,7 @@ class JokerTest extends AnyFlatSpec, Matchers:
     ) shouldBe defaultHandScore + HandScore(0, 12)
 
   "Devious Joker" should "increase score by +100 Chips if played hand contains a Straight" in:
-    val joker: Joker = Joker(JokerType.DeviousJoker)
+    val joker: Joker = JokerType.DeviousJoker
     val c1 = Card(Rank.Two, Suit.Clubs)
     val c2 = Card(Rank.Three, Suit.Hearts)
     val c3 = Card(Rank.Four, Suit.Clubs)

@@ -18,7 +18,17 @@ object JokerConfig:
 
   def default: JokerConfig = JokerConfig(Seq.empty, HandTypeLevels.initial)
 
-class Joker:
+sealed trait Joker:
+
+  /** @return
+    *   The name of the joker
+    */
+  def name: String
+
+  /** @return
+    *   The description of the joker
+    */
+  def description: String
 
   /** The effect applied at the end of the hand played, before obtaining the
     * total hand score
@@ -61,21 +71,10 @@ class Joker:
       jokerConfig: JokerConfig
   ): HandScore = handScore
 
-object Joker:
-  def apply(jokerType: JokerType): Joker = jokerType match
-    case JokerType.CleverJoker =>
-      new Joker with FlatHandTypeContained(HandType.TwoPair, HandScore(80, 0))
-    case JokerType.CraftyJoker =>
-      new Joker with FlatHandTypeContained(HandType.Flush, HandScore(80, 0))
-    case JokerType.CrazyJoker =>
-      new Joker with FlatHandTypeContained(HandType.Straight, HandScore(0, 12))
-    case JokerType.DeviousJoker =>
-      new Joker with FlatHandTypeContained(HandType.Straight, HandScore(100, 0))
-
 /** Trait which, if the hand played is of the specified type, increases the hand
   * score by the addition of a certain amount
   */
-trait FlatHandTypeContained(handType: HandType, increase: HandScore)
+sealed trait FlatHandTypeContained(handType: HandType, increase: HandScore)
     extends Joker:
 
   override def independent(
@@ -88,8 +87,10 @@ trait FlatHandTypeContained(handType: HandType, increase: HandScore)
 /** Trait which, if the hand played is of the specified type, increases the hand
   * score multiplying the mult component by a certain amount
   */
-trait MultiplicativeHandTypeContained(handType: HandType, multiplier: Double)
-    extends Joker:
+sealed trait MultiplicativeHandTypeContained(
+    handType: HandType,
+    multiplier: Double
+) extends Joker:
 
   override def independent(handScore: HandScore)(using
       jokerConfig: JokerConfig
@@ -103,30 +104,36 @@ trait MultiplicativeHandTypeContained(handType: HandType, multiplier: Double)
 
 /** Trait which increases the score with an addition by a certain amount
   */
-trait FlatScoreIncrease(increase: HandScore) extends Joker:
+sealed trait FlatScoreIncrease(increase: HandScore) extends Joker:
 
   override def independent(handScore: HandScore)(using
       jokerConfig: JokerConfig
   ): HandScore = super.independent(handScore + increase)
 
-enum JokerType(val name: String, val description: String):
+// TODO: .values funziona solo se nessun joker ha uno stato interno (es. case MyJoker(var bonus : HandScore))
+// in questo caso si dovrebbe dichiarare .values nel companion object
+enum JokerType(val name: String, val description: String) extends Joker:
   case CleverJoker
       extends JokerType(
         "Clever Joker",
         "+80 Chips if played hand contains a Two Pair"
       )
+      with FlatHandTypeContained(HandType.TwoPair, HandScore(80, 0))
   case CraftyJoker
       extends JokerType(
         "Crafty Joker",
         "+80 Chips if played hand contains a Flush"
       )
+      with FlatHandTypeContained(HandType.Flush, HandScore(80, 0))
   case CrazyJoker
       extends JokerType(
         "Crazy Joker",
         "+12 Mult if played hand contains a Straight"
       )
+      with FlatHandTypeContained(HandType.Straight, HandScore(0, 12))
   case DeviousJoker
       extends JokerType(
         "Devious Joker",
         "+100 Chips if played hand contains a Straight"
       )
+      with FlatHandTypeContained(HandType.Straight, HandScore(100, 0))

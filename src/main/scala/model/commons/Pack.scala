@@ -35,5 +35,5 @@ object CardsPack extends PackFactory[Card]:
 object PlanetPack extends PackFactory[Planet]:
   val pool: Seq[Planet] = Planet.values.toSeq
 
-object JokerPack extends PackFactory[JokerType]:
-  val pool: Seq[JokerType] = JokerType.values.toSeq
+object JokerPack extends PackFactory[Joker]:
+  val pool: Seq[Joker] = JokerType.values.toSeq
