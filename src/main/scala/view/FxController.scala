@@ -8,20 +8,13 @@ import cats.effect.IO
 import cats.effect.std.Queue
 import cats.effect.unsafe.implicits.global
 import eu.iamgio.animated.binding.value.AnimatedIntValueLabel
-import eu.iamgio.animated.transition.container.AnimatedHBox
-import javafx.animation.{
-  Animation,
-  FadeTransition,
-  PauseTransition,
-  ScaleTransition,
-  SequentialTransition
-}
+import javafx.animation.*
 import javafx.application.Platform
 import javafx.fxml.{FXML, Initializable}
 import javafx.scene.control.{Button, Label, TextField, ToggleButton}
 import javafx.scene.image.{Image, ImageView}
 import javafx.scene.input.{ClipboardContent, TransferMode}
-import javafx.scene.layout.{HBox, StackPane}
+import javafx.scene.layout.HBox
 import javafx.util.Duration
 import scalafx.scene.control.{Label as SfxLabel, TextField as SfxTextField}
 
@@ -91,16 +84,40 @@ class FxController extends Initializable:
 
   private var handSlots: List[(ToggleButton, Card)] = List()
 
-  private var playAvailable: Boolean = false
-  private var discardAvailable: Boolean = false
+  private var lastKnownRound: Option[Round] = None
+
+  private def playAvailable: Boolean = lastKnownRound match
+    case Some(round) => round.remainingPlays > 0
+    case _           => false
+  private def discardAvailable: Boolean = lastKnownRound match
+    case Some(round) => round.remainingDiscards > 0
+    case _           => false
+
+  private case class LevelledHandType(
+      handType: HandType,
+      handScore: HandScore,
+      level: Level
+  )
 
   override def initialize(url: URL, rb: ResourceBundle): Unit =
+    extension (cards: Seq[Card])
+      private def levelledHandType: LevelledHandType =
+        val handType = HandType.detect(cards)
+        val handTypeLevel: Level = lastKnownRound match
+          case Some(round) =>
+            round.gameState.levels.getOrElse(handType, Level.initial)
+          case _ => Level.initial
+        val handTypeIncreaseScore: HandScore = Planet.getIncrease(handType)
+        val handScore =
+          handType.baseScore + (handTypeIncreaseScore * (handTypeLevel - 1))
+        LevelledHandType(handType, handScore, handTypeLevel)
+
     playButton.setOnAction(_ => onPlay())
     discardButton.setOnAction(_ => onDiscard())
     cardButtons.foreach(
       _.setOnAction(_ =>
         setHandType(selectedCards match
-          case h :: _ => Some(HandType.detect(selectedCards))
+          case h :: _ => Some(selectedCards.levelledHandType)
           case _      => None)
       )
     )
@@ -154,19 +171,22 @@ class FxController extends Initializable:
     playButton.setDisable(true)
     discardButton.setDisable(true)
 
-  private def setHandType(handType: Option[HandType]): Unit = handType match
-    case Some(handType) =>
-      chipsLabel.setValue(handType.baseScore.chips.toInt)
-      multLabel.setValue(handType.baseScore.mult.toInt)
-      handLabel.setText(handType.toString)
-      playButton.setDisable(!playAvailable || selectedCards.isEmpty)
-      discardButton.setDisable(!discardAvailable || selectedCards.isEmpty)
-    case _ =>
-      chipsLabel.setValue(0)
-      multLabel.setValue(0)
-      handLabel.setText("")
-      playButton.setDisable(true)
-      discardButton.setDisable(true)
+  private def setHandType(levelledHandType: Option[LevelledHandType]): Unit =
+    levelledHandType match
+      case Some(handType) =>
+        chipsLabel.setValue(handType.handScore.chips.toInt)
+        multLabel.setValue(handType.handScore.mult.toInt)
+        handLabel.setText(handType.handType.toString)
+        handLevelLabel.setText(s"lvl.${handType.level}")
+        playButton.setDisable(!playAvailable || selectedCards.isEmpty)
+        discardButton.setDisable(!discardAvailable || selectedCards.isEmpty)
+      case _ =>
+        chipsLabel.setValue(0)
+        multLabel.setValue(0)
+        handLabel.setText("")
+        handLevelLabel.setText("")
+        playButton.setDisable(true)
+        discardButton.setDisable(true)
 
   /** Update all UI nodes to reflect the new Round state. */
   def update(round: Round): Unit =
@@ -180,9 +200,8 @@ class FxController extends Initializable:
       discardsRemainingLabel.setText(round.remainingDiscards.toString)
       roundNumLabel.setText(s"Round ${round.gameState.blind.roundNum}")
 
-      playAvailable = round.remainingPlays > 0
+      lastKnownRound = Some(round)
       playButton.setDisable(round.remainingPlays <= 0)
-      discardAvailable = round.remainingDiscards > 0
       discardButton.setDisable(round.remainingDiscards <= 0)
 
       // Reset all card slots, then repopulate from the current hand
