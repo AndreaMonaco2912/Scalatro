@@ -11,7 +11,7 @@ import eu.iamgio.animated.binding.value.AnimatedIntValueLabel
 import javafx.animation.*
 import javafx.application.Platform
 import javafx.fxml.{FXML, Initializable}
-import javafx.scene.control.{Button, Label, TextField, ToggleButton, Tooltip}
+import javafx.scene.control.*
 import javafx.scene.image.{Image, ImageView}
 import javafx.scene.input.{ClipboardContent, TransferMode}
 import javafx.scene.layout.HBox
@@ -107,6 +107,7 @@ class FxController extends Initializable:
   private var jokerSlots: List[(ToggleButton, Joker)] = List()
 
   private var lastKnownRound: Option[Round] = None
+  private var cardOrderer: Option[CardOrderer] = None
 
   private def playAvailable: Boolean = lastKnownRound match
     case Some(round) => round.remainingPlays > 0
@@ -160,6 +161,7 @@ class FxController extends Initializable:
         val success = if db.hasString then
           val draggedIdx = db.getString.toInt
           val targetIdx = index
+          cardOrderer = None
           onOrder(CardOrderer.moveCard(draggedIdx, targetIdx))
           true
         else false
@@ -169,8 +171,16 @@ class FxController extends Initializable:
       }
     }
 
-    sortRankButton.setOnAction(_ => onOrder(CardOrderer.sortByRank))
-    sortSuitButton.setOnAction(_ => onOrder(CardOrderer.sortBySuit))
+    sortRankButton.setOnAction(_ =>
+      val ord = CardOrderer.sortByRank
+      cardOrderer = Some(ord)
+      onOrder(ord)
+    )
+    sortSuitButton.setOnAction(_ =>
+      val ord = CardOrderer.sortBySuit
+      cardOrderer = Some(ord)
+      onOrder(ord)
+    )
 
   /** Injects the action queue. Must be called before the first render. */
   def setActionQueue(queue: Queue[IO, RoundAction]): Unit =
@@ -280,6 +290,7 @@ class FxController extends Initializable:
       scale.setToY(1.25)
       scale.setCycleCount(2)
       scale.setAutoReverse(true)
+      chipsLabel.setValue(chipsLabel.getValue + card.rank.value)
       scale
     else
       val fade = new FadeTransition(Duration.millis(500), cardImage)
@@ -312,11 +323,13 @@ class FxController extends Initializable:
     actionQueue.foreach(
       _.offer(RoundAction.PlayCards(selectedCards)).unsafeRunAndForget()
     )
+    cardOrderer.foreach(onOrder)
 
   private def onDiscard(): Unit =
     actionQueue.foreach(
       _.offer(RoundAction.DiscardCards(selectedCards)).unsafeRunAndForget()
     )
+    cardOrderer.foreach(onOrder)
 
   private def onOrder(cardOrderer: CardOrderer): Unit =
     actionQueue.foreach(
