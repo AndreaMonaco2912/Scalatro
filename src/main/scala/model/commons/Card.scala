@@ -19,11 +19,19 @@ enum Rank(val value: Int):
   case King extends Rank(13)
   case Ace extends Rank(14)
 
-case class Card(rank: Rank, suit: Suit):
-  def onScored(prevHandScore: HandScore): HandScore =
-    HandScore(this.getBaseChips + prevHandScore.chips, prevHandScore.mult)
+trait Card:
+  def rank: Rank
+  def suit: Suit
+  def onScored(prevHandScore: HandScore): HandScore
 
-  def getBaseChips: Chips.Chips = this.rank match
-    case Rank.Jack | Rank.Queen | Rank.King => 10
-    case Rank.Ace                           => 11
-    case r                                  => r.value
+object Card:
+  def apply(rank: Rank, suit: Suit): Card = CardImpl(rank, suit)
+
+  private case class CardImpl(rank: Rank, suit: Suit) extends Card:
+    override def onScored(prevHandScore: HandScore): HandScore =
+      HandScore(this.getBaseChips + prevHandScore.chips, prevHandScore.mult)
+
+    private def getBaseChips: Chips.Chips = this.rank match
+      case Rank.Jack | Rank.Queen | Rank.King => 10
+      case Rank.Ace                           => 11
+      case r                                  => r.value
