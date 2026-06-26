@@ -1,0 +1,5 @@
+Conclusioni della riunione:
+- Parziale aggiunta degli elementi di gioco ritenuti obbligatori: joker, carte pianeta, economia
+- Aggiornamento dei vari membri sulle proprie parti per allineamento generale
+- Analisi del dominio e del codice
+- Proposte e discussioni su nuove estensioni del gioco
