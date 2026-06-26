@@ -44,7 +44,7 @@ class SingleRoundController(
     gameState: GameState
 ) extends Controller[Round]:
 
-  private val (hand, deck) = gameState.deck.draw(8)
+  private val (hand, deck) = gameState.deck.draw(gameState.handInformation.handSize)
 
   private val initialRound = Round(
     Score.zero,

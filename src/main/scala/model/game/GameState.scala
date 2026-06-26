@@ -33,7 +33,7 @@ case class ShopInformation(
 )
 
 object GameState:
-  private val initialHandSize = 5
+  private val initialHandSize = 8
   private val initialHandNum = 4
   private val initialDiscardNum = 3
 
