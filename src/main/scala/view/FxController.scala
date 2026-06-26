@@ -7,7 +7,6 @@ import model.round.{Round, RoundAction}
 import cats.effect.IO
 import cats.effect.std.Queue
 import cats.effect.unsafe.implicits.global
-import eu.iamgio.animated.binding.value.AnimatedIntValueLabel
 import javafx.animation.*
 import javafx.application.Platform
 import javafx.fxml.{FXML, Initializable}
@@ -283,7 +282,8 @@ class FxController extends Initializable:
       scoringCards: Seq[Card]
   ): Animation =
     if scoringCards.contains(card) then
-      val scale = new ScaleTransition(Duration.millis(250), cardImage)
+      val SCALE_ANIMATION_DURATION = 125
+      val scale = new ScaleTransition(Duration.millis(SCALE_ANIMATION_DURATION), cardImage)
       scale.setFromX(1.0)
       scale.setFromY(1.0)
       scale.setToX(1.25)
@@ -293,7 +293,8 @@ class FxController extends Initializable:
       chipsLabel.setText(chipsLabel.getText + card.rank.value.customToString)
       scale
     else
-      val fade = new FadeTransition(Duration.millis(500), cardImage)
+      val FADE_ANIMATION_DURATION = 250
+      val fade = new FadeTransition(Duration.millis(FADE_ANIMATION_DURATION), cardImage)
       fade.setFromValue(1.0)
       fade.setToValue(0.3)
       fade
@@ -304,11 +305,13 @@ class FxController extends Initializable:
   ): Unit =
     animations match
       case Nil =>
-        val finalPause = PauseTransition(Duration.millis(500))
+        val FINAL_PAUSE_DURATION = 500
+        val finalPause = PauseTransition(Duration.millis(FINAL_PAUSE_DURATION))
         finalPause.setOnFinished(_ => onComplete())
         finalPause.play()
       case anim :: rest =>
-        val pause = PauseTransition(Duration.millis(200))
+        val BETWEEN_CARDS_PAUSE_DURATION = 100
+        val pause = PauseTransition(Duration.millis(BETWEEN_CARDS_PAUSE_DURATION))
         val sequence = SequentialTransition(pause, anim)
         sequence.setOnFinished(_ => playSequentially(rest, onComplete))
         sequence.play()
