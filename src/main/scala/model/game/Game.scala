@@ -5,13 +5,13 @@ import scala.util.Random
 import model.commons.Score.Score
 
 import cats.effect.IO
-import model.shop.{Shop, ShopActions}
+import model.shop.Shop
 
 trait GameHandler:
   def playRound(state: GameState): IO[Score]
   def onRoundWon(blind: Blind): IO[Unit]
   def onRoundLost(blind: Blind): IO[Unit]
-  def showShop(shop: Shop): IO[ShopActions]
+  def showShop(shop: Shop): IO[Unit]
 
 class Game(handler: GameHandler, val seed: Long = Random.nextLong()):
   private val rng: Random = Random(seed)

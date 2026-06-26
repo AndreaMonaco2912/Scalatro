@@ -52,8 +52,8 @@ class SingleRoundController(
     yield finalRound
 
 class GameController(gameViews: GameViews)
-    extends Controller[GameResult]
-    with GameHandler:
+    extends Controller[GameResult],
+      GameHandler:
 
   override def playRound(gameState: GameState): IO[Score] =
     for
@@ -80,12 +80,12 @@ class GameController(gameViews: GameViews)
       _ <- queue.take
     yield ()
 
-  override def showShop(shop: Shop): IO[ShopActions] =
+  override def showShop(shop: Shop): IO[Unit] =
     for
       queue <- Queue.unbounded[IO, ShopActions]
       controller <- gameViews.shop
-      _ <- IO(ShopView(controller, queue))
+      view = ShopView(controller, queue)
       action <- queue.take
-    yield action  
+    yield ()
 
   override def start(): IO[GameResult] = Game(this).play()
