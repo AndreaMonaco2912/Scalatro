@@ -3,6 +3,7 @@ package view
 
 import model.round.{Round, RoundAction}
 import model.shop.{Shop, ShopActions}
+import model.commons.Pack
 
 import cats.effect.IO
 import cats.effect.std.Queue
@@ -54,3 +55,11 @@ class ShopView(
 ) extends View[Shop]:
   controller.setActionQueue(actionQueue)
   override def render(state: Shop): IO[Unit] = IO.unit
+
+class PackView[A](
+    controller: FxPackController[A],
+    pack: Pack[A],
+    actionQueue: Queue[IO, Unit]
+):
+  controller.setActionQueue(actionQueue)
+  controller.showItems(pack.items)

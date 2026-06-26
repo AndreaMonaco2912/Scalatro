@@ -124,3 +124,25 @@
     -fx-translate-y: 1;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 3, 0, 0, 1);
 }
+
+/* ── Pack screens (card / planet pack opening) ───────────────────── */
+.pack-continue-button {
+    -fx-font-size: 16px;
+    -fx-background-color: #2e2e2e;
+    -fx-text-fill: white;
+    -fx-padding: 10 24 10 24;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.pack-card {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.55), 8, 0, 0, 4);
+}
+
+.planet-card {
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-padding: 30;
+    -fx-background-color: #2e2e2e;
+    -fx-background-radius: 8;
+}

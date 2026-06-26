@@ -2,8 +2,10 @@ package scalatro
 
 import controller.GameController
 import view.{
+  FxCardPackController,
   FxController,
-  FxRoundEndController,
+  FxJokerPackController,
+  FxPlanetPackController,
   FxRoundLostController,
   FxRoundWonController,
   FxShopController
@@ -71,3 +73,16 @@ class GameViews(scene: Scene):
 
   def shop: IO[FxShopController] =
     SceneRouter.switchTo[FxShopController](scene)("/scalatro/shop.fxml")
+
+  def cardPack: IO[FxCardPackController] =
+    SceneRouter.switchTo[FxCardPackController](scene)("/scalatro/cardPack.fxml")
+
+  def planetPack: IO[FxPlanetPackController] =
+    SceneRouter.switchTo[FxPlanetPackController](scene)(
+      "/scalatro/planetPack.fxml"
+    )
+
+  def jokerPack: IO[FxJokerPackController] =
+    SceneRouter.switchTo[FxJokerPackController](scene)(
+      "/scalatro/jokerPack.fxml"
+    )

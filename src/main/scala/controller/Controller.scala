@@ -2,11 +2,19 @@ package scalatro
 package controller
 
 import model.commons.Score.Score
-import model.commons.{Deck, Score}
+import model.commons.{Deck, Pack, Score}
 import model.game.*
 import model.round.{Round, RoundAction, RoundManager}
 import model.shop.{Shop, ShopActions}
-import view.{FxRoundEndController, FxView, RoundEndView, ShopView, View}
+import view.{
+  FxPackController,
+  FxRoundEndController,
+  FxView,
+  PackView,
+  RoundEndView,
+  ShopView,
+  View
+}
 
 import cats.effect.IO
 import cats.effect.std.Queue
@@ -86,6 +94,25 @@ class GameController(gameViews: GameViews)
       controller <- gameViews.shop
       view = ShopView(controller, queue)
       action <- queue.take
+      _ <- action match
+        case ShopActions.OpenCardPack =>
+          showPack(gameViews.cardPack, shop.cardPack)
+        case ShopActions.OpenPlanetPack =>
+          showPack(gameViews.planetPack, shop.planetPack)
+        case ShopActions.OpenJokerPack =>
+          showPack(gameViews.jokerPack, shop.jokerPack)
+        case ShopActions.SkipShop => IO.unit
+    yield ()
+
+  private def showPack[A](
+      getController: IO[FxPackController[A]],
+      pack: Pack[A]
+  ): IO[Unit] =
+    for
+      queue <- Queue.unbounded[IO, Unit]
+      controller <- getController
+      _ = PackView(controller, pack, queue)
+      _ <- queue.take
     yield ()
 
   override def start(): IO[GameResult] = Game(this).play()

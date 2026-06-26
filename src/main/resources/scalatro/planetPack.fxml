@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="scalatro.view.FxPlanetPackController"
+      alignment="CENTER"
+      spacing="40"
+      style="-fx-background-color: #1a2a4a;">
+
+    <Label text="Planet Pack"
+           textFill="WHITE"
+           style="-fx-font-size: 28px; -fx-font-weight: bold;" />
+
+    <HBox fx:id="packBox" alignment="CENTER" spacing="12" />
+
+    <Button fx:id="continueButton"
+            text="Continue"
+            styleClass="pack-continue-button" />
+
+</VBox>

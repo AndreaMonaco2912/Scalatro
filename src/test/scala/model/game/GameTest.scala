@@ -17,12 +17,12 @@ class GameTest extends AnyFlatSpec, Matchers:
       onPlay: GameState => IO[Score],
       onWon: Blind => IO[Unit] = _ => IO.unit,
       onLost: Blind => IO[Unit] = _ => IO.unit,
-      skipShop: Shop => IO[ShopActions] = _ => IO(ShopActions.SkipShop)
+      skipShop: Shop => IO[Unit] = _ => IO.unit
   ): GameHandler = new GameHandler:
     override def playRound(state: GameState): IO[Score] = onPlay(state)
     override def onRoundWon(b: Blind): IO[Unit] = onWon(b)
     override def onRoundLost(b: Blind): IO[Unit] = onLost(b)
-    override def showShop(shop: Shop): IO[ShopActions] = skipShop(shop)
+    override def showShop(shop: Shop): IO[Unit] = skipShop(shop)
 
 
   val alwaysHitsFirstTarget: GameState => IO[Score] =
