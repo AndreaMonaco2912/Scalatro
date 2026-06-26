@@ -21,7 +21,16 @@ case class GameState(
   def scoreConfig: ScoreConfig =
     ScoreConfig(jokers, levels, BasicHandScoreCalculator)
 
+  def shopInformation: ShopInformation =
+    ShopInformation(deck, levels, jokers)
+
 case class HandInformation(handSize: Int, handNum: Int, discardNum: Int)
+
+case class ShopInformation(
+    deck: Deck,
+    levels: HandTypeLevels,
+    jokers: Seq[Joker]
+)
 
 object GameState:
   private val initialHandSize = 5

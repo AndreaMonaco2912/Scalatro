@@ -30,7 +30,7 @@ class Game(handler: GameHandler, val seed: Long = Random.nextLong()):
   private def handleWin(gameState: GameState): IO[GameResult] =
     for
       _ <- handler.onRoundWon(gameState.blind)
-      _ <- handler.showShop(Shop.default)
+      _ <- handler.showShop(Shop.default(gameState.shopInformation))
       result <- gameLoop(gameState.advanceBlind)
     yield result
 
