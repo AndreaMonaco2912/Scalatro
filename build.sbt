@@ -34,7 +34,6 @@ ThisBuild / libraryDependencies ++= Seq(
   "org.scalafx" %% "scalafx" % "26.0.0-R38",
   "org.typelevel" %% "cats-core" % "2.13.0",
   "org.typelevel" %% "cats-effect" % "3.7.0",
-  "eu.iamgio" % "animated" % "1.3.0",
   "org.scalatest" %% "scalatest" % "3.2.20" % Test,
   "org.scalamock" %% "scalamock" % "7.5.5" % Test,
   "org.scalamock" %% "scalamock-cats-effect" % "7.5.5" % Test
