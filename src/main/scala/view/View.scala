@@ -2,7 +2,7 @@ package scalatro
 package view
 
 import model.round.{Round, RoundAction}
-import model.shop.{Shop, ShopActions}
+import model.shop.{PackAction, Shop, ShopActions}
 import model.commons.Pack
 
 import cats.effect.IO
@@ -59,7 +59,7 @@ class ShopView(
 class PackView[A](
     controller: FxPackController[A],
     pack: Pack[A],
-    actionQueue: Queue[IO, Unit]
+    actionQueue: Queue[IO, PackAction[A]]
 ):
   controller.setActionQueue(actionQueue)
   controller.showItems(pack.items)

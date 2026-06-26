@@ -18,8 +18,8 @@
 
     <HBox fx:id="packBox" alignment="CENTER" spacing="12" />
 
-    <Button fx:id="continueButton"
-            text="Continue"
+    <Button fx:id="skipButton"
+            text="Skip"
             styleClass="pack-continue-button" />
 
 </VBox>

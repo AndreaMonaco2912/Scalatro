@@ -34,3 +34,7 @@ enum ShopActions:
   case OpenPlanetPack
   case OpenJokerPack
   case SkipShop
+
+enum PackAction[+A]:
+  case Select(item: A)
+  case Skip

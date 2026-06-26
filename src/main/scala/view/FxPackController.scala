@@ -2,6 +2,7 @@ package scalatro
 package view
 
 import model.commons.*
+import model.shop.PackAction
 
 import cats.effect.IO
 import cats.effect.std.Queue
@@ -21,7 +22,7 @@ import scala.compiletime.uninitialized
 abstract class FxPackController[A] extends Initializable:
 
   @FXML private var packBox: HBox = uninitialized
-  @FXML private var continueButton: Button = uninitialized
+  @FXML private var skipButton: Button = uninitialized
 
   protected def renderItem(item: A): Node
 
@@ -33,22 +34,26 @@ abstract class FxPackController[A] extends Initializable:
     iv.getStyleClass.add("pack-card")
     iv
 
-  private var actionQueue: Option[Queue[IO, Unit]] = None
+  private var actionQueue: Option[Queue[IO, PackAction[A]]] = None
 
   override def initialize(url: URL, rb: ResourceBundle): Unit =
-    continueButton.setOnAction(_ => onContinue())
+    skipButton.setOnAction(_ => offer(PackAction.Skip))
 
-  def setActionQueue(queue: Queue[IO, Unit]): Unit =
+  def setActionQueue(queue: Queue[IO, PackAction[A]]): Unit =
     actionQueue = Some(queue)
 
   def showItems(items: Seq[A]): Unit =
     Platform.runLater { () =>
       packBox.getChildren.clear()
-      items.foreach(item => packBox.getChildren.add(renderItem(item)))
+      items.foreach { item =>
+        val node = renderItem(item)
+        node.setOnMouseClicked(_ => offer(PackAction.Select(item)))
+        packBox.getChildren.add(node)
+      }
     }
 
-  private def onContinue(): Unit =
-    actionQueue.foreach(_.offer(()).unsafeRunAndForget())
+  private def offer(action: PackAction[A]): Unit =
+    actionQueue.foreach(_.offer(action).unsafeRunAndForget())
 
 class FxCardPackController extends FxPackController[Card]:
   override protected def renderItem(card: Card): Node =

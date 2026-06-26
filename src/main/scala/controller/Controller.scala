@@ -5,7 +5,7 @@ import model.commons.Score.Score
 import model.commons.{Deck, Pack, Score}
 import model.game.*
 import model.round.{Round, RoundAction, RoundManager}
-import model.shop.{Shop, ShopActions}
+import model.shop.{PackAction, Shop, ShopActions}
 import view.{
   FxPackController,
   FxRoundEndController,
@@ -44,7 +44,8 @@ class SingleRoundController(
     gameState: GameState
 ) extends Controller[Round]:
 
-  private val (hand, deck) = gameState.deck.draw(gameState.handInformation.handSize)
+  private val (hand, deck) =
+    gameState.deck.draw(gameState.handInformation.handSize)
 
   private val initialRound = Round(
     Score.zero,
@@ -107,12 +108,14 @@ class GameController(gameViews: GameViews)
   private def showPack[A](
       getController: IO[FxPackController[A]],
       pack: Pack[A]
-  ): IO[Unit] =
+  ): IO[Option[A]] =
     for
-      queue <- Queue.unbounded[IO, Unit]
+      queue <- Queue.unbounded[IO, PackAction[A]]
       controller <- getController
       _ = PackView(controller, pack, queue)
-      _ <- queue.take
-    yield ()
+      action <- queue.take
+    yield action match
+      case PackAction.Select(item) => Some(item)
+      case PackAction.Skip         => None
 
   override def start(): IO[GameResult] = Game(this).play()
