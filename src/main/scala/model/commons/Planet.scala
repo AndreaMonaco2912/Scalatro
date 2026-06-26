@@ -27,6 +27,17 @@ extension (htl: HandTypeLevels)
   def getLevel(handType: HandType): Level =
     htl.getOrElse(handType, Level.initial)
 
+  /** Update the level of an hand type
+    * @param handType
+    *   the hand type
+    * @param newLevel
+    *   the new level
+    * @return
+    *   the updated hand levels
+    */
+  def update(handType: HandType, newLevel: Level): HandTypeLevels =
+    htl.updated(handType, newLevel)
+
 object HandTypeLevels:
   /** @return
     *   the initial level of the hand types
@@ -50,8 +61,10 @@ enum Planet(val handType: HandType, val increase: HandScore, val name: String):
   case Jupiter extends Planet(HandType.Flush, HandScore(15, 2), "Jupiter")
   case Earth extends Planet(HandType.FullHouse, HandScore(25, 2), "Earth")
   case Mars extends Planet(HandType.FourOfAKind, HandScore(30, 3), "Mars")
-  case Neptune extends Planet(HandType.StraightFlush, HandScore(40, 4), "Neptune")
-  case PlanetX extends Planet(HandType.FiveOfAKind, HandScore(35, 3), "Planet X")
+  case Neptune
+      extends Planet(HandType.StraightFlush, HandScore(40, 4), "Neptune")
+  case PlanetX
+      extends Planet(HandType.FiveOfAKind, HandScore(35, 3), "Planet X")
   case Ceres extends Planet(HandType.FlushHouse, HandScore(40, 4), "Ceres")
   case Eris extends Planet(HandType.FlushFive, HandScore(50, 3), "Eris")
 
@@ -79,8 +92,7 @@ object Planet:
       *   the new hand type levels
       */
     def use(levels: HandTypeLevels): HandTypeLevels =
-      val currentLevel: Level = levels.getOrElse(planet.handType, Level.initial)
-      levels.updated(planet.handType, currentLevel + 1)
+      levels.update(planet.handType, levels.getLevel(planet.handType) + 1)
 
-    def use(levels: HandTypeLevels, times: Int): HandTypeLevels =
-      (1 to times).foldLeft(levels)((acc, _) => planet.use(acc))
+//    def use(levels: HandTypeLevels, times: Int): HandTypeLevels =
+//      (1 to times).foldLeft(levels)((acc, _) => planet.use(acc))
