@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import eu.iamgio.animated.binding.AnimationSettings?>
-<?import eu.iamgio.animated.binding.value.AnimatedIntValueLabel?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
@@ -88,14 +86,11 @@
                 <!-- Blue chips rectangle -->
                 <StackPane>
                     <Rectangle arcHeight="12.0" arcWidth="12.0" fill="#2a82d8" height="60.0" width="75.0"/>
-                    <AnimatedIntValueLabel fx:id="chipsLabel" textFill="WHITE" value="0">
+                    <Label fx:id="chipsLabel" textFill="WHITE" text="0">
                         <font>
                             <Font name="System Bold" size="24.0"/>
                         </font>
-                        <settings>
-                            <AnimationSettings curve="EASE_OUT" duration="200ms"/>
-                        </settings>
-                    </AnimatedIntValueLabel>
+                    </Label>
                 </StackPane>
 
                 <Label text="×" textFill="WHITE">
@@ -107,14 +102,11 @@
                 <!-- Red mult rectangle -->
                 <StackPane>
                     <Rectangle arcHeight="12.0" arcWidth="12.0" fill="#d84a4a" height="60.0" width="75.0"/>
-                    <AnimatedIntValueLabel fx:id="multLabel" textFill="WHITE" value="0">
+                    <Label fx:id="multLabel" textFill="WHITE" text="0">
                         <font>
                             <Font name="System Bold" size="24.0"/>
                         </font>
-                        <settings>
-                            <AnimationSettings curve="EASE_OUT" duration="200ms"/>
-                        </settings>
-                    </AnimatedIntValueLabel>
+                    </Label>
                 </StackPane>
             </HBox>
 

@@ -63,8 +63,8 @@ class FxController extends Initializable:
   @FXML private var roundNumLabel: Label = uninitialized
   @FXML private var roundScoreLabel: Label = uninitialized
   @FXML private var goalLabel: Label = uninitialized
-  @FXML private var chipsLabel: AnimatedIntValueLabel = uninitialized
-  @FXML private var multLabel: AnimatedIntValueLabel = uninitialized
+  @FXML private var chipsLabel: Label = uninitialized
+  @FXML private var multLabel: Label = uninitialized
   @FXML private var handLabel: Label = uninitialized
   @FXML private var handLevelLabel: Label = uninitialized
   @FXML private var deckLabel: Label = uninitialized
@@ -204,15 +204,15 @@ class FxController extends Initializable:
   private def setHandType(levelledHandType: Option[LevelledHandType]): Unit =
     levelledHandType match
       case Some(handType) =>
-        chipsLabel.setValue(handType.handScore.chips.toInt)
-        multLabel.setValue(handType.handScore.mult.toInt)
+        chipsLabel.setText(handType.handScore.chips.customToString)
+        multLabel.setText(handType.handScore.mult.customToString)
         handLabel.setText(handType.handType.toString)
         handLevelLabel.setText(s"lvl.${handType.level}")
         playButton.setDisable(!playAvailable || selectedCards.isEmpty)
         discardButton.setDisable(!discardAvailable || selectedCards.isEmpty)
       case _ =>
-        chipsLabel.setValue(0)
-        multLabel.setValue(0)
+        chipsLabel.setText("0")
+        multLabel.setText("0")
         handLabel.setText("")
         handLevelLabel.setText("")
         playButton.setDisable(true)
@@ -290,7 +290,7 @@ class FxController extends Initializable:
       scale.setToY(1.25)
       scale.setCycleCount(2)
       scale.setAutoReverse(true)
-      chipsLabel.setValue(chipsLabel.getValue + card.rank.value)
+      chipsLabel.setText(chipsLabel.getText + card.rank.value.customToString)
       scale
     else
       val fade = new FadeTransition(Duration.millis(500), cardImage)
