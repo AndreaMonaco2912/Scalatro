@@ -31,6 +31,13 @@
                        -fx-text-fill: white;
                        -fx-padding: 40 30 40 30;
                        -fx-background-radius: 8;" />
+        <Button fx:id="jokerPackButton"
+                text="Joker Pack"
+                style="-fx-font-size: 18px;
+                       -fx-background-color: #2e2e2e;
+                       -fx-text-fill: white;
+                       -fx-padding: 40 30 40 30;
+                       -fx-background-radius: 8;" />
     </HBox>
 
     <Button fx:id="skipButton"

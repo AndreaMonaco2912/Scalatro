@@ -17,17 +17,17 @@ import scala.compiletime.uninitialized
 class FxShopController extends Initializable:
   @FXML private var cardPackButton: Button = uninitialized
   @FXML private var planetPackButton: Button = uninitialized
+  @FXML private var jokerPackButton: Button = uninitialized
   @FXML private var skipButton: Button = uninitialized
 
   private var actionQueue: Option[Queue[IO, ShopActions]] = None
 
   override def initialize(url: URL, rb: ResourceBundle): Unit =
-    // Index convention: 0 = cardPack, 1 = planetPack (matches Shop's field order)
     cardPackButton.setOnAction(_ => offer(ShopActions.OpenCardPack))
     planetPackButton.setOnAction(_ => offer(ShopActions.OpenPlanetPack))
+    jokerPackButton.setOnAction(_ => offer(ShopActions.OpenJokerPack))
     skipButton.setOnAction(_ => offer(ShopActions.SkipShop))
 
-  /** Injects the action queue. Must be called before the screen is shown. */
   def setActionQueue(queue: Queue[IO, ShopActions]): Unit =
     actionQueue = Some(queue)
 
