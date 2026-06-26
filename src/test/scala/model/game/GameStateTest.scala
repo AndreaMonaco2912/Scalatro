@@ -4,7 +4,12 @@ package model.game
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
-import model.commons.Deck
+import model.commons.{
+  Deck,
+  HandType,
+  HandTypeLevels,
+  JokerType
+}
 
 import scala.util.Random
 
@@ -30,3 +35,12 @@ class GameStateTest extends AnyFlatSpec, Matchers:
   "shuffle" should "change the card order" in:
     val result = start.shuffleDeck
     result.deck should not equal start.deck
+
+  "shopInformation" should "carry over the deck, levels, and jokers" in:
+    val jokers = Seq(JokerType.CraftyJoker)
+    val levels = HandTypeLevels.initial.updated(HandType.Flush, 2)
+    val state = start.copy(jokers = jokers, levels = levels)
+    val info = state.shopInformation
+    info.deck shouldBe state.deck
+    info.levels shouldBe levels
+    info.jokers shouldBe jokers
