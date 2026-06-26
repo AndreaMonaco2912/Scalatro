@@ -1,20 +1,19 @@
 package scalatro
 package model.shop
 
-import model.commons.{Card, CardsPack, Pack, Planet, PlanetPack}
+import model.commons.{Card, CardsPack, Joker, JokerPack, Pack, Planet, PlanetPack}
 
 import scala.util.Random
 
-case class Shop(cardPack: Pack[Card], planetPack: Pack[Planet])
+case class Shop(cardPack: Pack[Card], planetPack: Pack[Planet], jokerPack: Pack[Joker])
 
 object Shop:
-  private val cardPackSize = 3
-  private val planetPackSize = 3
 
   def default(using Random): Shop =
-    Shop(CardsPack(cardPackSize), PlanetPack(planetPackSize))
+    Shop(CardsPack.smallPack, PlanetPack.smallPack, JokerPack.smallPack)
 
 enum ShopActions:
   case OpenCardPack
   case OpenPlanetPack
+  case OpenJokerPack
   case SkipShop
