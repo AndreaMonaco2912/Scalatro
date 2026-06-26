@@ -61,9 +61,7 @@ class FxCardPackController extends FxPackController[Card]:
 
 class FxPlanetPackController extends FxPackController[Planet]:
   override protected def renderItem(planet: Planet): Node =
-    val label = new Label(s"$planet\n${planet.handType}")
-    label.getStyleClass.add("planet-card")
-    label
+    imageNode(Images.planet(planet))
 
 class FxJokerPackController extends FxPackController[Joker]:
   override protected def renderItem(joker: Joker): Node =
