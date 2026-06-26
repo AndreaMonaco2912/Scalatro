@@ -1,7 +1,7 @@
 package scalatro
 package view
 
-import model.commons.{Card, Joker, Rank}
+import model.commons.{Card, Joker, Pack, PackFactory, Planet, Rank}
 
 import javafx.scene.image.Image
 
@@ -28,5 +28,19 @@ object Images:
     new Image(
       getClass.getResourceAsStream(
         s"/scalatro/jokers/${joker.name.replace(" ", "_")}.png"
+      )
+    )
+
+  def planet(planet: Planet): Image =
+    new Image(
+      getClass.getResourceAsStream(
+        s"/scalatro/planets/${planet.name.replace(" ", "_")}.png"
+      )
+    )
+
+  def pack(category: String, size: String, version: Int) =
+    new Image(
+      getClass.getResourceAsStream(
+        s"/scalatro/packs/${category}_${size}_$version.png"
       )
     )
