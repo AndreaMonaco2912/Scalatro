@@ -7,7 +7,7 @@ import model.commons.Score.Score
 
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
-import model.shop.{Shop, ShopActions}
+import model.shop.Shop
 
 class GameTest extends AnyFlatSpec, Matchers:
   val seed = 0L
@@ -23,7 +23,6 @@ class GameTest extends AnyFlatSpec, Matchers:
     override def onRoundWon(b: Blind): IO[Unit] = onWon(b)
     override def onRoundLost(b: Blind): IO[Unit] = onLost(b)
     override def showShop(shop: Shop): IO[Unit] = skipShop(shop)
-
 
   val alwaysHitsFirstTarget: GameState => IO[Score] =
     _ => IO.pure(blind.targetScore)
