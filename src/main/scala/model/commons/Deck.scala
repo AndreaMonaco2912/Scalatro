@@ -21,4 +21,5 @@ object Deck:
       require(n >= 0 && n <= d.size, s"cannot draw $n from a deck of ${d.size}")
       d.splitAt(n)
     def size: Int = d.size
+    def add(card: Card): Deck = d :+ card
     def cards: Seq[Card] = d

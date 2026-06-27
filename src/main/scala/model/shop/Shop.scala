@@ -38,3 +38,8 @@ enum ShopActions:
 enum PackAction[+A]:
   case Select(item: A)
   case Skip
+
+enum ShopSelection:
+  case CardSelected(card: Card)
+  case PlanetSelected(planet: Planet)
+  case JokerSelected(joker: Joker)

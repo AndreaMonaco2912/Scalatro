@@ -1,17 +1,12 @@
 package scalatro
 package model.game
 
-import scala.util.Random
 import model.commons.Score.Score
-
-import cats.effect.IO
 import model.shop.Shop
+import controller.GameHandler
 
-trait GameHandler:
-  def playRound(state: GameState): IO[Score]
-  def onRoundWon(blind: Blind): IO[Unit]
-  def onRoundLost(blind: Blind): IO[Unit]
-  def showShop(shop: Shop): IO[Unit]
+import scala.util.Random
+import cats.effect.IO
 
 class Game(handler: GameHandler, val seed: Long = Random.nextLong()):
   private val rng: Random = Random(seed)
@@ -30,8 +25,9 @@ class Game(handler: GameHandler, val seed: Long = Random.nextLong()):
   private def handleWin(gameState: GameState): IO[GameResult] =
     for
       _ <- handler.onRoundWon(gameState.blind)
-      _ <- handler.showShop(Shop.default(gameState.shopInformation))
-      result <- gameLoop(gameState.advanceBlind)
+      selection <- handler.showShop(Shop.default(gameState.shopInformation))
+      nextState = selection.fold(gameState)(gameState.selectItem).advanceBlind
+      result <- gameLoop(nextState)
     yield result
 
   private def handleLoss(gameState: GameState, result: Score): IO[GameResult] =

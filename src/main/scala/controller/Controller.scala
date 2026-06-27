@@ -5,7 +5,7 @@ import model.commons.Score.Score
 import model.commons.{Deck, Pack, Score}
 import model.game.*
 import model.round.{Round, RoundAction, RoundManager}
-import model.shop.{PackAction, Shop, ShopActions}
+import model.shop.{PackAction, Shop, ShopActions, ShopSelection}
 import view.{FxView, View}
 import view.fxController.{Bindable, FxPackController, FxRoundEndController}
 import view.GameViews
@@ -55,9 +55,15 @@ class SingleRoundController(
       finalRound <- roundManager.startRound(initialRound)
     yield finalRound
 
+trait GameHandler:
+  def playRound(state: GameState): IO[Score]
+  def onRoundWon(blind: Blind): IO[Unit]
+  def onRoundLost(blind: Blind): IO[Unit]
+  def showShop(shop: Shop): IO[Option[ShopSelection]]
+
 class GameController(gameViews: GameViews)
     extends Controller[GameResult],
-      GameHandler:
+      GameHandler://TODO create a new separated GameHandler singleton
 
   override def playRound(gameState: GameState): IO[Score] =
     for
@@ -93,16 +99,20 @@ class GameController(gameViews: GameViews)
   ): IO[Unit] =
     awaitAction[A](getController).void
 
-  override def showShop(shop: Shop): IO[Unit] =
-    awaitAction[ShopActions](gameViews.shop).flatMap {
-      case ShopActions.OpenCardPack =>
-        showPack(gameViews.cardPack, shop.cardPack).void
-      case ShopActions.OpenPlanetPack =>
-        showPack(gameViews.planetPack, shop.planetPack).void
-      case ShopActions.OpenJokerPack =>
-        showPack(gameViews.jokerPack, shop.jokerPack).void
-      case ShopActions.SkipShop => IO.unit
-    }
+  override def showShop(shop: Shop): IO[Option[ShopSelection]] =
+    awaitAction[ShopActions](gameViews.shop)
+      .flatMap { // TODO: improve this method readability
+        case ShopActions.OpenCardPack =>
+          showPack(gameViews.cardPack, shop.cardPack)
+            .map(_.map(ShopSelection.CardSelected(_)))
+        case ShopActions.OpenPlanetPack =>
+          showPack(gameViews.planetPack, shop.planetPack)
+            .map(_.map(ShopSelection.PlanetSelected(_)))
+        case ShopActions.OpenJokerPack =>
+          showPack(gameViews.jokerPack, shop.jokerPack)
+            .map(_.map(ShopSelection.JokerSelected(_)))
+        case ShopActions.SkipShop => IO.pure(None)
+      }
 
   private def showPack[A](
       getController: IO[FxPackController[A]],
