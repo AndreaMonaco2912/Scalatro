@@ -20,7 +20,9 @@ import java.util.ResourceBundle
 import scala.compiletime.uninitialized
 
 @SuppressWarnings(Array("org.wartremover.warts.Null"))
-abstract class FxPackController[A] extends Initializable:
+abstract class FxPackController[A]
+    extends Initializable,
+      Bindable[PackAction[A]]:
 
   @FXML private var packBox: HBox = uninitialized
   @FXML private var skipButton: Button = uninitialized
@@ -40,9 +42,6 @@ abstract class FxPackController[A] extends Initializable:
   override def initialize(url: URL, rb: ResourceBundle): Unit =
     skipButton.setOnAction(_ => offer(PackAction.Skip))
 
-  def setActionQueue(queue: Queue[IO, PackAction[A]]): Unit =
-    actionQueue = Some(queue)
-
   def showItems(items: Seq[A]): Unit =
     Platform.runLater { () =>
       packBox.getChildren.clear()
@@ -52,9 +51,6 @@ abstract class FxPackController[A] extends Initializable:
         packBox.getChildren.add(node)
       }
     }
-
-  private def offer(action: PackAction[A]): Unit =
-    actionQueue.foreach(_.offer(action).unsafeRunAndForget())
 
 class FxCardPackController extends FxPackController[Card]:
   override protected def renderItem(card: Card): Node =

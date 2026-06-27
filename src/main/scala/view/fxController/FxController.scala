@@ -23,7 +23,7 @@ import java.util.ResourceBundle
 import scala.compiletime.uninitialized
 
 @SuppressWarnings(Array("org.wartremover.warts.Null"))
-class FxController extends Initializable:
+class FxController extends Initializable, Bindable[RoundAction]:
 
   // Card graphics
   @FXML private var card1: ImageView = uninitialized
@@ -182,10 +182,6 @@ class FxController extends Initializable:
       onOrder(ord)
     )
 
-  /** Injects the action queue. Must be called before the first render. */
-  def setActionQueue(queue: Queue[IO, RoundAction]): Unit =
-    actionQueue = Some(queue)
-
   private def selectedCards: Seq[Card] =
     handSlots.collect { case (btn, card) if btn.isSelected => card }
 
@@ -284,7 +280,10 @@ class FxController extends Initializable:
   ): Animation =
     if scoringCards.contains(card) then
       val SCALE_ANIMATION_DURATION = 125
-      val scale = new ScaleTransition(Duration.millis(SCALE_ANIMATION_DURATION), cardImage)
+      val scale = new ScaleTransition(
+        Duration.millis(SCALE_ANIMATION_DURATION),
+        cardImage
+      )
       scale.setFromX(1.0)
       scale.setFromY(1.0)
       scale.setToX(1.25)
@@ -295,7 +294,8 @@ class FxController extends Initializable:
       scale
     else
       val FADE_ANIMATION_DURATION = 250
-      val fade = new FadeTransition(Duration.millis(FADE_ANIMATION_DURATION), cardImage)
+      val fade =
+        new FadeTransition(Duration.millis(FADE_ANIMATION_DURATION), cardImage)
       fade.setFromValue(1.0)
       fade.setToValue(0.3)
       fade
@@ -312,7 +312,9 @@ class FxController extends Initializable:
         finalPause.play()
       case anim :: rest =>
         val BETWEEN_CARDS_PAUSE_DURATION = 100
-        val pause = PauseTransition(Duration.millis(BETWEEN_CARDS_PAUSE_DURATION))
+        val pause = PauseTransition(
+          Duration.millis(BETWEEN_CARDS_PAUSE_DURATION)
+        )
         val sequence = SequentialTransition(pause, anim)
         sequence.setOnFinished(_ => playSequentially(rest, onComplete))
         sequence.play()
@@ -324,34 +326,18 @@ class FxController extends Initializable:
     yield getAnimation(card, cardImage, scoringCards)
     playSequentially(animations, () => removeCardsFromPlayArea())
 
-    actionQueue.foreach(
-      _.offer(RoundAction.PlayCards(selectedCards)).unsafeRunAndForget()
-    )
+    offer(RoundAction.PlayCards(selectedCards))
     cardOrderer.foreach(onOrder)
 
   private def onDiscard(): Unit =
-    actionQueue.foreach(
-      _.offer(RoundAction.DiscardCards(selectedCards)).unsafeRunAndForget()
-    )
+    offer(RoundAction.DiscardCards(selectedCards))
     cardOrderer.foreach(onOrder)
 
   private def onOrder(cardOrderer: CardOrderer): Unit =
-    actionQueue.foreach(
-      _.offer(RoundAction.OrderHand(cardOrderer)).unsafeRunAndForget()
-    )
+    offer(RoundAction.OrderHand(cardOrderer))
 
   private def setJokerImage(imageView: ImageView, joker: Joker): Unit =
     imageView.setImage(Images.joker(joker))
 
   private def setCardImage(imageView: ImageView, card: Card): Unit =
     imageView.setImage(Images.card(card))
-
-@SuppressWarnings(Array("org.wartremover.warts.Null"))
-class StartController extends Initializable:
-  @FXML private var mirror: Label = uninitialized
-  @FXML private var input: TextField = uninitialized
-
-  override def initialize(url: URL, resourceBundle: ResourceBundle): Unit =
-    val sfxMirror = new SfxLabel(mirror)
-    val sfxInput = new SfxTextField(input)
-    sfxMirror.text <== sfxInput.text

@@ -13,7 +13,7 @@ import java.net.URL
 import java.util.ResourceBundle
 import scala.compiletime.uninitialized
 
-abstract class FxRoundEndController[A] extends Initializable:
+abstract class FxRoundEndController[A] extends Initializable, Bindable[A]:
 
   /** Realised by each subclass with its @FXML-injected button. */
   protected def button: Button
@@ -26,11 +26,8 @@ abstract class FxRoundEndController[A] extends Initializable:
   override def initialize(url: URL, rb: ResourceBundle): Unit =
     button.setOnAction(_ => onClick())
 
-  def setActionQueue(queue: Queue[IO, A]): Unit =
-    actionQueue = Some(queue)
-
   private def onClick(): Unit =
-    actionQueue.foreach(_.offer(action).unsafeRunAndForget())
+    offer(action)
 
 @SuppressWarnings(Array("org.wartremover.warts.Null"))
 class FxRoundWonController extends FxRoundEndController[RoundWonAction]:
