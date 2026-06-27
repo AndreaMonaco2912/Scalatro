@@ -1,19 +1,11 @@
 package scalatro
 
 import controller.GameController
-import view.{
-  FxCardPackController,
-  FxController,
-  FxJokerPackController,
-  FxPlanetPackController,
-  FxRoundLostController,
-  FxRoundWonController,
-  FxShopController
-}
+import view.fxController.*
+import view.GameViews
 
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
-import javafx.application.Platform
 import javafx.fxml.FXMLLoader
 import javafx.scene.{Parent, Scene}
 import scalafx.application.JFXApp3
@@ -43,46 +35,3 @@ object MainApp extends JFXApp3:
       yield ()
 
     program.unsafeRunAndForget()
-
-object SceneRouter:
-
-  def switchTo[C](scene: Scene)(fxml: String): IO[C] =
-    IO.async_ { cb =>
-      Platform.runLater { () =>
-        try
-          val loader = new FXMLLoader(getClass.getResource(fxml))
-          val root: Parent = loader.load()
-          scene.setRoot(root)
-          cb(Right(loader.getController[C]))
-        catch case t: Throwable => cb(Left(t))
-      }
-    }
-
-class GameViews(scene: Scene):
-
-  def gameplay: IO[FxController] =
-    SceneRouter.switchTo[FxController](scene)("/scalatro/scene.fxml")
-
-  def roundWon: IO[FxRoundWonController] =
-    SceneRouter.switchTo[FxRoundWonController](scene)("/scalatro/roundWon.fxml")
-
-  def roundLost: IO[FxRoundLostController] =
-    SceneRouter.switchTo[FxRoundLostController](scene)(
-      "/scalatro/roundLost.fxml"
-    )
-
-  def shop: IO[FxShopController] =
-    SceneRouter.switchTo[FxShopController](scene)("/scalatro/shop.fxml")
-
-  def cardPack: IO[FxCardPackController] =
-    SceneRouter.switchTo[FxCardPackController](scene)("/scalatro/cardPack.fxml")
-
-  def planetPack: IO[FxPlanetPackController] =
-    SceneRouter.switchTo[FxPlanetPackController](scene)(
-      "/scalatro/planetPack.fxml"
-    )
-
-  def jokerPack: IO[FxJokerPackController] =
-    SceneRouter.switchTo[FxJokerPackController](scene)(
-      "/scalatro/jokerPack.fxml"
-    )

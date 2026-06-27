@@ -7,7 +7,7 @@
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="scalatro.view.FxJokerPackController"
+      fx:controller="scalatro.view.fxController.FxJokerPackController"
       alignment="CENTER"
       spacing="40"
       style="-fx-background-color: #3a1a4a;">

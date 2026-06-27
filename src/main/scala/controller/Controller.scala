@@ -6,20 +6,15 @@ import model.commons.{Deck, Pack, Score}
 import model.game.*
 import model.round.{Round, RoundAction, RoundManager}
 import model.shop.{PackAction, Shop, ShopActions}
-import view.{
-  FxPackController,
-  FxRoundEndController,
-  FxView,
-  PackView,
-  RoundEndView,
-  ShopView,
-  View
-}
+import view.{FxView, PackView, RoundEndView, ShopView, View}
+import view.fxController.{FxPackController, FxRoundEndController}
+import view.GameViews
 
 import cats.effect.IO
 import cats.effect.std.Queue
 
 /** A trait representing a functional controller
+  *
   * @tparam S
   *   the type of the results of the actions
   */

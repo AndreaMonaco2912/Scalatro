@@ -1,12 +1,13 @@
 package scalatro
-package view
+package view.fxController
+
+import model.game.{RoundLostAction, RoundWonAction}
 
 import cats.effect.IO
 import cats.effect.std.Queue
 import cats.effect.unsafe.implicits.global
 import javafx.fxml.{FXML, Initializable}
 import javafx.scene.control.Button
-import model.game.{RoundLostAction, RoundWonAction}
 
 import java.net.URL
 import java.util.ResourceBundle

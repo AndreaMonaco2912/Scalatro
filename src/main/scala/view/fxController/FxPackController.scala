@@ -1,8 +1,9 @@
 package scalatro
-package view
+package view.fxController
 
 import model.commons.*
 import model.shop.PackAction
+import view.Images
 
 import cats.effect.IO
 import cats.effect.std.Queue

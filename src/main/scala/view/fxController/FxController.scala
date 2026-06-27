@@ -1,8 +1,9 @@
 package scalatro
-package view
+package view.fxController
 
 import model.commons.*
 import model.round.{Round, RoundAction}
+import view.Images
 
 import cats.effect.IO
 import cats.effect.std.Queue
@@ -11,7 +12,7 @@ import javafx.animation.*
 import javafx.application.Platform
 import javafx.fxml.{FXML, Initializable}
 import javafx.scene.control.*
-import javafx.scene.image.{Image, ImageView}
+import javafx.scene.image.ImageView
 import javafx.scene.input.{ClipboardContent, TransferMode}
 import javafx.scene.layout.HBox
 import javafx.util.Duration

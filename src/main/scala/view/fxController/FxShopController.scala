@@ -1,5 +1,5 @@
 package scalatro
-package view
+package view.fxController
 
 import model.shop.ShopActions
 

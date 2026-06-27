@@ -4,6 +4,12 @@ package view
 import model.round.{Round, RoundAction}
 import model.shop.{PackAction, Shop, ShopActions}
 import model.commons.Pack
+import view.fxController.{
+  FxController,
+  FxPackController,
+  FxRoundEndController,
+  FxShopController
+}
 
 import cats.effect.IO
 import cats.effect.std.Queue
