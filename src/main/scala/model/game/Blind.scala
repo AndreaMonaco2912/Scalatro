@@ -7,7 +7,8 @@ import model.commons.Score.Score
 case class Blind(roundNum: Int, targetScore: Score):
   def isBeaten(achieved: Score): Boolean = achieved >= targetScore
 
-  def next: Blind = Blind(roundNum + 1, targetScore * Score(1.5))
+  def next: Blind =
+    Blind(roundNum + 1, targetScore * Score(Blind.increaseAmount))
 
 object Blind:
   val increaseAmount = 1.5
