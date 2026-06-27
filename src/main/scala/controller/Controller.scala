@@ -63,7 +63,7 @@ class GameController(gameViews: GameViews)
     for
       queue <- Queue.unbounded[IO, RoundAction]
       ctrl <- gameViews.gameplay
-      view = FxView(ctrl, queue)
+      view <- FxView(ctrl, queue)
       src = SingleRoundController(view, queue, gameState)
       finalRound <- src.start()
     yield finalRound.score
@@ -81,8 +81,10 @@ class GameController(gameViews: GameViews)
       queue <- Queue.unbounded[IO, A]
       ctrl <- getController
       _ <- IO(ctrl.setActionQueue(queue))
-      _ <- queue.take
-    yield ()
+      action <- queue.take
+    yield action
+
+    IO.unit
 
   override def showShop(shop: Shop): IO[Unit] =
     for

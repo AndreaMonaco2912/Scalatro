@@ -25,18 +25,23 @@ class HeadlessView extends View[Round]:
   override def render(round: Round): IO[Unit] =
     IO.println(s"[Test Render] Score is: ${round.score}, hand is ${round.hand}")
 
-/** Represents the main view of the game, tied to JavaFx
-  * @param controller
-  *   the JavaFx controller
-  * @param actionQueue
-  *   the queue of action coming from the GUI
-  */
-class FxView(
-    controller: FxController,
-    actionQueue: Queue[IO, RoundAction]
-) extends View[Round]:
-
-  controller.setActionQueue(actionQueue)
-
-  override def render(round: Round): IO[Unit] =
-    IO(controller.update(round))
+object FxView:
+  /** Binds the controller to its action queue and returns a [[View]] that
+    * pushes each new [[Round]] to the JavaFX GUI.
+    *
+    * The queue binding is a side effect, so it is sequenced inside `IO` and
+    * runs exactly once, before the first render.
+    *
+    * @param controller
+    *   the JavaFX controller
+    * @param actionQueue
+    *   the queue of actions coming from the GUI
+    * @return
+    *   an IO producing the bound view
+    */
+  def apply(
+      controller: FxController,
+      actionQueue: Queue[IO, RoundAction]
+  ): IO[View[Round]] =
+    IO(controller.setActionQueue(actionQueue)) as
+      ((round: Round) => IO(controller.update(round)))
