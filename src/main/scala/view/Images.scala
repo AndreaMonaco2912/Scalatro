@@ -1,11 +1,15 @@
 package scalatro
 package view
 
-import model.commons.{Card, Joker, Pack, PackFactory, Planet, Rank}
+import model.commons.{Card, Joker, Planet, Rank}
 
 import javafx.scene.image.Image
 
 object Images:
+
+  private def load(path: String): Image =
+    new Image(getClass.getResourceAsStream(path))
+
   def card(card: Card): Image =
     val rankString = card.rank match
       case Rank.Two   => "2"
@@ -18,29 +22,13 @@ object Images:
       case Rank.Nine  => "9"
       case Rank.Ten   => "10"
       case other      => other
-    new Image(
-      getClass.getResourceAsStream(
-        s"/scalatro/cards/${rankString}_of_${card.suit}.png"
-      )
-    )
+    load(Resources.card(s"${rankString}_of_${card.suit}"))
 
   def joker(joker: Joker): Image =
-    new Image(
-      getClass.getResourceAsStream(
-        s"/scalatro/jokers/${joker.name.replace(" ", "_")}.png"
-      )
-    )
+    load(Resources.joker(joker.name.replace(" ", "_")))
 
   def planet(planet: Planet): Image =
-    new Image(
-      getClass.getResourceAsStream(
-        s"/scalatro/planets/${planet.name.replace(" ", "_")}.png"
-      )
-    )
+    load(Resources.planet(planet.name.replace(" ", "_")))
 
-  def pack(category: String, size: String, version: Int) =
-    new Image(
-      getClass.getResourceAsStream(
-        s"/scalatro/packs/${category}_${size}_$version.png"
-      )
-    )
+  def pack(category: String, size: String, version: Int): Image =
+    load(Resources.pack(s"${category}_${size}_$version"))

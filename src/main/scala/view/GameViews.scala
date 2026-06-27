@@ -1,15 +1,7 @@
 package scalatro
 package view
 
-import view.fxController.{
-  FxCardPackController,
-  FxController,
-  FxJokerPackController,
-  FxPlanetPackController,
-  FxRoundLostController,
-  FxRoundWonController,
-  FxShopController
-}
+import view.fxController.*
 
 import cats.effect.IO
 import javafx.application.Platform
@@ -30,23 +22,17 @@ class GameViews(scene: Scene):
       }
     }
 
-  def gameplay: IO[FxController] =
-    switchTo[FxController]("/scalatro/scene.fxml")
+  def gameplay: IO[FxController] = switchTo(Resources.Fxml.gameplay)
 
-  def roundWon: IO[FxRoundWonController] =
-    switchTo[FxRoundWonController]("/scalatro/roundWon.fxml")
+  def roundWon: IO[FxRoundWonController] = switchTo(Resources.Fxml.roundWon)
 
-  def roundLost: IO[FxRoundLostController] =
-    switchTo[FxRoundLostController]("/scalatro/roundLost.fxml")
+  def roundLost: IO[FxRoundLostController] = switchTo(Resources.Fxml.roundLost)
 
-  def shop: IO[FxShopController] =
-    switchTo[FxShopController]("/scalatro/shop.fxml")
+  def shop: IO[FxShopController] = switchTo(Resources.Fxml.shop)
 
-  def cardPack: IO[FxCardPackController] =
-    switchTo[FxCardPackController]("/scalatro/cardPack.fxml")
+  def cardPack: IO[FxCardPackController] = switchTo(Resources.Fxml.cardPack)
 
   def planetPack: IO[FxPlanetPackController] =
-    switchTo[FxPlanetPackController]("/scalatro/planetPack.fxml")
+    switchTo(Resources.Fxml.planetPack)
 
-  def jokerPack: IO[FxJokerPackController] =
-    switchTo[FxJokerPackController]("/scalatro/jokerPack.fxml")
+  def jokerPack: IO[FxJokerPackController] = switchTo(Resources.Fxml.jokerPack)
