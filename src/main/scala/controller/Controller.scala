@@ -7,7 +7,7 @@ import model.game.*
 import model.round.{Round, RoundAction, RoundManager}
 import model.shop.{PackAction, Shop, ShopActions}
 import view.{FxView, View}
-import view.fxController.{FxPackController, FxRoundEndController}
+import view.fxController.{Bindable, FxPackController, FxRoundEndController}
 import view.GameViews
 
 import cats.effect.IO
@@ -68,6 +68,20 @@ class GameController(gameViews: GameViews)
       finalRound <- src.start()
     yield finalRound.score
 
+  private def awaitActionWith[C, A](
+      getController: IO[C],
+      bind: (C, Queue[IO, A]) => Unit
+  ): IO[A] =
+    for
+      queue <- Queue.unbounded[IO, A]
+      ctrl <- getController
+      _ <- IO(bind(ctrl, queue))
+      action <- queue.take
+    yield action
+
+  private def awaitAction[A](getController: IO[Bindable[A]]): IO[A] =
+    awaitActionWith(getController, _.setActionQueue(_))
+
   override def onRoundWon(blind: Blind): IO[Unit] =
     showOutcome[RoundWonAction](gameViews.roundWon)
 
@@ -77,45 +91,31 @@ class GameController(gameViews: GameViews)
   private def showOutcome[A](
       getController: IO[FxRoundEndController[A]]
   ): IO[Unit] =
-    for
-      queue <- Queue.unbounded[IO, A]
-      ctrl <- getController
-      _ <- IO(ctrl.setActionQueue(queue))
-      action <- queue.take
-    yield action
-
-    IO.unit
+    awaitAction[A](getController).void
 
   override def showShop(shop: Shop): IO[Unit] =
-    for
-      queue <- Queue.unbounded[IO, ShopActions]
-      ctrl <- gameViews.shop
-      _ <- IO(ctrl.setActionQueue(queue))
-      action <- queue.take
-      _ <- action match
-        case ShopActions.OpenCardPack =>
-          showPack(gameViews.cardPack, shop.cardPack)
-        case ShopActions.OpenPlanetPack =>
-          showPack(gameViews.planetPack, shop.planetPack)
-        case ShopActions.OpenJokerPack =>
-          showPack(gameViews.jokerPack, shop.jokerPack)
-        case ShopActions.SkipShop => IO.unit
-    yield ()
+    awaitAction[ShopActions](gameViews.shop).flatMap {
+      case ShopActions.OpenCardPack =>
+        showPack(gameViews.cardPack, shop.cardPack).void
+      case ShopActions.OpenPlanetPack =>
+        showPack(gameViews.planetPack, shop.planetPack).void
+      case ShopActions.OpenJokerPack =>
+        showPack(gameViews.jokerPack, shop.jokerPack).void
+      case ShopActions.SkipShop => IO.unit
+    }
 
   private def showPack[A](
       getController: IO[FxPackController[A]],
       pack: Pack[A]
   ): IO[Option[A]] =
-    for
-      queue <- Queue.unbounded[IO, PackAction[A]]
-      ctrl <- getController
-      _ <- IO {
+    awaitActionWith[FxPackController[A], PackAction[A]](
+      getController,
+      (ctrl, queue) =>
         ctrl.setActionQueue(queue)
         ctrl.showItems(pack.items)
-      }
-      action <- queue.take
-    yield action match
+    ).map {
       case PackAction.Select(item) => Some(item)
       case PackAction.Skip         => None
+    }
 
   override def start(): IO[GameResult] = Game(this).play()
