@@ -2,14 +2,7 @@ package scalatro
 package view
 
 import model.round.{Round, RoundAction}
-import model.shop.{PackAction, Shop, ShopActions}
-import model.commons.Pack
-import view.fxController.{
-  FxController,
-  FxPackController,
-  FxRoundEndController,
-  FxShopController
-}
+import view.fxController.FxController
 
 import cats.effect.IO
 import cats.effect.std.Queue
@@ -47,25 +40,3 @@ class FxView(
 
   override def render(round: Round): IO[Unit] =
     IO(controller.update(round))
-
-class RoundEndView[A](
-    controller: FxRoundEndController[A],
-    actionQueue: Queue[IO, A]
-) extends View[Round]:
-  controller.setActionQueue(actionQueue)
-  override def render(state: Round): IO[Unit] = IO.unit
-
-class ShopView(
-    controller: FxShopController,
-    actionQueue: Queue[IO, ShopActions]
-) extends View[Shop]:
-  controller.setActionQueue(actionQueue)
-  override def render(state: Shop): IO[Unit] = IO.unit
-
-class PackView[A](
-    controller: FxPackController[A],
-    pack: Pack[A],
-    actionQueue: Queue[IO, PackAction[A]]
-):
-  controller.setActionQueue(actionQueue)
-  controller.showItems(pack.items)

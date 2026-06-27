@@ -6,7 +6,7 @@ import model.commons.{Deck, Pack, Score}
 import model.game.*
 import model.round.{Round, RoundAction, RoundManager}
 import model.shop.{PackAction, Shop, ShopActions}
-import view.{FxView, PackView, RoundEndView, ShopView, View}
+import view.{FxView, View}
 import view.fxController.{FxPackController, FxRoundEndController}
 import view.GameViews
 
@@ -80,15 +80,15 @@ class GameController(gameViews: GameViews)
     for
       queue <- Queue.unbounded[IO, A]
       ctrl <- getController
-      view = RoundEndView(ctrl, queue)
+      _ <- IO(ctrl.setActionQueue(queue))
       _ <- queue.take
     yield ()
 
   override def showShop(shop: Shop): IO[Unit] =
     for
       queue <- Queue.unbounded[IO, ShopActions]
-      controller <- gameViews.shop
-      view = ShopView(controller, queue)
+      ctrl <- gameViews.shop
+      _ <- IO(ctrl.setActionQueue(queue))
       action <- queue.take
       _ <- action match
         case ShopActions.OpenCardPack =>
@@ -106,8 +106,11 @@ class GameController(gameViews: GameViews)
   ): IO[Option[A]] =
     for
       queue <- Queue.unbounded[IO, PackAction[A]]
-      controller <- getController
-      _ = PackView(controller, pack, queue)
+      ctrl <- getController
+      _ <- IO {
+        ctrl.setActionQueue(queue)
+        ctrl.showItems(pack.items)
+      }
       action <- queue.take
     yield action match
       case PackAction.Select(item) => Some(item)
