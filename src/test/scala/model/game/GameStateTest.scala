@@ -3,19 +3,20 @@ package model.game
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
+import model.commons.{Deck, HandType, HandTypeLevels, JokerType}
 
-import model.commons.{
-  Deck,
-  HandType,
-  HandTypeLevels,
-  JokerType
-}
+import model.game.GameStateBuilder.DSL.{Discards, Hands, HandSize}
 
 import scala.util.Random
 
 class GameStateTest extends AnyFlatSpec, Matchers:
 
-  val start: GameState = GameState.initial
+//  val start: GameState = GameState.initial
+  val start: GameState = GameStateBuilder.configure{
+    HandSize := GameState.initial.handInformation.handSize
+    Hands := GameState.initial.handInformation.handNum
+    Discards := GameState.initial.handInformation.discardNum
+  }
   given Random = new Random(0L)
 
   "initial" should "start at the first blind" in:
