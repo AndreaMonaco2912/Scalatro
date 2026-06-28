@@ -101,8 +101,6 @@ class FxController extends Initializable, Bindable[RoundAction]:
   private def jokerButtons: List[ToggleButton] =
     List(jokerBtn1, jokerBtn2, jokerBtn3, jokerBtn4, jokerBtn5)
 
-  private var actionQueue: Option[Queue[IO, RoundAction]] = None
-
   private var handSlots: List[(ToggleButton, Card)] = List()
 
   private var jokerSlots: List[(ToggleButton, Joker)] = List()

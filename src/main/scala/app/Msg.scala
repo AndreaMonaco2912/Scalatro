@@ -1,7 +1,7 @@
 package scalatro
 package app
 
-import model.commons.{Card, CardOrderer}
+import model.commons.{Card, CardOrderer, Joker, Planet}
 
 object Msg:
   enum DefaultAction:
@@ -36,3 +36,9 @@ object Msg:
     case OpenPlanetPack
     case OpenJokerPack
     case SkipShop
+
+  enum PackSelection:
+    case SelectCard(card: Card)
+    case SelectPlanet(planet: Planet)
+    case SelectJoker(joker: Joker)
+    case SkipPack

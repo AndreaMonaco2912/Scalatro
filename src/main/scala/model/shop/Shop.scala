@@ -29,10 +29,6 @@ object Shop:
       JokerPack.smallPack(shopInformation.jokers)
     )
 
-enum PackAction[+A]:
-  case Select(item: A)
-  case Skip
-
 enum ShopSelection:
   case CardSelected(card: Card)
   case PlanetSelected(planet: Planet)

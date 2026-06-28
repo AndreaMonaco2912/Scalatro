@@ -26,7 +26,7 @@ class Game(handler: GameHandler, val seed: Long = Random.nextLong()):
     for
       _ <- handler.onRoundWon(gameState.blind)
       selection <- handler.showShop(Shop.default(gameState.shopInformation))
-      nextState = selection.fold(gameState)(gameState.selectItem).advanceBlind
+      nextState = gameState.selectItem(selection).advanceBlind
       result <- gameLoop(nextState)
     yield result
 

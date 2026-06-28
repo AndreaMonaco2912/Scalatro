@@ -6,13 +6,15 @@ import model.commons.Score.Score
 import model.commons.{Deck, Pack, Score}
 import model.game.*
 import model.round.{Round, RoundManager}
-import model.shop.{PackAction, Shop, ShopSelection}
+import model.shop.{Shop, ShopSelection}
 import view.{FxView, View}
 import view.fxController.{Bindable, FxPackController, FxRoundEndController}
 import view.GameViews
 
 import cats.effect.IO
 import cats.effect.std.Queue
+import app.Msg.PackSelection.{SelectCard, SelectJoker, SelectPlanet, SkipPack}
+import model.shop.ShopSelection.*
 
 /** A trait representing a functional controller
   *
@@ -60,7 +62,7 @@ trait GameHandler:
   def playRound(state: GameState): IO[Score]
   def onRoundWon(blind: Blind): IO[Unit]
   def onRoundLost(blind: Blind): IO[Unit]
-  def showShop(shop: Shop): IO[Option[ShopSelection]]
+  def showShop(shop: Shop): IO[PackSelection]
 
 class GameController(gameViews: GameViews)
     extends Controller[GameResult],
@@ -100,33 +102,27 @@ class GameController(gameViews: GameViews)
   ): IO[Unit] =
     awaitAction[A](getController).void
 
-  override def showShop(shop: Shop): IO[Option[ShopSelection]] =
+  override def showShop(shop: Shop): IO[PackSelection] =
     awaitAction[ShopAction](gameViews.shop)
       .flatMap { // TODO: improve this method readability
         case ShopAction.OpenCardPack =>
           showPack(gameViews.cardPack, shop.cardPack)
-            .map(_.map(ShopSelection.CardSelected(_)))
         case ShopAction.OpenPlanetPack =>
           showPack(gameViews.planetPack, shop.planetPack)
-            .map(_.map(ShopSelection.PlanetSelected(_)))
         case ShopAction.OpenJokerPack =>
           showPack(gameViews.jokerPack, shop.jokerPack)
-            .map(_.map(ShopSelection.JokerSelected(_)))
-        case ShopAction.SkipShop => IO.pure(None)
+        case ShopAction.SkipShop => IO.pure(PackSelection.SkipPack)
       }
 
   private def showPack[A](
       getController: IO[FxPackController[A]],
       pack: Pack[A]
-  ): IO[Option[A]] =
-    awaitActionWith[FxPackController[A], PackAction[A]](
+  ): IO[PackSelection] =
+    awaitActionWith[FxPackController[A], PackSelection](
       getController,
       (ctrl, queue) =>
         ctrl.setActionQueue(queue)
         ctrl.showItems(pack.items)
-    ).map {
-      case PackAction.Select(item) => Some(item)
-      case PackAction.Skip         => None
-    }
+    )
 
   override def start(): IO[GameResult] = Game(this).play()
