@@ -14,17 +14,19 @@ object Msg:
      *   the cards to play
      */
     case PlayCards(cards: Seq[Card])
-  
+
     /** The action of discarding a group of cards
      * @param cards
      *   the cards to discard
      */
     case DiscardCards(cards: Seq[Card])
-  
+
     /** The action of ordering cards according to a specific [[CardOrderer]]
      * @param orderer
      *   the card orderer
      */
     case OrderHand(orderer: CardOrderer)
-  
-  
+
+  enum RoundEndAction:
+    case NextRound
+    case Restart

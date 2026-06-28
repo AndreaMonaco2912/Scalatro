@@ -2,6 +2,7 @@ package scalatro
 package controller
 
 import app.Msg.RoundAction
+import app.Msg.RoundEndAction
 import model.commons.Score.Score
 import model.commons.{Deck, Pack, Score}
 import model.game.*
@@ -90,10 +91,10 @@ class GameController(gameViews: GameViews)
     awaitActionWith(getController, _.setActionQueue(_))
 
   override def onRoundWon(blind: Blind): IO[Unit] =
-    showOutcome[RoundWonAction](gameViews.roundWon)
+    showOutcome[RoundEndAction](gameViews.roundWon)
 
   override def onRoundLost(blind: Blind): IO[Unit] =
-    showOutcome[RoundLostAction](gameViews.roundLost)
+    showOutcome[RoundEndAction](gameViews.roundLost)
 
   private def showOutcome[A](
       getController: IO[FxRoundEndController[A]]

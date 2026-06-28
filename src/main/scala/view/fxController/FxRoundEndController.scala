@@ -1,7 +1,7 @@
 package scalatro
 package view.fxController
 
-import model.game.{RoundLostAction, RoundWonAction}
+import app.Msg.RoundEndAction
 
 import cats.effect.IO
 import cats.effect.std.Queue
@@ -30,13 +30,13 @@ abstract class FxRoundEndController[A] extends Initializable, Bindable[A]:
     offer(action)
 
 @SuppressWarnings(Array("org.wartremover.warts.Null"))
-class FxRoundWonController extends FxRoundEndController[RoundWonAction]:
+class FxRoundWonController extends FxRoundEndController[RoundEndAction]:
   @FXML private var nextRoundButton: Button = uninitialized
   override protected def button: Button = nextRoundButton
-  override protected def action: RoundWonAction = RoundWonAction.NextRound
+  override protected def action: RoundEndAction = RoundEndAction.NextRound
 
 @SuppressWarnings(Array("org.wartremover.warts.Null"))
-class FxRoundLostController extends FxRoundEndController[RoundLostAction]:
+class FxRoundLostController extends FxRoundEndController[RoundEndAction]:
   @FXML private var restartButton: Button = uninitialized
   override protected def button: Button = restartButton
-  override protected def action: RoundLostAction = RoundLostAction.NewRun
+  override protected def action: RoundEndAction = RoundEndAction.Restart
