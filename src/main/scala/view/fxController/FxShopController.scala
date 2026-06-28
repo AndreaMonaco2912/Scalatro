@@ -1,7 +1,7 @@
 package scalatro
 package view.fxController
 
-import model.shop.ShopActions
+import app.Msg.ShopAction
 
 import cats.effect.IO
 import cats.effect.std.Queue
@@ -13,16 +13,16 @@ import java.util.ResourceBundle
 import scala.compiletime.uninitialized
 
 @SuppressWarnings(Array("org.wartremover.warts.Null"))
-class FxShopController extends Initializable, Bindable[ShopActions]:
+class FxShopController extends Initializable, Bindable[ShopAction]:
   @FXML private var cardPackButton: Button = uninitialized
   @FXML private var planetPackButton: Button = uninitialized
   @FXML private var jokerPackButton: Button = uninitialized
   @FXML private var skipButton: Button = uninitialized
 
-  private var actionQueue: Option[Queue[IO, ShopActions]] = None
+  private var actionQueue: Option[Queue[IO, ShopAction]] = None
 
   override def initialize(url: URL, rb: ResourceBundle): Unit =
-    cardPackButton.setOnAction(_ => offer(ShopActions.OpenCardPack))
-    planetPackButton.setOnAction(_ => offer(ShopActions.OpenPlanetPack))
-    jokerPackButton.setOnAction(_ => offer(ShopActions.OpenJokerPack))
-    skipButton.setOnAction(_ => offer(ShopActions.SkipShop))
+    cardPackButton.setOnAction(_ => offer(ShopAction.OpenCardPack))
+    planetPackButton.setOnAction(_ => offer(ShopAction.OpenPlanetPack))
+    jokerPackButton.setOnAction(_ => offer(ShopAction.OpenJokerPack))
+    skipButton.setOnAction(_ => offer(ShopAction.SkipShop))

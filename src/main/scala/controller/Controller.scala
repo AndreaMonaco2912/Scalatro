@@ -1,13 +1,12 @@
 package scalatro
 package controller
 
-import app.Msg.RoundAction
-import app.Msg.RoundEndAction
+import app.Msg.*
 import model.commons.Score.Score
 import model.commons.{Deck, Pack, Score}
 import model.game.*
 import model.round.{Round, RoundManager}
-import model.shop.{PackAction, Shop, ShopActions, ShopSelection}
+import model.shop.{PackAction, Shop, ShopSelection}
 import view.{FxView, View}
 import view.fxController.{Bindable, FxPackController, FxRoundEndController}
 import view.GameViews
@@ -102,18 +101,18 @@ class GameController(gameViews: GameViews)
     awaitAction[A](getController).void
 
   override def showShop(shop: Shop): IO[Option[ShopSelection]] =
-    awaitAction[ShopActions](gameViews.shop)
+    awaitAction[ShopAction](gameViews.shop)
       .flatMap { // TODO: improve this method readability
-        case ShopActions.OpenCardPack =>
+        case ShopAction.OpenCardPack =>
           showPack(gameViews.cardPack, shop.cardPack)
             .map(_.map(ShopSelection.CardSelected(_)))
-        case ShopActions.OpenPlanetPack =>
+        case ShopAction.OpenPlanetPack =>
           showPack(gameViews.planetPack, shop.planetPack)
             .map(_.map(ShopSelection.PlanetSelected(_)))
-        case ShopActions.OpenJokerPack =>
+        case ShopAction.OpenJokerPack =>
           showPack(gameViews.jokerPack, shop.jokerPack)
             .map(_.map(ShopSelection.JokerSelected(_)))
-        case ShopActions.SkipShop => IO.pure(None)
+        case ShopAction.SkipShop => IO.pure(None)
       }
 
   private def showPack[A](

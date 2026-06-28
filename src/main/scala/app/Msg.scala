@@ -30,3 +30,9 @@ object Msg:
   enum RoundEndAction:
     case NextRound
     case Restart
+
+  enum ShopAction:
+    case OpenCardPack
+    case OpenPlanetPack
+    case OpenJokerPack
+    case SkipShop
