@@ -1,10 +1,11 @@
 package scalatro
 package controller
 
+import app.Msg.RoundAction
 import model.commons.Score.Score
 import model.commons.{Deck, Pack, Score}
 import model.game.*
-import model.round.{Round, RoundAction, RoundManager}
+import model.round.{Round, RoundManager}
 import model.shop.{PackAction, Shop, ShopActions, ShopSelection}
 import view.{FxView, View}
 import view.fxController.{Bindable, FxPackController, FxRoundEndController}

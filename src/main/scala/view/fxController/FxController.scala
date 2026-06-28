@@ -2,7 +2,8 @@ package scalatro
 package view.fxController
 
 import model.commons.*
-import model.round.{Round, RoundAction}
+import model.round.Round
+import app.Msg.RoundAction
 import view.Images
 
 import cats.effect.IO

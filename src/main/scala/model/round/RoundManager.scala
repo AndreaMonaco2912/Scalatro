@@ -2,8 +2,9 @@ package scalatro
 package model.round
 
 import model.commons.ScoreConfig
-import model.round.RoundAction.*
-import model.round.{Round, RoundAction, TurnActions}
+import app.Msg.RoundAction
+import app.Msg.RoundAction.*
+import model.round.Round
 
 import cats.effect.IO
 

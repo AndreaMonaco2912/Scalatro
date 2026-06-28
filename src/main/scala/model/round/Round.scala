@@ -8,26 +8,6 @@ import model.game.{Blind, GameState}
 /** The game's hand: the collection of cards the player can choose from */
 type Hand = Seq[Card]
 
-/** An action the user can perform during the round */
-enum RoundAction:
-  /** The action of playing a group of cards
-    * @param cards
-    *   the cards to play
-    */
-  case PlayCards(cards: Seq[Card])
-
-  /** The action of discarding a group of cards
-    * @param cards
-    *   the cards to discard
-    */
-  case DiscardCards(cards: Seq[Card])
-
-  /** The action of ordering cards according to a specific [[CardOrderer]]
-    * @param orderer
-    *   the card orderer
-    */
-  case OrderHand(orderer: CardOrderer)
-
 /** A trait for indicating the current state of the round */
 trait Round:
   /** The current score */

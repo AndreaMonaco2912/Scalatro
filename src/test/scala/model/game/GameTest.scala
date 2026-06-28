@@ -9,6 +9,8 @@ import cats.effect.IO
 import cats.effect.unsafe.implicits.global
 import model.shop.Shop
 
+import controller.GameHandler
+
 class GameTest extends AnyFlatSpec, Matchers:
   val seed = 0L
   val blind: Blind = Blind.first

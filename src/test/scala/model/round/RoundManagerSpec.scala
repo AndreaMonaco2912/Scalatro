@@ -3,8 +3,9 @@ package model.round
 
 import model.commons.*
 import model.game.{Blind, GameState}
-import model.round.RoundAction.{DiscardCards, PlayCards}
-import model.round.{Round, RoundAction, RoundManager}
+import app.Msg.RoundAction
+import app.Msg.RoundAction.{DiscardCards, PlayCards}
+import model.round.{Round, RoundManager}
 
 import cats.effect.IO
 import cats.effect.std.Queue
