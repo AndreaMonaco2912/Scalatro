@@ -32,6 +32,12 @@ case class GameState(
     case PackSelection.SelectJoker(joker) => copy(jokers = jokers :+ joker)
     case _                                => this
 
+  def addCard(card: Card): GameState = copy(deck = deck.add(card))
+
+  def addJoker(joker: Joker): GameState = copy(jokers = jokers :+ joker)
+
+  def usePlanet(planet: Planet): GameState = copy(levels = planet.use(levels))
+
 case class HandInformation(handSize: Int, handNum: Int, discardNum: Int)
 
 case class ShopInformation(

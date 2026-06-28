@@ -22,7 +22,7 @@ import scala.compiletime.uninitialized
 @SuppressWarnings(Array("org.wartremover.warts.Null"))
 abstract class FxPackController[A]
     extends Initializable,
-      Bindable[PackSelection]:
+      Dispatcher:
 
   @FXML private var packBox: HBox = uninitialized
   @FXML private var skipButton: Button = uninitialized
@@ -39,14 +39,14 @@ abstract class FxPackController[A]
     iv
 
   override def initialize(url: URL, rb: ResourceBundle): Unit =
-    skipButton.setOnAction(_ => offer(PackSelection.SkipPack))
+    skipButton.setOnAction(_ => dispatch(PackSelection.SkipPack))
 
   def showItems(items: Seq[A]): Unit =
     Platform.runLater { () =>
       packBox.getChildren.clear()
       items.foreach { item =>
         val node = renderItem(item)
-        node.setOnMouseClicked(_ => offer(selectMsg(item)))
+        node.setOnMouseClicked(_ => dispatch(selectMsg(item)))
         packBox.getChildren.add(node)
       }
     }

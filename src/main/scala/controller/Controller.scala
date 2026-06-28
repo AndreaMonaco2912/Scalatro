@@ -29,15 +29,15 @@ trait Controller[S]:
   def start(): IO[S]
 
 /** A controller for a single round
-  * @param view
-  *   the view
+  * @param render
+  *   the function of rendering
   * @param actionQueue
   *   the queue of events coming from the view
   * @param gameState
   *   the initial configuration of the round
   */
 class SingleRoundController(
-    view: View[Round],
+    render: Round => IO[Unit],
     actionQueue: Queue[IO, RoundAction],
     gameState: GameState
 ) extends Controller[Round]:
@@ -54,75 +54,6 @@ class SingleRoundController(
 
   override def start(): IO[Round] =
     for
-      roundManager = RoundManager(view.render, actionQueue.take)
+      roundManager = RoundManager(render, actionQueue.take)
       finalRound <- roundManager.startRound(initialRound)
     yield finalRound
-
-trait GameHandler:
-  def playRound(state: GameState): IO[Score]
-  def onRoundWon(blind: Blind): IO[Unit]
-  def onRoundLost(blind: Blind): IO[Unit]
-  def showShop(shop: Shop): IO[PackSelection]
-
-class GameController(gameViews: GameViews)
-    extends Controller[GameResult],
-      GameHandler://TODO create a new separated GameHandler singleton
-
-  override def playRound(gameState: GameState): IO[Score] =
-    for
-      queue <- Queue.unbounded[IO, RoundAction]
-      ctrl <- gameViews.gameplay
-      view <- FxView(ctrl, queue)
-      src = SingleRoundController(view, queue, gameState)
-      finalRound <- src.start()
-    yield finalRound.score
-
-  private def awaitActionWith[C, A](
-      getController: IO[C],
-      bind: (C, Queue[IO, A]) => Unit
-  ): IO[A] =
-    for
-      queue <- Queue.unbounded[IO, A]
-      ctrl <- getController
-      _ <- IO(bind(ctrl, queue))
-      action <- queue.take
-    yield action
-
-  private def awaitAction[A](getController: IO[Bindable[A]]): IO[A] =
-    awaitActionWith(getController, _.setActionQueue(_))
-
-  override def onRoundWon(blind: Blind): IO[Unit] =
-    showOutcome[RoundEndAction](gameViews.roundWon)
-
-  override def onRoundLost(blind: Blind): IO[Unit] =
-    showOutcome[RoundEndAction](gameViews.roundLost)
-
-  private def showOutcome[A](
-      getController: IO[FxRoundEndController[A]]
-  ): IO[Unit] =
-    awaitAction[A](getController).void
-
-  override def showShop(shop: Shop): IO[PackSelection] =
-    awaitAction[ShopAction](gameViews.shop)
-      .flatMap { // TODO: improve this method readability
-        case ShopAction.OpenCardPack =>
-          showPack(gameViews.cardPack, shop.cardPack)
-        case ShopAction.OpenPlanetPack =>
-          showPack(gameViews.planetPack, shop.planetPack)
-        case ShopAction.OpenJokerPack =>
-          showPack(gameViews.jokerPack, shop.jokerPack)
-        case ShopAction.SkipShop => IO.pure(PackSelection.SkipPack)
-      }
-
-  private def showPack[A](
-      getController: IO[FxPackController[A]],
-      pack: Pack[A]
-  ): IO[PackSelection] =
-    awaitActionWith[FxPackController[A], PackSelection](
-      getController,
-      (ctrl, queue) =>
-        ctrl.setActionQueue(queue)
-        ctrl.showItems(pack.items)
-    )
-
-  override def start(): IO[GameResult] = Game(this).play()

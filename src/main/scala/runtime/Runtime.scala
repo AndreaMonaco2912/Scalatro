@@ -1,0 +1,69 @@
+package scalatro
+package runtime
+
+import app.{Cmd, Model, Msg, Update}
+import app.Msg.RoundAction
+import controller.SingleRoundController
+import model.game.GameState
+import model.round.Round
+import model.shop.Shop
+import view.{FxView, GameViews, View}
+
+import cats.effect.IO
+import cats.effect.std.Queue
+import cats.effect.unsafe.implicits.global
+
+import scala.util.Random
+
+class Runtime(screens: GameViews, seed: Long = Random.nextLong()):
+  private given Random = Random(seed)
+
+  def run: IO[Unit] =
+    for
+      queue <- Queue.unbounded[IO, Msg]
+      dispatch = (m: Msg) => queue.offer(m).unsafeRunAndForget()
+      view = FxView(screens, dispatch)
+      (model0, cmd0) = Update.init
+      _ <- perform(cmd0, queue, view)
+      _ <- loop(model0, queue, view)
+    yield ()
+
+  private def loop(model: Model, queue: Queue[IO, Msg], view: FxView): IO[Unit] =
+    for
+      msg <- queue.take
+      (next, cmd) = Update.update(model, msg)
+      _ <- view.render(next)
+      _ <- perform(cmd, queue, view)
+      _ <- loop(next, queue, view)
+    yield ()
+
+  private def perform(cmd: Cmd, queue: Queue[IO, Msg], view: FxView): IO[Unit] =
+    cmd match
+      case Cmd.NoOp          => IO.unit
+      case Cmd.Deal(gs)      => runRound(view, queue, gs)
+      case Cmd.BuildShop(gs) =>
+        IO(Shop.default(gs.shopInformation))
+          .flatMap(s => queue.offer(Msg.InternalEffect.ShopReady(gs, s)))
+
+  private def runRound(
+      view: FxView,
+      queue: Queue[IO, Msg],
+      gs: GameState
+  ): IO[Unit] =
+    for
+      ctrl <- view.enterGameplay
+      roundQueue <- Queue.unbounded[IO, RoundAction]
+      _ <- IO(ctrl.setActionQueue(roundQueue))
+      controller = SingleRoundController(
+        r => IO(ctrl.update(r)),
+        roundQueue,
+        gs.shuffleDeck
+      )
+      finalRound <- controller.start()
+      _ <- queue.offer(outcome(finalRound))
+    yield ()
+
+  private def outcome(round: Round): Msg =
+    if round.gameState.blind.isBeaten(round.score)
+    then Msg.InternalEffect.RoundWon(round.gameState)
+    else Msg.InternalEffect.RoundLost(round.gameState.blind, round.score)

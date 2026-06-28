@@ -1,48 +1,59 @@
 package scalatro
 package view
 
-import model.round.Round
-import app.Msg.RoundAction
-import view.fxController.FxController
+import app.{Model, Msg, OpenPack}
+import view.fxController.{FxController, FxPackController}
 
 import cats.effect.IO
 import cats.effect.std.Queue
+import model.round.Round
 
-/** A trait representing a functional view
-  * @tparam S
-  *   the type of the state to render
-  */
-trait View[S]:
-  /** Creates a template for rendering a state object in a functional way
-    * @param state
-    *   the object to render
-    * @return
-    *   an IO representing the result of the computation
-    */
-  def render(state: S): IO[Unit]
+trait View:
+  def render(model: Model): IO[Unit]
 
-/** Represents a useless view which just prints the current state */
-class HeadlessView extends View[Round]:
-  override def render(round: Round): IO[Unit] =
-    IO.println(s"[Test Render] Score is: ${round.score}, hand is ${round.hand}")
+private enum Screen:
+  case Gameplay, Won, Lost, ShopScreen, CardPack, PlanetPack, JokerPack
 
-object FxView:
-  /** Binds the controller to its action queue and returns a [[View]] that
-    * pushes each new [[Round]] to the JavaFX GUI.
-    *
-    * The queue binding is a side effect, so it is sequenced inside `IO` and
-    * runs exactly once, before the first render.
-    *
-    * @param controller
-    *   the JavaFX controller
-    * @param actionQueue
-    *   the queue of actions coming from the GUI
-    * @return
-    *   an IO producing the bound view
-    */
-  def apply(
-      controller: FxController,
-      actionQueue: Queue[IO, RoundAction]
-  ): IO[View[Round]] =
-    IO(controller.setActionQueue(actionQueue)) as
-      ((round: Round) => IO(controller.update(round)))
+class FxView(screens: GameViews, dispatch: Msg => Unit) extends View:
+  private var current: Option[Screen] = None
+  private var gameplay: Option[FxController] = None
+
+  def render(model: Model): IO[Unit] = model match
+    case Model.RoundWon(_) =>
+      enter(Screen.Won, screens.roundWon)(_.onMessage(dispatch))
+    case Model.RoundLost(_, _) =>
+      enter(Screen.Lost, screens.roundLost)(_.onMessage(dispatch))
+    case Model.InShop(_, _) =>
+      enter(Screen.ShopScreen, screens.shop)(_.onMessage(dispatch))
+
+    case Model.OpeningPack(_, OpenPack.Cards(pack)) =>
+      enterPack(Screen.CardPack, screens.cardPack, pack.items)
+    case Model.OpeningPack(_, OpenPack.Planets(pack)) =>
+      enterPack(Screen.PlanetPack, screens.planetPack, pack.items)
+    case Model.OpeningPack(_, OpenPack.Jokers(pack)) =>
+      enterPack(Screen.JokerPack, screens.jokerPack, pack.items)
+    case Model.Playing => IO.unit
+
+  def enterGameplay: IO[FxController] =
+    screens.gameplay.flatMap: ctrl =>
+      IO:
+        gameplay = Some(ctrl)
+        current = Some(Screen.Gameplay)
+        ctrl
+
+  private def enter[C](screen: Screen, load: IO[C])(wire: C => Unit): IO[Unit] =
+    if current.contains(screen) then IO.unit
+    else load.flatMap(ctrl => IO { wire(ctrl); current = Some(screen) })
+
+  private def enterPack[A](
+      screen: Screen,
+      load: IO[FxPackController[A]],
+      items: Seq[A]
+  ): IO[Unit] =
+    if current.contains(screen) then IO.unit
+    else
+      load.flatMap: ctrl =>
+        IO:
+          ctrl.onMessage(dispatch)
+          ctrl.showItems(items)
+          current = Some(screen)
