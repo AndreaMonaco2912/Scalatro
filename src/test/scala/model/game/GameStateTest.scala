@@ -4,18 +4,21 @@ package model.game
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import model.commons.{Deck, HandType, HandTypeLevels, JokerType}
-
-import model.game.GameStateBuilder.DSL.{Discards, Hands, HandSize}
+import model.game.GameStateBuilder.DSL.*
 
 import scala.util.Random
 
 class GameStateTest extends AnyFlatSpec, Matchers:
 
 //  val start: GameState = GameState.initial
-  val start: GameState = GameStateBuilder.configure{
+  val start: GameState = GameStateBuilder.configure {
     HandSize := GameState.initial.handInformation.handSize
     Hands := GameState.initial.handInformation.handNum
     Discards := GameState.initial.handInformation.discardNum
+    DeckInGame := GameState.initial.deck
+    BlindInGame := GameState.initial.blind
+    Jokers := GameState.initial.jokers
+    Levels := GameState.initial.levels
   }
   given Random = new Random(0L)
 
