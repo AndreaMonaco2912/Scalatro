@@ -4,7 +4,7 @@ package model.commons
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
-class CardTest extends AnyFlatSpec, Matchers:
+class CardSpec extends AnyFlatSpec, Matchers:
 
   "An Ace" should "add 11 chips to score" in:
     val AceOfDiamonds = Card(Rank.Ace, Suit.Diamonds)

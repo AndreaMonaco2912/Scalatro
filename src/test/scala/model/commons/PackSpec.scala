@@ -6,7 +6,7 @@ import org.scalatest.matchers.should.Matchers
 
 import scala.util.Random
 
-class PackTest extends AnyFlatSpec, Matchers:
+class PackSpec extends AnyFlatSpec, Matchers:
   given Random = Random(0L)
 
   "A pack with 3 cards" should "contain exactly 3 cards" in:
