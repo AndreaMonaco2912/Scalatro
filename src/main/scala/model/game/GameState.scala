@@ -47,9 +47,9 @@ case class ShopInformation(
 )
 
 object GameState:
-  private val initialHandSize = 8
-  private val initialHandNum = 4
-  private val initialDiscardNum = 3
+  val initialHandSize = 8
+  val initialHandNum = 4
+  val initialDiscardNum = 3
 
   private def initialHand: HandInformation =
     HandInformation(initialHandSize, initialHandNum, initialDiscardNum)

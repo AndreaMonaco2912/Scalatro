@@ -19,9 +19,9 @@ import scala.annotation.targetName
   * }}}
   */
 class GameStateBuilder:
-  var handSize: Int = 8
-  var remainingHands: Int = 4
-  var remainingDiscards: Int = 3
+  var handSize: Int = GameState.initialHandSize
+  var remainingHands: Int = GameState.initialHandNum
+  var remainingDiscards: Int = GameState.initialDiscardNum
   var deck: Deck = Deck()
   var blind: Blind = Blind.first
   var jokers: Seq[Joker] = Seq.empty
