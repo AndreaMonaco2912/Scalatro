@@ -289,7 +289,6 @@ class FxController extends Initializable, Bindable[RoundAction]:
       scale.setToY(1.25)
       scale.setCycleCount(2)
       scale.setAutoReverse(true)
-      chipsLabel.setText(chipsLabel.getText + card.rank.value.customToString)
       scale
     else
       val FADE_ANIMATION_DURATION = 250
@@ -323,10 +322,13 @@ class FxController extends Initializable, Bindable[RoundAction]:
       scoringCards = HandType.getScoringCards(selectedCards)
       (card, cardImage) <- moveCardsToPlayArea(selectedCards)
     yield getAnimation(card, cardImage, scoringCards)
-    playSequentially(animations, () => removeCardsFromPlayArea())
-
-    offer(RoundAction.PlayCards(selectedCards))
-    cardOrderer.foreach(onOrder)
+    playSequentially(
+      animations,
+      () =>
+        removeCardsFromPlayArea()
+        offer(RoundAction.PlayCards(selectedCards))
+        cardOrderer.foreach(onOrder)
+    )
 
   private def onDiscard(): Unit =
     offer(RoundAction.DiscardCards(selectedCards))
