@@ -12,14 +12,14 @@ class RoundBuilderSpec extends AnyFlatSpec with Matchers:
 
   "RoundBuilder" should "correctly build a round with all custom values" in {
     val customScore = Score(42)
-    val customHand  = Seq(A | S, K | H, 10 | D, 5 | C)
-    val customDeck  = Deck(Seq(2 | S, A | H, J | D, 6 | C))
+    val customHand = Seq(A | S, K | H, 10 | D, 5 | C)
+    val customDeck = Deck(Seq(2 | S, A | H, J | D, 6 | C))
     val customState = GameState.initial
 
     val currentRound = RoundBuilder.configure {
-      ScoreInRound     := customScore
-      HandInRound      := customHand
-      DeckInRound      := customDeck
+      ScoreInRound := customScore
+      HandInRound := customHand
+      DeckInRound := customDeck
       GameStateInRound := customState
     }
 
