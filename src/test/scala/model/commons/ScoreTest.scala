@@ -14,6 +14,12 @@ class ScoreTest extends AnyFlatSpec, Matchers:
   private given defaultScoreConfig: ScoreConfig = ScoreConfig.default
   private given calculator: HandScoreCalculator = defaultScoreConfig.calculator
 
+  // TODO: da rimuovere e sostituire con i test a mano
+  private def getBaseChips(card: Card): Chips.Chips = card.rank match
+    case Rank.Jack | Rank.Queen | Rank.King => 10
+    case Rank.Ace                           => 11
+    case r => r.value
+
   /** Method for getting the expected score of a hand played
     * @param cards
     *   the cards played
@@ -30,7 +36,7 @@ class ScoreTest extends AnyFlatSpec, Matchers:
     val baseScore = handType.baseScore
     val scoringCards = HandType.getScoringCards(cards)
     val level = levels.getOrElse(handType, Level.initial)
-    val chipsSum = scoringCards.map(_.getBaseChips).sum
+    val chipsSum = scoringCards.map(c => getBaseChips(c)).sum
     baseScore + Planet.getIncrease(handType) * (level - 1) + HandScore(
       chipsSum,
       0
