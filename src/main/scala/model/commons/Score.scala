@@ -132,13 +132,13 @@ object Score:
     val initialScore: HandScore =
       getHandTypeBaseScore(handType, levels)
     val afterHandPlayed: HandScore = jokers.foldLeft(initialScore)(
-      (acc, joker) => joker.onHandPlayed(acc, cards)(using jokerConfig)
+      (acc, joker) => joker.onHandPlayed(cards).apply(acc)(using jokerConfig)
     )
     val afterCards: HandScore =
       scoringCards.foldLeft(afterHandPlayed)((acc, card) =>
         val afterCard: HandScore = card.onScored(acc)
         jokers.foldLeft(afterCard)((acc, joker) =>
-          joker.onCardScored(afterCard, card)(using jokerConfig)
+          joker.onCardScored(card).apply(acc)(using jokerConfig)
         )
       )
     jokers.foldLeft(afterCards)((acc, joker) =>
