@@ -3,46 +3,62 @@ package app
 
 import model.game.GameState
 
-import scalatro.model.round.Round
-
-/** The single, pure state transition function. */
 object Update:
 
   val init: (Model, Cmd) =
     (Model.Playing, Cmd.Deal(GameState.initial))
 
   def update(model: Model, msg: Msg): (Model, Cmd) =
-    (model, msg) match
+    msg match
+      case effect: Msg.InternalEffect => fromEffect(effect)
+      case action                     => fromAction(model, action)
 
+  private def fromEffect(effect: Msg.InternalEffect): (Model, Cmd) =
+    effect match
+      case Msg.InternalEffect.RoundWon(gs) =>
+        (Model.RoundWon(gs), Cmd.NoOp)
+      case Msg.InternalEffect.RoundLost(blind, score) =>
+        (Model.RoundLost(blind, score), Cmd.NoOp)
+      case Msg.InternalEffect.ShopReady(gs, shop) =>
+        (Model.InShop(gs, shop), Cmd.NoOp)
+
+  private def fromAction(model: Model, msg: Msg): (Model, Cmd) =
+    (model, msg) match
       case (Model.RoundWon(gs), Msg.RoundEndAction.NextRound) =>
         (model, Cmd.BuildShop(gs))
       case (Model.RoundLost(_, _), Msg.RoundEndAction.Restart) =>
         (model, Cmd.Deal(GameState.initial))
-
-      case (Model.InShop(gs, shop), Msg.ShopAction.OpenCardPack) =>
-        (Model.OpeningPack(gs, OpenPack.Cards(shop.cardPack)), Cmd.NoOp)
-      case (Model.InShop(gs, shop), Msg.ShopAction.OpenPlanetPack) =>
-        (Model.OpeningPack(gs, OpenPack.Planets(shop.planetPack)), Cmd.NoOp)
-      case (Model.InShop(gs, shop), Msg.ShopAction.OpenJokerPack) =>
-        (Model.OpeningPack(gs, OpenPack.Jokers(shop.jokerPack)), Cmd.NoOp)
-      case (Model.InShop(gs, _), Msg.ShopAction.SkipShop) =>
-        (model, Cmd.Deal(gs.advanceBlind))
-
-      case (Model.OpeningPack(gs, _), Msg.PackSelection.SelectCard(c)) =>
-        (model, Cmd.Deal(gs.addCard(c).advanceBlind))
-      case (Model.OpeningPack(gs, _), Msg.PackSelection.SelectPlanet(p)) =>
-        (model, Cmd.Deal(gs.usePlanet(p).advanceBlind))
-      case (Model.OpeningPack(gs, _), Msg.PackSelection.SelectJoker(j)) =>
-        (model, Cmd.Deal(gs.addJoker(j).advanceBlind))
-      case (Model.OpeningPack(gs, _), Msg.PackSelection.SkipPack) =>
-        (model, Cmd.Deal(gs.advanceBlind))
-      case (_, Msg.InternalEffect.RoundWon(gs)) =>
-        (Model.RoundWon(gs), Cmd.NoOp)
-      case (_, Msg.InternalEffect.RoundLost(blind, score)) =>
-        (Model.RoundLost(blind, score), Cmd.NoOp)
-      case (_, Msg.InternalEffect.ShopReady(gs, shop)) =>
-        (Model.InShop(gs, shop), Cmd.NoOp)
-      case (_, Msg.InternalEffect.ShopReady(gs, shop)) =>
-        (Model.InShop(gs, shop), Cmd.NoOp)
+      case (m: Model.InShop, action: Msg.ShopAction) =>
+        inShop(m, action)
+      case (Model.OpeningPack(gs, _), selection: Msg.PackSelection) =>
+        (model, Cmd.Deal(applySelection(gs, selection).advanceBlind))
 
       case _ => (model, Cmd.NoOp)
+
+  private def applySelection(
+      gs: GameState,
+      selection: Msg.PackSelection
+  ): GameState =
+    selection match
+      case Msg.PackSelection.SelectCard(c)   => gs.addCard(c)
+      case Msg.PackSelection.SelectPlanet(p) => gs.usePlanet(p)
+      case Msg.PackSelection.SelectJoker(j)  => gs.addJoker(j)
+      case Msg.PackSelection.SkipPack        => gs
+
+  private def inShop(
+      model: Model.InShop,
+      action: Msg.ShopAction
+  ): (Model, Cmd) =
+    val gs = model.gameState
+    action match
+      case Msg.ShopAction.OpenCardPack =>
+        (Model.OpeningPack(gs, OpenPack.Cards(model.shop.cardPack)), Cmd.NoOp)
+      case Msg.ShopAction.OpenPlanetPack =>
+        (
+          Model.OpeningPack(gs, OpenPack.Planets(model.shop.planetPack)),
+          Cmd.NoOp
+        )
+      case Msg.ShopAction.OpenJokerPack =>
+        (Model.OpeningPack(gs, OpenPack.Jokers(model.shop.jokerPack)), Cmd.NoOp)
+      case Msg.ShopAction.SkipShop =>
+        (model, Cmd.Deal(gs.advanceBlind))
