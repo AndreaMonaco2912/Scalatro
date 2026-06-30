@@ -1,7 +1,7 @@
 package scalatro
 package app
 
-import model.commons.{Card, CardOrderer, Joker, Planet}
+import model.commons.{Card, CardOrderer, Deck, Joker, Planet}
 import model.commons.Score.Score
 import model.game.{Blind, GameState}
 import model.shop.Shop
@@ -9,8 +9,9 @@ import model.shop.Shop
 sealed trait Msg
 
 object Msg:
-  enum DefaultAction extends Msg:
-    case Pause
+  enum ManagementAction extends Msg:
+    case ShowDeck
+    case CloseDeck
 
   /** An action the user can perform during the round */
   enum RoundAction extends Msg:
@@ -50,5 +51,5 @@ object Msg:
 
   enum InternalEffect extends Msg:
     case RoundWon(gameState: GameState)
-    case RoundLost(blind: Blind, finalScore: Score)
+    case RoundLost(gameState: GameState, finalScore: Score)
     case ShopReady(gameState: GameState, shop: Shop)

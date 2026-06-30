@@ -2,6 +2,7 @@ package scalatro
 package app
 
 import model.game.GameState
+import model.commons.Deck
 
 object Update:
 
@@ -17,8 +18,8 @@ object Update:
     effect match
       case Msg.InternalEffect.RoundWon(gs) =>
         (Model.RoundWon(gs), Cmd.NoOp)
-      case Msg.InternalEffect.RoundLost(blind, score) =>
-        (Model.RoundLost(blind, score), Cmd.NoOp)
+      case Msg.InternalEffect.RoundLost(gs, score) =>
+        (Model.RoundLost(gs, score), Cmd.NoOp)
       case Msg.InternalEffect.ShopReady(gs, shop) =>
         (Model.InShop(gs, shop), Cmd.NoOp)
 
@@ -32,6 +33,10 @@ object Update:
         inShop(m, action)
       case (Model.OpeningPack(gs, _), selection: Msg.PackSelection) =>
         (model, Cmd.Deal(applySelection(gs, selection).advanceBlind))
+      case (Model.ShowDeck(_, prev), Msg.ManagementAction.CloseDeck) =>
+        (prev, Cmd.NoOp)
+      case (m, Msg.ManagementAction.ShowDeck) =>
+        deckOf(m).fold((m, Cmd.NoOp))(d => (Model.ShowDeck(d, m), Cmd.NoOp))
 
       case _ => (model, Cmd.NoOp)
 
@@ -62,3 +67,10 @@ object Update:
         (Model.OpeningPack(gs, OpenPack.Jokers(model.shop.jokerPack)), Cmd.NoOp)
       case Msg.ShopAction.SkipShop =>
         (model, Cmd.Deal(gs.advanceBlind))
+
+  private def deckOf(model: Model): Option[Deck] = model match
+    case Model.RoundWon(gs)       => Some(gs.deck)
+    case Model.RoundLost(gs, _)   => Some(gs.deck)
+    case Model.InShop(gs, _)      => Some(gs.deck)
+    case Model.OpeningPack(gs, _) => Some(gs.deck)
+    case _                        => None
