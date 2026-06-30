@@ -2,7 +2,6 @@ package scalatro
 package model.game
 
 import model.commons.*
-import app.Msg.PackSelection
 
 import scala.util.Random
 
@@ -24,13 +23,6 @@ case class GameState(
 
   def shopInformation: ShopInformation =
     ShopInformation(deck, levels, jokers)
-
-  def selectItem(selection: PackSelection): GameState = selection match
-    case PackSelection.SelectCard(card)     => copy(deck = deck.add(card))
-    case PackSelection.SelectPlanet(planet) =>
-      copy(levels = planet.use(levels))
-    case PackSelection.SelectJoker(joker) => copy(jokers = jokers :+ joker)
-    case _                                => this
 
   def addCard(card: Card): GameState = copy(deck = deck.add(card))
 
