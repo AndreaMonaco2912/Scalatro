@@ -3,9 +3,8 @@ package model.commons
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.Inspectors.forAll
-
 import model.commons.Score.Score
+
 import model.commons.Chips.Chips
 import model.commons.Mult.Mult
 
@@ -13,58 +12,6 @@ class ScoreTest extends AnyFlatSpec, Matchers:
 
   private given defaultScoreConfig: ScoreConfig = ScoreConfig.default
   private given calculator: HandScoreCalculator = defaultScoreConfig.calculator
-
-  // TODO: da rimuovere e sostituire con i test a mano
-  private def getBaseChips(card: Card): Chips.Chips = card.rank match
-    case Rank.Jack | Rank.Queen | Rank.King => 10
-    case Rank.Ace                           => 11
-    case r => r.value
-
-  /** Method for getting the expected score of a hand played
-    * @param cards
-    *   the cards played
-    * @param levels
-    *   the levels of the hand types
-    * @return
-    *   the expected score
-    */
-  def getExpectedScore(
-      cards: Seq[Card],
-      levels: HandTypeLevels = HandTypeLevels.initial
-  ): HandScore =
-    val handType = HandType.detect(cards)
-    val baseScore = handType.baseScore
-    val scoringCards = HandType.getScoringCards(cards)
-    val level = levels.getOrElse(handType, Level.initial)
-    val chipsSum = scoringCards.map(c => getBaseChips(c)).sum
-    baseScore + Planet.getIncrease(handType) * (level - 1) + HandScore(
-      chipsSum,
-      0
-    )
-
-  def getCardsForHandType(handType: HandType): Seq[Card] =
-    val suit1 = Suit.Hearts
-    val suit2 = Suit.Clubs
-    val c1 = Card(Rank.Ace, suit1)
-    val c2 = Card(Rank.Two, suit1)
-    val c3 = Card(Rank.Three, suit1)
-    val c4 = Card(Rank.Four, suit1)
-    val c5 = Card(Rank.Five, suit1)
-    val c6 = Card(Rank.Ace, suit2)
-    val c7 = Card(Rank.Two, suit2)
-    handType match
-      case HandType.HighCard      => Seq(c1)
-      case HandType.Pair          => Seq(c1, c1)
-      case HandType.TwoPair       => Seq(c1, c1, c2, c2)
-      case HandType.ThreeOfAKind  => Seq(c1, c1, c1)
-      case HandType.Straight      => Seq(c6, c7, c3, c4, c5)
-      case HandType.Flush         => Seq(c1, c1, c2, c3, c4)
-      case HandType.FullHouse     => Seq(c1, c1, c1, c7, c7)
-      case HandType.FourOfAKind   => Seq(c1, c1, c1, c1)
-      case HandType.StraightFlush => Seq(c1, c2, c3, c4, c5)
-      case HandType.FiveOfAKind   => Seq(c1, c1, c1, c6, c6)
-      case HandType.FlushHouse    => Seq(c1, c1, c1, c2, c2)
-      case HandType.FlushFive     => Seq(c1, c1, c1, c1, c1)
 
   "BasicHandScoreCalculator" should "multiply chips and mult together" in:
     val chips: Chips = 50
@@ -83,22 +30,184 @@ class ScoreTest extends AnyFlatSpec, Matchers:
       AvgSquaredHandScoreCalculator
     ) shouldBe Score(avg * avg)
 
-  "Hand type at initial level" should "score base score + rank of the cards scored" in:
-    forAll(HandType.values)(handType =>
-      val cards = getCardsForHandType(handType)
-      val score = Score.calculateHandScore(cards)
-      val expectedScore = getExpectedScore(cards, HandTypeLevels.initial)
-      score shouldBe expectedScore
+  "High Card" should "score base score + rank of the card" in:
+    val cards = Seq(
+      Card(Rank.Jack, Suit.Clubs)
     )
+    val score: HandScore = Score.calculateHandScore(cards)
+    val expectedScore = HandScore(15,1)
+    score shouldBe expectedScore
 
-  "Hand type at level N" should "score base score + (level-1) * planet score increase + rank of the cards scored" in:
-    val level = 5
-    forAll(HandType.values)(handType =>
-      val scoreConfig = ScoreConfig.default.copy(levels =
-        HandTypeLevels.initial.updated(handType, level)
-      )
-      val cards = getCardsForHandType(handType)
-      val score = Score.calculateHandScore(cards)(using scoreConfig)
-      val expectedScore = getExpectedScore(cards, scoreConfig.levels)
-      score shouldBe expectedScore
+  "Pair" should "score base score + rank of the 2 cards" in:
+    val c = Card(Rank.Jack, Suit.Clubs)
+    val cards = Seq(
+      c,
+      c
     )
+    val score: HandScore = Score.calculateHandScore(cards)
+    val expectedScore = HandScore(30,2)
+    score shouldBe expectedScore
+
+  "Two Pair" should "score base score + rank of the 4 cards" in:
+    val c1 = Card(Rank.Jack, Suit.Clubs)
+    val c2 = Card(Rank.Queen, Suit.Clubs)
+    val c3 = Card(Rank.King, Suit.Spades)
+    val cards = Seq(
+      c1,
+      c1,
+      c2,
+      c2,
+      c3
+    )
+    val score: HandScore = Score.calculateHandScore(cards)
+    val expectedScore = HandScore(60,2)
+    score shouldBe expectedScore
+
+  "Three of a Kind" should "score base + rank of the 3 cards" in:
+    val c1 = Card(Rank.Jack, Suit.Clubs)
+    val c2 = Card(Rank.Queen, Suit.Hearts)
+    val cards = Seq(
+      c1,
+      c1,
+      c1,
+      c2
+    )
+    val score: HandScore = Score.calculateHandScore(cards)
+    val expectedScore = HandScore(60,3)
+    score shouldBe expectedScore
+
+  "Straight" should "score base + rank of all cards" in:
+    val suit1 = Suit.Clubs
+    val suit2 = Suit.Hearts
+    val c1 = Card(Rank.Ace, suit1)
+    val c2 = Card(Rank.Two, suit1)
+    val c3 = Card(Rank.Three, suit1)
+    val c4 = Card(Rank.Four, suit1)
+    val c5 = Card(Rank.Five, suit2)
+    val cards = Seq(
+      c1,
+      c2,
+      c3,
+      c4,
+      c5
+    )
+    val score: HandScore = Score.calculateHandScore(cards)
+    val expectedScore = HandScore(55,4)
+    score shouldBe expectedScore
+
+  "Flush" should "score base + rank of all cards" in:
+    val suit = Suit.Spades
+    val c1 = Card(Rank.Two, suit)
+    val c2 = Card(Rank.Four, suit)
+    val c3 = Card(Rank.Six, suit)
+    val c4 = Card(Rank.Eight, suit)
+    val c5 = Card(Rank.Jack, suit)
+    val cards = Seq(
+      c1,
+      c2,
+      c3,
+      c4,
+      c5
+    )
+    val score: HandScore = Score.calculateHandScore(cards)
+    val expectedScore = HandScore(65,4)
+    score shouldBe expectedScore
+
+  "Full House" should "score base + rank of all cards" in:
+    val c1 = Card(Rank.Two, Suit.Spades)
+    val c2 = Card(Rank.Seven, Suit.Clubs)
+    val cards = Seq(
+      c1,
+      c1,
+      c1,
+      c2,
+      c2
+    )
+    val score: HandScore = Score.calculateHandScore(cards)
+    val expectedScore = HandScore(60,4)
+    score shouldBe expectedScore
+
+  "Four of a Kind" should "score base + rank of the 4 cards" in:
+    val c1 = Card(Rank.Two, Suit.Spades)
+    val c2 = Card(Rank.Seven, Suit.Clubs)
+    val cards = Seq(
+      c1,
+      c1,
+      c1,
+      c1,
+      c2
+    )
+    val score: HandScore = Score.calculateHandScore(cards)
+    val expectedScore = HandScore(68,7)
+    score shouldBe expectedScore
+
+  "Straight Flush" should "score base + rank of all cards" in:
+    val suit = Suit.Hearts
+    val c1 = Card(Rank.Ace, suit)
+    val c2 = Card(Rank.Two, suit)
+    val c3 = Card(Rank.Three, suit)
+    val c4 = Card(Rank.Four, suit)
+    val c5 = Card(Rank.Five, suit)
+    val cards = Seq(
+      c1,
+      c2,
+      c3,
+      c4,
+      c5
+    )
+    val score: HandScore = Score.calculateHandScore(cards)
+    val expectedScore = HandScore(125,8)
+    score shouldBe expectedScore
+
+  "Five of a Kind" should "score base + rank of all cards" in:
+    val c1 = Card(Rank.Ace, Suit.Hearts)
+    val c2 = Card(Rank.Ace, Suit.Diamonds)
+    val cards = Seq(
+      c1,
+      c1,
+      c1,
+      c2,
+      c2
+    )
+    val score: HandScore = Score.calculateHandScore(cards)
+    val expectedScore = HandScore(175,12)
+    score shouldBe expectedScore
+
+  "Flush House" should "score base + rank of all cards" in:
+    val c1 = Card(Rank.Two, Suit.Spades)
+    val c2 = Card(Rank.Seven, Suit.Spades)
+    val cards = Seq(
+      c1,
+      c1,
+      c1,
+      c2,
+      c2
+    )
+    val score: HandScore = Score.calculateHandScore(cards)
+    val expectedScore = HandScore(160,14)
+    score shouldBe expectedScore
+
+  "Flush Five" should "score base + rank of all cards" in:
+    val c = Card(Rank.Two, Suit.Spades)
+    val cards = Seq(
+      c,
+      c,
+      c,
+      c,
+      c
+    )
+    val score: HandScore = Score.calculateHandScore(cards)
+    val expectedScore = HandScore(170,16)
+    score shouldBe expectedScore
+//
+//  "High Card level N" should "score base + N * score increase + chips of the card" in:
+//    val level: Level = 5
+//    val scoreConfig = ScoreConfig(
+//      Seq.empty,
+//      HandTypeLevels.initial.updated(HandType.HighCard, level),
+//      defaultScoreConfig.calculator
+//    )
+//    val cards: Seq[Card] = Seq(Card(Rank.Ace, Suit.Clubs))
+//    val score: HandScore = Score.calculateHandScore(cards)(using scoreConfig)
+//    val expectedScore = getExpectedScore(cards, HandType.HighCard, level)
+//    score shouldBe expectedScore

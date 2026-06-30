@@ -7,16 +7,16 @@ import org.scalatest.matchers.should.Matchers
 class JokerTest extends AnyFlatSpec, Matchers:
 
   val defaultHandScore: HandScore = HandScore(50, 20)
-  val defaultJokerConfig: JokerConfig = JokerConfig.default
+  val defaultJokerContext: JokerContext = JokerContext.default
 
   "Clever Joker" should "increase score by +80 chips if played hand contains Two Pair" in:
     val joker: Joker = JokerType.CleverJoker
     val c1 = Card(Rank.Ace, Suit.Clubs)
     val c2 = Card(Rank.Ten, Suit.Hearts)
-    val jokerConfig =
-      JokerConfig(Seq(c1, c1, c2, c2), HandTypeLevels.initial)
+    val jokerContext =
+      JokerContext(Seq(c1, c1, c2, c2), HandTypeLevels.initial)
     joker.independent(defaultHandScore)(using
-      jokerConfig
+      jokerContext
     ) shouldBe defaultHandScore + HandScore(80, 0)
 
   "Crafty Joker" should "increase score by +80 Chips if played hand contains a Flush" in:
@@ -25,10 +25,10 @@ class JokerTest extends AnyFlatSpec, Matchers:
     val c1 = Card(Rank.Two, suit)
     val c2 = Card(Rank.Four, suit)
     val c3 = Card(Rank.Six, suit)
-    val jokerConfig =
-      JokerConfig(Seq(c1, c1, c2, c2, c3), HandTypeLevels.initial)
+    val jokerContext =
+      JokerContext(Seq(c1, c1, c2, c2, c3), HandTypeLevels.initial)
     joker.independent(defaultHandScore)(using
-      jokerConfig
+      jokerContext
     ) shouldBe defaultHandScore + HandScore(80, 0)
 
   "Crazy Joker" should "increase score by +12 Mult if played hand contains a Straight" in:
@@ -38,10 +38,10 @@ class JokerTest extends AnyFlatSpec, Matchers:
     val c3 = Card(Rank.Four, Suit.Clubs)
     val c4 = Card(Rank.Five, Suit.Hearts)
     val c5 = Card(Rank.Six, Suit.Hearts)
-    val jokerConfig =
-      JokerConfig(Seq(c1, c2, c3, c4, c5), HandTypeLevels.initial)
+    val jokerContext =
+      JokerContext(Seq(c1, c2, c3, c4, c5), HandTypeLevels.initial)
     joker.independent(defaultHandScore)(using
-      jokerConfig
+      jokerContext
     ) shouldBe defaultHandScore + HandScore(0, 12)
 
   "Devious Joker" should "increase score by +100 Chips if played hand contains a Straight" in:
@@ -51,8 +51,35 @@ class JokerTest extends AnyFlatSpec, Matchers:
     val c3 = Card(Rank.Four, Suit.Clubs)
     val c4 = Card(Rank.Five, Suit.Hearts)
     val c5 = Card(Rank.Six, Suit.Hearts)
-    val jokerConfig =
-      JokerConfig(Seq(c1, c2, c3, c4, c5), HandTypeLevels.initial)
+    val jokerContext =
+      JokerContext(Seq(c1, c2, c3, c4, c5), HandTypeLevels.initial)
     joker.independent(defaultHandScore)(using
-      jokerConfig
+      jokerContext
     ) shouldBe defaultHandScore + HandScore(100, 0)
+
+  "The Order" should "increase score by X3 Mult if played hand contains a Straight" in:
+    val joker: Joker = JokerType.TheOrder
+    val c1 = Card(Rank.Two, Suit.Clubs)
+    val c2 = Card(Rank.Three, Suit.Hearts)
+    val c3 = Card(Rank.Four, Suit.Clubs)
+    val c4 = Card(Rank.Five, Suit.Hearts)
+    val c5 = Card(Rank.Six, Suit.Hearts)
+    val jokerContext =
+      JokerContext(Seq(c1, c2, c3, c4, c5), HandTypeLevels.initial)
+    joker.independent(defaultHandScore)(using jokerContext) shouldBe HandScore(
+      defaultHandScore.chips,
+      defaultHandScore.mult * 3
+    )
+
+  "The Tribe" should "increase score by X2 Mult if played hand contains a Flush" in:
+    val joker: Joker = JokerType.TheTribe
+    val suit = Suit.Hearts
+    val c1 = Card(Rank.Two, suit)
+    val c2 = Card(Rank.Four, suit)
+    val c3 = Card(Rank.Six, suit)
+    val jokerContext =
+      JokerContext(Seq(c1, c1, c2, c2, c3), HandTypeLevels.initial)
+    joker.independent(defaultHandScore)(using jokerContext) shouldBe HandScore(
+      defaultHandScore.chips,
+      defaultHandScore.mult * 2
+    )
