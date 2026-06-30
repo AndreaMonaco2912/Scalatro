@@ -5,42 +5,32 @@ import model.round.Hand
 import model.game.{GameState, HandInformation}
 
 /** The information needed to apply the effects of a joker
-  * @param playedCards
-  *   the cards played
-  * @param levels
-  *   the level of the hand types
   */
-case class JokerConfig(
-    playedCards: Seq[Card],
-    levels: HandTypeLevels
-)
+trait JokerContext:
+  /** @return
+    *   the cards played
+    */
+  def playedCards: Seq[Card]
 
-object JokerConfig:
+  /** @return
+    *   the level of hand types
+    */
+  def levels: HandTypeLevels
 
-  def default: JokerConfig = JokerConfig(Seq.empty, HandTypeLevels.initial)
+object JokerContext:
 
-trait Reversible:
-  def reverse[A]: A
+  private case class JokerContextImpl(
+      playedCards: Seq[Card],
+      levels: HandTypeLevels
+  ) extends JokerContext
 
-trait Effect[A]:
-  def apply(value: A)(using JokerConfig): A
+  def apply(playedCards: Seq[Card], levels: HandTypeLevels): JokerContext =
+    JokerContextImpl(playedCards, levels)
 
-object Effect:
+  def default: JokerContext =
+    JokerContextImpl(Seq.empty, HandTypeLevels.initial)
 
-  def identity[A]: Effect[A] =
-    new Effect[A]:
-      def apply(value: A)(using JokerConfig): A = value
-
-  def apply[A](f: (A, JokerConfig) => A): Effect[A] =
-    new Effect[A]:
-      def apply(value: A)(using jokerConfig: JokerConfig): A =
-        f(value, jokerConfig)
-
-  extension [A](self: Effect[A])
-    def andThen(next: Effect[A]): Effect[A] =
-      new Effect[A]:
-        def apply(value: A)(using jokerConfig: JokerConfig): A =
-          next(self(value))
+type JokerEffect[A] = Effect[A, JokerContext]
 
 sealed trait Joker:
 
@@ -59,19 +49,19 @@ sealed trait Joker:
     * @return
     *   the new hand score
     */
-  def independent: Effect[HandScore] = Effect.identity
+  def independent: JokerEffect[HandScore] = Effect.identity
 
   /** The effect applied when a card played is scored
     * @return
     *   the new hand score
     */
-  def onCardScored(card: Card): Effect[HandScore] = Effect.identity
+  def onCardScored(card: Card): JokerEffect[HandScore] = Effect.identity
 
   /** The effect applied when a hand is played
     * @return
     *   the new hand score
     */
-  def onHandPlayed(cards: Seq[Card]): Effect[HandScore] = Effect.identity
+  def onHandPlayed(cards: Seq[Card]): JokerEffect[HandScore] = Effect.identity
 
 /** Trait which, if the hand played is of the specified type, increases the hand
   * score by the addition of a certain amount
@@ -79,9 +69,9 @@ sealed trait Joker:
 sealed trait FlatHandTypeContained(handType: HandType, increase: HandScore)
     extends Joker:
 
-  override def independent: Effect[HandScore] =
-    super.independent.andThen(Effect { (handScore, jokerConfig) =>
-      if HandType.contains(jokerConfig.playedCards, handType)
+  override def independent: JokerEffect[HandScore] =
+    super.independent.andThen(Effect { (handScore, context) =>
+      if HandType.contains(context.playedCards, handType)
       then handScore + increase
       else handScore
     })
@@ -94,9 +84,9 @@ sealed trait MultiplicativeHandTypeContained(
     multiplier: Double
 ) extends Joker:
 
-  override def independent: Effect[HandScore] =
-    super.independent.andThen(Effect { (handScore, jokerConfig) =>
-      (handScore, HandType.contains(jokerConfig.playedCards, handType)) match
+  override def independent: JokerEffect[HandScore] =
+    super.independent.andThen(Effect { (handScore, context) =>
+      (handScore, HandType.contains(context.playedCards, handType)) match
         case (HandScore(chips, mult), true) =>
           HandScore(chips, mult * multiplier)
         case (handScore, _) => handScore
@@ -106,7 +96,7 @@ sealed trait MultiplicativeHandTypeContained(
   */
 sealed trait FlatScoreIncrease(increase: HandScore) extends Joker:
 
-  override def independent: Effect[HandScore] =
+  override def independent: JokerEffect[HandScore] =
     super.independent.andThen(Effect { (handScore, _) => handScore + increase })
 
 // TODO: .values funziona solo se nessun joker ha uno stato interno (es. case MyJoker(var bonus : HandScore))
