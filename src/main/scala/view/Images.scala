@@ -32,3 +32,5 @@ object Images:
 
   def pack(category: String, size: String, version: Int): Image =
     load(Resources.pack(s"${category}_${size}_$version"))
+
+  def deckBack: Image = load(Resources.deckBack)

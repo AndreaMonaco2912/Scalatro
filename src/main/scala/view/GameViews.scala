@@ -36,3 +36,5 @@ class GameViews(scene: Scene):
     switchTo(Resources.Fxml.planetPack)
 
   def jokerPack: IO[FxJokerPackController] = switchTo(Resources.Fxml.jokerPack)
+
+  def deck: IO[FxDeckController] = switchTo(Resources.Fxml.deck)

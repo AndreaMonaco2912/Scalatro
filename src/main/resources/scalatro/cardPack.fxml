@@ -8,6 +8,7 @@
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="scalatro.view.fxController.FxCardPackController"
+      fx:id="deckHost"
       alignment="CENTER"
       spacing="40"
       style="-fx-background-color: #5a3a22;">

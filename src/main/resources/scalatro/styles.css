@@ -146,3 +146,11 @@
     -fx-background-color: #2e2e2e;
     -fx-background-radius: 8;
 }
+
+.deck-trigger {
+    -fx-cursor: hand;
+}
+
+.deck-trigger:hover {
+    -fx-translate-y: -6;
+}

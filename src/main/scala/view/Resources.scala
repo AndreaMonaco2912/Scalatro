@@ -12,6 +12,7 @@ object Resources:
     val cardPack: String = s"$base/cardPack.fxml"
     val planetPack: String = s"$base/planetPack.fxml"
     val jokerPack: String = s"$base/jokerPack.fxml"
+    val deck: String = s"$base/deck.fxml"
 
   val stylesheet: String = s"$base/styles.css"
   
@@ -19,3 +20,4 @@ object Resources:
   def joker(name: String): String = s"$base/jokers/$name.png"
   def planet(name: String): String = s"$base/planets/$name.png"
   def pack(name: String): String = s"$base/packs/$name.png"
+  def deckBack: String = s"$base/decks/Red_Deck.png"

@@ -3,24 +3,28 @@ package view.fxController
 
 import app.Msg.RoundEndAction
 
-import cats.effect.IO
-import cats.effect.std.Queue
-import cats.effect.unsafe.implicits.global
 import javafx.fxml.{FXML, Initializable}
 import javafx.scene.control.Button
+import javafx.scene.layout.VBox
 
 import java.net.URL
 import java.util.ResourceBundle
 import scala.compiletime.uninitialized
 
-abstract class FxRoundEndController extends Initializable, Dispatcher:
+@SuppressWarnings(Array("org.wartremover.warts.Null"))
+abstract class FxRoundEndController
+    extends Initializable,
+      Dispatcher,
+      ClickableDeck:
 
-  /** Realised by each subclass with its @FXML-injected button. */
+  @FXML private var deckHost: VBox = uninitialized
+
   protected def button: Button
   protected def message: RoundEndAction
 
   override def initialize(url: URL, rb: ResourceBundle): Unit =
     button.setOnAction(_ => dispatch(message))
+    mountDeck(deckHost)
 
 @SuppressWarnings(Array("org.wartremover.warts.Null"))
 class FxRoundWonController extends FxRoundEndController:

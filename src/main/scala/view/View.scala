@@ -3,16 +3,15 @@ package view
 
 import app.{Model, Msg, OpenPack}
 import view.fxController.{FxController, FxPackController}
+import model.commons.Deck
 
 import cats.effect.IO
-import cats.effect.std.Queue
-import model.round.Round
 
 trait View:
   def render(model: Model): IO[Unit]
 
 private enum Screen:
-  case Gameplay, Won, Lost, ShopScreen, CardPack, PlanetPack, JokerPack
+  case Gameplay, Won, Lost, ShopScreen, CardPack, PlanetPack, JokerPack, Deck
 
 class FxView(screens: GameViews, dispatch: Msg => Unit) extends View:
   private var current: Option[Screen] = None
@@ -32,7 +31,8 @@ class FxView(screens: GameViews, dispatch: Msg => Unit) extends View:
       enterPack(Screen.PlanetPack, screens.planetPack, pack.items)
     case Model.OpeningPack(_, OpenPack.Jokers(pack)) =>
       enterPack(Screen.JokerPack, screens.jokerPack, pack.items)
-    case Model.Playing => IO.unit
+    case Model.ShowDeck(deck, _) => enterDeck(deck)
+    case Model.Playing           => IO.unit
 
   def enterGameplay: IO[FxController] =
     screens.gameplay.flatMap: ctrl =>
@@ -57,3 +57,10 @@ class FxView(screens: GameViews, dispatch: Msg => Unit) extends View:
           ctrl.onMessage(dispatch)
           ctrl.showItems(items)
           current = Some(screen)
+
+  private def enterDeck(deck: Deck): IO[Unit] =
+    screens.deck.flatMap: ctrl =>
+      IO:
+        ctrl.onMessage(dispatch)
+        ctrl.showCards(deck.sort)
+        current = Some(Screen.Deck)

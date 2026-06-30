@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="scalatro.view.fxController.FxDeckController"
+      alignment="CENTER" spacing="24" style="-fx-background-color: #1a4a30;">
+
+    <Label text="Deck" textFill="WHITE"
+           style="-fx-font-size: 28px; -fx-font-weight: bold;" />
+
+    <ScrollPane fitToWidth="true" prefHeight="460" maxWidth="900"
+                style="-fx-background-color: transparent;">
+        <FlowPane fx:id="deckPane" hgap="8" vgap="8" alignment="CENTER">
+            <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
+        </FlowPane>
+    </ScrollPane>
+
+    <Button fx:id="backButton" text="Back" styleClass="pack-continue-button" />
+</VBox>
