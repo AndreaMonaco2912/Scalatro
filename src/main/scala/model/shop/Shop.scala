@@ -28,8 +28,3 @@ object Shop:
       PlanetPack.smallPack,
       JokerPack.smallPack(shopInformation.jokers)
     )
-
-enum ShopSelection:
-  case CardSelected(card: Card)
-  case PlanetSelected(planet: Planet)
-  case JokerSelected(joker: Joker)

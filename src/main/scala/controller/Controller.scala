@@ -2,19 +2,12 @@ package scalatro
 package controller
 
 import app.Msg.*
-import model.commons.Score.Score
-import model.commons.{Deck, Pack, Score}
+import model.commons.{Deck, Score}
 import model.game.*
 import model.round.{Round, RoundManager}
-import model.shop.{Shop, ShopSelection}
-import view.{FxView, View}
-import view.fxController.{Bindable, FxPackController, FxRoundEndController}
-import view.GameViews
 
 import cats.effect.IO
 import cats.effect.std.Queue
-import app.Msg.PackSelection.{SelectCard, SelectJoker, SelectPlanet, SkipPack}
-import model.shop.ShopSelection.*
 
 /** A trait representing a functional controller
   *
