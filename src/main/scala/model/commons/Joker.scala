@@ -99,6 +99,15 @@ sealed trait FlatScoreIncrease(increase: HandScore) extends Joker:
   override def independent: JokerEffect[HandScore] =
     super.independent.andThen(Effect { (handScore, _) => handScore + increase })
 
+sealed trait FlatSuitScored(suit: Suit, increase: HandScore) extends Joker:
+
+  override def onCardScored(card: Card): JokerEffect[HandScore] =
+    super
+      .onCardScored(card)
+      .andThen(Effect { (handScore, _) =>
+        if card.suit == suit then handScore + increase else handScore
+      })
+
 // TODO: .values funziona solo se nessun joker ha uno stato interno (es. case MyJoker(var bonus : HandScore))
 // in questo caso si dovrebbe dichiarare .values nel companion object
 enum JokerType(val name: String, val description: String) extends Joker:
@@ -135,3 +144,15 @@ enum JokerType(val name: String, val description: String) extends Joker:
         "X3 Mult if played hand contains a Straight"
       )
       with MultiplicativeHandTypeContained(HandType.Straight, 3)
+  case Arrowhead
+      extends JokerType(
+        "Arrowhead",
+        "Played cards with Spade suit give +50 Chips when scored"
+      )
+      with FlatSuitScored(Suit.Spades, HandScore(50, 0))
+  case OnyxAgate
+      extends JokerType(
+        "Onyx Agate",
+        "Played cards with Club suit give +7 Mult when scored"
+      )
+      with FlatSuitScored(Suit.Clubs, HandScore(0, 7))

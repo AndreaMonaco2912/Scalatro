@@ -34,6 +34,10 @@ trait HandScoreCalculator:
     */
   def calculate(chips: Chips, mult: Mult): Score
 
+object HandScoreCalculator:
+
+  def default: HandScoreCalculator = BasicHandScoreCalculator
+
 /** Hand score calculator in which the score is given by multiplying together
   * the chips and the multiplier
   */
