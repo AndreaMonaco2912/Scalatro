@@ -27,42 +27,9 @@ import scala.compiletime.uninitialized
 @SuppressWarnings(Array("org.wartremover.warts.Null"))
 class FxController extends Initializable, Bindable[RoundAction]:
 
-  @FXML private var jokerSlots: HBox = uninitialized
-//  @FXML private var handSlots: HBox = uninitialized
-
-  // Card graphics
-  @FXML private var card1: ImageView = uninitialized
-  @FXML private var card2: ImageView = uninitialized
-  @FXML private var card3: ImageView = uninitialized
-  @FXML private var card4: ImageView = uninitialized
-  @FXML private var card5: ImageView = uninitialized
-  @FXML private var card6: ImageView = uninitialized
-  @FXML private var card7: ImageView = uninitialized
-  @FXML private var card8: ImageView = uninitialized
-
-  // Card toggle buttons
-  @FXML private var cardBtn1: ToggleButton = uninitialized
-  @FXML private var cardBtn2: ToggleButton = uninitialized
-  @FXML private var cardBtn3: ToggleButton = uninitialized
-  @FXML private var cardBtn4: ToggleButton = uninitialized
-  @FXML private var cardBtn5: ToggleButton = uninitialized
-  @FXML private var cardBtn6: ToggleButton = uninitialized
-  @FXML private var cardBtn7: ToggleButton = uninitialized
-  @FXML private var cardBtn8: ToggleButton = uninitialized
-
-  // Joker graphics
-//  @FXML private var joker1: ImageView = uninitialized
-//  @FXML private var joker2: ImageView = uninitialized
-//  @FXML private var joker3: ImageView = uninitialized
-//  @FXML private var joker4: ImageView = uninitialized
-//  @FXML private var joker5: ImageView = uninitialized
-//
-//  // Joker toggle buttons
-//  @FXML private var jokerBtn1: ToggleButton = uninitialized
-//  @FXML private var jokerBtn2: ToggleButton = uninitialized
-//  @FXML private var jokerBtn3: ToggleButton = uninitialized
-//  @FXML private var jokerBtn4: ToggleButton = uninitialized
-//  @FXML private var jokerBtn5: ToggleButton = uninitialized
+  // Joker and hand slots
+  @FXML private var jokerSlotsBox: HBox = uninitialized
+  @FXML private var handSlotsBox: HBox = uninitialized
 
   // Info labels
   @FXML private var roundNumLabel: Label = uninitialized
@@ -84,30 +51,8 @@ class FxController extends Initializable, Bindable[RoundAction]:
 
   // Play area
   @FXML private var playAreaBox: HBox = uninitialized
-  // Convenient grouped lists (order matters – matches FXML fx:id numbering)
-  private def cardViews: List[ImageView] =
-    List(card1, card2, card3, card4, card5, card6, card7, card8)
-
-  private def cardButtons: List[ToggleButton] = List(
-    cardBtn1,
-    cardBtn2,
-    cardBtn3,
-    cardBtn4,
-    cardBtn5,
-    cardBtn6,
-    cardBtn7,
-    cardBtn8
-  )
-
-//  private def jokerViews: List[ImageView] =
-//    List(joker1, joker2, joker3, joker4, joker5)
-
-//  private def jokerButtons: List[ToggleButton] =
-//    List(jokerBtn1, jokerBtn2, jokerBtn3, jokerBtn4, jokerBtn5)
 
   private var handSlots: List[(ToggleButton, Card)] = List()
-
-//  private var jokerSlots: List[(ToggleButton, Joker)] = List()
 
   private var lastKnownRound: Option[Round] = None
   private var cardOrderer: Option[CardOrderer] = None
@@ -125,54 +70,19 @@ class FxController extends Initializable, Bindable[RoundAction]:
       level: Level
   )
 
-  override def initialize(url: URL, rb: ResourceBundle): Unit =
-    extension (cards: Seq[Card])
-      private def levelledHandType: LevelledHandType =
-        val handType = HandType.detect(cards)
-        val levels: HandTypeLevels = lastKnownRound match
-          case Some(round) => round.gameState.levels
-          case _           => HandTypeLevels.initial
-        val handTypeLevel = levels.getLevel(handType)
-        val handScore = Score.getHandTypeBaseScore(handType, levels)
-        LevelledHandType(handType, handScore, handTypeLevel)
+  extension (cards: Seq[Card])
+    private def levelledHandType: LevelledHandType =
+      val handType = HandType.detect(cards)
+      val levels: HandTypeLevels = lastKnownRound match
+        case Some(round) => round.gameState.levels
+        case _           => HandTypeLevels.initial
+      val handTypeLevel = levels.getLevel(handType)
+      val handScore = Score.getHandTypeBaseScore(handType, levels)
+      LevelledHandType(handType, handScore, handTypeLevel)
 
+  override def initialize(url: URL, rb: ResourceBundle): Unit =
     playButton.setOnAction(_ => onPlay())
     discardButton.setOnAction(_ => onDiscard())
-    cardButtons.foreach(
-      _.setOnAction(_ =>
-        setHandType(selectedCards match
-          case h :: _ => Some(selectedCards.levelledHandType)
-          case _      => None)
-      )
-    )
-
-    cardButtons.zipWithIndex.foreach { case (btn, index) =>
-      btn.setOnDragDetected { event =>
-        val db = btn.startDragAndDrop(TransferMode.MOVE)
-        val content = new ClipboardContent()
-        content.putString(index.toString)
-        db.setContent(content)
-        event.consume()
-      }
-      btn.setOnDragOver { event =>
-        if event.getGestureSource != btn && event.getDragboard.hasString then
-          event.acceptTransferModes(TransferMode.MOVE)
-        event.consume()
-      }
-      btn.setOnDragDropped { event =>
-        val db = event.getDragboard
-        val success = if db.hasString then
-          val draggedIdx = db.getString.toInt
-          val targetIdx = index
-          cardOrderer = None
-          onOrder(CardOrderer.moveCard(draggedIdx, targetIdx))
-          true
-        else false
-
-        event.setDropCompleted(success)
-        event.consume()
-      }
-    }
 
     sortRankButton.setOnAction(_ =>
       val ord = CardOrderer.sortByRank
@@ -233,45 +143,35 @@ class FxController extends Initializable, Bindable[RoundAction]:
       playButton.setDisable(round.remainingPlays <= 0)
       discardButton.setDisable(round.remainingDiscards <= 0)
 
-      // Reset all card slots, then repopulate from the current hand
-      cardViews.foreach(_.setImage(null))
-      cardButtons.foreach { btn =>
-        btn.setSelected(false)
-        btn.setVisible(false)
-      }
+      // Cards overlap
+      val handSize = round.hand.size
+      val maxNormalCards = 8
+      if handSize > maxNormalCards then
+        val negativeSpacing = -15.0 - ((handSize - maxNormalCards) * 2.0)
+        handSlotsBox.setSpacing(negativeSpacing)
+      else handSlotsBox.setSpacing(5.0)
 
-//      jokerViews.foreach(_.setImage(null))
-//      jokerButtons.foreach { btn =>
-//        btn.setSelected(false)
-//        btn.setVisible(false)
-//      }
-//
-//      handSlots.getChildren.clear()
-//      round.hand.toSeq.foreach(c =>
-//        val cardNode = renderCard(c)
-//        val toggleButton = new ToggleButton()
-//        toggleButton.getStyleClass.add("card-button")
-//        handSlots.getChildren.add(cardNode)
-//      )
-
-      handSlots = round.hand.toList.zip(cardButtons).map { case (card, btn) =>
-        setCardImage(cardViews(cardButtons.indexOf(btn)), card)
-        btn.setVisible(true)
+      // Rebuild the card slots from the current hand, mirroring jokerSlotsBox
+      handSlotsBox.getChildren.clear()
+      handSlots = round.hand.toList.zipWithIndex.map { case (card, index) =>
+        val btn = renderCardButton(card, index)
+        handSlotsBox.getChildren.add(btn)
         (btn, card)
       }
 
-      jokerSlots.getChildren.clear()
+      // Jokers overlap
+      val numJokers = round.gameState.jokers.length
+      val maxNormalJokers = 7
+      if numJokers > maxNormalJokers then
+        val negativeSpacing = -15.0 - ((numJokers - maxNormalJokers) * 2.0)
+        jokerSlotsBox.setSpacing(negativeSpacing)
+      else jokerSlotsBox.setSpacing(15.0)
+
+      jokerSlotsBox.getChildren.clear()
       round.gameState.jokers.foreach(joker =>
         val node = renderJoker(joker)
-        jokerSlots.getChildren.add(node)
+        jokerSlotsBox.getChildren.add(node)
       )
-//      jokerSlots = round.gameState.jokers.toList.zip(jokerButtons).map {
-//        case (joker, btn) =>
-//          setJokerImage(jokerViews(jokerButtons.indexOf(btn)), joker)
-//          btn.setVisible(true)
-//          btn.setTooltip(new Tooltip(joker.description))
-//          (btn, joker)
-//      }
 
       setHandType(None)
     }
@@ -351,7 +251,6 @@ class FxController extends Initializable, Bindable[RoundAction]:
     offer(RoundAction.DiscardCards(selectedCards))
     cardOrderer.foreach(onOrder)
 
-
   private def onOrder(cardOrderer: CardOrderer): Unit =
     offer(RoundAction.OrderHand(cardOrderer))
 
@@ -365,15 +264,49 @@ class FxController extends Initializable, Bindable[RoundAction]:
 
   private def renderJoker(joker: Joker): Node =
     val iv = imageNode(Images.joker(joker))
-    Tooltip.install(iv,new Tooltip(joker.description))
+    Tooltip.install(iv, new Tooltip(joker.description))
     iv
 
-//  private def setJokerImage(imageView: ImageView, joker: Joker): Unit =
-//    imageView.setImage(Images.joker(joker))
-//
   private def setCardImage(imageView: ImageView, card: Card): Unit =
     imageView.setImage(Images.card(card))
 
-//  private def renderCard(card: Card): Node =
-//    val iv = imageNode(Images.card(card))
-//    iv
+  private def renderCardButton(card: Card, index: Int): ToggleButton =
+    val iv = imageNode(Images.card(card))
+
+    val btn = new ToggleButton()
+    btn.getStyleClass.add("card-button")
+    btn.setGraphic(iv)
+    btn.setOnAction(_ =>
+      setHandType(selectedCards match
+        case _ :: _ => Some(selectedCards.levelledHandType)
+        case _      => None)
+    )
+    setupCardDragAndDrop(btn, index)
+    btn
+
+  private def setupCardDragAndDrop(btn: ToggleButton, index: Int): Unit =
+    btn.setOnDragDetected { event =>
+      val db = btn.startDragAndDrop(TransferMode.MOVE)
+      val content = new ClipboardContent()
+      content.putString(index.toString)
+      db.setContent(content)
+      event.consume()
+    }
+    btn.setOnDragOver { event =>
+      if event.getGestureSource != btn && event.getDragboard.hasString then
+        event.acceptTransferModes(TransferMode.MOVE)
+      event.consume()
+    }
+    btn.setOnDragDropped { event =>
+      val db = event.getDragboard
+      val success = if db.hasString then
+        val draggedIdx = db.getString.toInt
+        val targetIdx = index
+        cardOrderer = None
+        onOrder(CardOrderer.moveCard(draggedIdx, targetIdx))
+        true
+      else false
+
+      event.setDropCompleted(success)
+      event.consume()
+    }

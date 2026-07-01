@@ -153,7 +153,7 @@
         <StackPane>
             <VBox alignment="TOP_CENTER">
                 <VBox prefHeight="200.0" prefWidth="100.0">
-                    <HBox fx:id="jokerSlots" alignment="CENTER" spacing="30.0">
+                    <HBox fx:id="jokerSlotsBox" alignment="CENTER">
                     </HBox>
                 </VBox>
             </VBox>
@@ -174,56 +174,7 @@
                     <!-- ==================================================== -->
                     <HBox alignment="CENTER" spacing="30.0">
                         <VBox alignment="CENTER" spacing="18.0">
-                            <!-- The 8 selectable card slots -->
-                            <HBox alignment="CENTER" spacing="5.0">
-                                <ToggleButton fx:id="cardBtn1" styleClass="card-button">
-                                    <graphic>
-                                        <ImageView fx:id="card1" fitHeight="125.0" fitWidth="85.0"
-                                                   pickOnBounds="true" preserveRatio="true"/>
-                                    </graphic>
-                                </ToggleButton>
-                                <ToggleButton fx:id="cardBtn2" styleClass="card-button">
-                                    <graphic>
-                                        <ImageView fx:id="card2" fitHeight="125.0" fitWidth="85.0"
-                                                   pickOnBounds="true" preserveRatio="true"/>
-                                    </graphic>
-                                </ToggleButton>
-                                <ToggleButton fx:id="cardBtn3" styleClass="card-button">
-                                    <graphic>
-                                        <ImageView fx:id="card3" fitHeight="125.0" fitWidth="85.0"
-                                                   pickOnBounds="true" preserveRatio="true"/>
-                                    </graphic>
-                                </ToggleButton>
-                                <ToggleButton fx:id="cardBtn4" styleClass="card-button">
-                                    <graphic>
-                                        <ImageView fx:id="card4" fitHeight="125.0" fitWidth="85.0"
-                                                   pickOnBounds="true" preserveRatio="true"/>
-                                    </graphic>
-                                </ToggleButton>
-                                <ToggleButton fx:id="cardBtn5" styleClass="card-button">
-                                    <graphic>
-                                        <ImageView fx:id="card5" fitHeight="125.0" fitWidth="85.0"
-                                                   pickOnBounds="true" preserveRatio="true"/>
-                                    </graphic>
-                                </ToggleButton>
-                                <ToggleButton fx:id="cardBtn6" styleClass="card-button">
-                                    <graphic>
-                                        <ImageView fx:id="card6" fitHeight="125.0" fitWidth="85.0"
-                                                   pickOnBounds="true" preserveRatio="true"/>
-                                    </graphic>
-                                </ToggleButton>
-                                <ToggleButton fx:id="cardBtn7" styleClass="card-button">
-                                    <graphic>
-                                        <ImageView fx:id="card7" fitHeight="125.0" fitWidth="85.0"
-                                                   pickOnBounds="true" preserveRatio="true"/>
-                                    </graphic>
-                                </ToggleButton>
-                                <ToggleButton fx:id="cardBtn8" styleClass="card-button">
-                                    <graphic>
-                                        <ImageView fx:id="card8" fitHeight="125.0" fitWidth="85.0"
-                                                   pickOnBounds="true" preserveRatio="true"/>
-                                    </graphic>
-                                </ToggleButton>
+                            <HBox fx:id="handSlotsBox" alignment="CENTER">
                             </HBox>
 
                             <!-- Row 2: Play Hand / Sort Hand / Discard, aligned to the card fan -->
