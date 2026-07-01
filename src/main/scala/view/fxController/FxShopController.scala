@@ -5,7 +5,9 @@ import app.Msg.ShopAction
 
 import javafx.fxml.{FXML, Initializable}
 import javafx.scene.control.Button
+import javafx.scene.image.{Image, ImageView}
 import javafx.scene.layout.VBox
+import view.Images
 
 import java.net.URL
 import java.util.ResourceBundle
@@ -19,9 +21,28 @@ class FxShopController extends Initializable, Dispatcher, ClickableDeck:
   @FXML private var skipButton: Button = uninitialized
   @FXML private var deckHost: VBox = uninitialized
 
+  protected def imageNode(image: Image): ImageView =
+    val iv = new ImageView(image)
+    iv.setFitWidth(136)
+    iv.setFitHeight(200)
+    iv.setPreserveRatio(true)
+    iv
+
   override def initialize(url: URL, rb: ResourceBundle): Unit =
+    cardPackButton.setGraphic(renderStandardPack)
+    planetPackButton.setGraphic(renderPlanetPack)
+    jokerPackButton.setGraphic(renderJokerPack)
     cardPackButton.setOnAction(_ => dispatch(ShopAction.OpenCardPack))
     planetPackButton.setOnAction(_ => dispatch(ShopAction.OpenPlanetPack))
     jokerPackButton.setOnAction(_ => dispatch(ShopAction.OpenJokerPack))
     skipButton.setOnAction(_ => dispatch(ShopAction.SkipShop))
     mountDeck(deckHost)
+
+  private def renderStandardPack: ImageView =
+    imageNode(Images.pack("Standard", "Normal", 1))
+
+  private def renderPlanetPack: ImageView =
+    imageNode(Images.pack("Celestial", "Normal", 1))
+
+  private def renderJokerPack: ImageView =
+    imageNode(Images.pack("Buffoon", "Normal", 1))
