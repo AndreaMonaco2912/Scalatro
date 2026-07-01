@@ -4,7 +4,7 @@ package model.round
 import model.commons.Score.Score
 import model.commons.{Card, CardOrderer, Deck}
 import model.game.{Blind, GameState}
-
+//TODO valutare se mettere maxSize = 5 e minSize = 1
 /** The game's hand: the collection of cards the player can choose from */
 type Hand = Seq[Card]
 
