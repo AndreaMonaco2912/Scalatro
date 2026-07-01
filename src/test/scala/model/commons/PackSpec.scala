@@ -17,4 +17,4 @@ class PackSpec extends AnyFlatSpec, Matchers:
   "A pack " should "not propose cards from the given blacklist" in:
     val blackList = Seq(A of S, A of D)
     val pack = CardsPack().smallPack(blackList)
-    pack.items.foreach(card => blackList should not contain (card))
+    pack.items.foreach(card => blackList should not contain card)
