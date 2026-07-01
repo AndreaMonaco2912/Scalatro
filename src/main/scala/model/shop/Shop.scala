@@ -1,18 +1,10 @@
 package scalatro
 package model.shop
 
-import model.commons.{
-  Card,
-  CardsPack,
-  Joker,
-  JokerPack,
-  Pack,
-  Planet,
-  PlanetPack
-}
+import model.commons.*
 import model.game.ShopInformation
-
-import scala.util.Random
+import model.rng.SelectionPolicy.UniformSelection
+import model.rng.{ScalatroRng, PresetPolicies, SelectionPolicy}
 
 case class Shop(
     cardPack: Pack[Card],
@@ -22,9 +14,12 @@ case class Shop(
 
 object Shop:
 
-  def default(shopInformation: ShopInformation)(using Random): Shop =
+  def default(shopInformation: ShopInformation)(using ScalatroRng): Shop =
+    given SelectionPolicy[Card] = PresetPolicies.noFaces
+    given SelectionPolicy[Planet] = PresetPolicies.pairBiasedPlanets
+    given SelectionPolicy[Joker] = UniformSelection[Joker]
     Shop(
-      CardsPack.smallPack,
-      PlanetPack.smallPack,
-      JokerPack.smallPack(shopInformation.jokers)
+      CardsPack().smallPack,
+      PlanetPack().smallPack,
+      JokerPack().smallPack(shopInformation.jokers)
     )

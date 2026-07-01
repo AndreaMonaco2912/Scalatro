@@ -1,39 +1,40 @@
 package scalatro
 package model.commons
 
-import scala.util.Random
+import model.rng.Types.Pool
+import model.rng.{ScalatroRng, SelectionPolicy}
 
 case class Pack[A](items: Seq[A])
 
-trait PackFactory[A]:
+trait PackFactory[A](using SelectionPolicy[A]):
   private val SMALL_PACK_SIZE = 3
   private val BIG_PACK_SIZE = 5
-  def pool: Seq[A]
-  def apply(n: Int)(using rng: Random): Pack[A] =
+  def pool: Pool[A]
+  def apply(n: Int)(using rng: ScalatroRng): Pack[A] =
     require(n >= 0, s"cannot present a pack with a negative amount of cards")
-    Pack(rng.shuffle(pool).take(n))
-  def apply(n: Int, blackList: Seq[A])(using rng: Random): Pack[A] =
+    Pack(rng.draw(pool, n))
+  def apply(n: Int, blackList: Seq[A])(using rng: ScalatroRng): Pack[A] =
     require(n >= 0, s"cannot present a pack with a negative amount of cards")
-    Pack(rng.shuffle(pool diff blackList).take(n))
+    Pack(rng.draw(pool without blackList, n))
 
-  def smallPack(using rng: Random): Pack[A] =
-    Pack(rng.shuffle(pool).take(SMALL_PACK_SIZE))
-  def smallPack(blackList: Seq[A])(using rng: Random): Pack[A] =
-    Pack(rng.shuffle(pool diff blackList).take(SMALL_PACK_SIZE))
-  def bigPack(using rng: Random): Pack[A] =
-    Pack(rng.shuffle(pool).take(BIG_PACK_SIZE))
-  def bigPack(blackList: Seq[A])(using rng: Random): Pack[A] =
-    Pack(rng.shuffle(pool diff blackList).take(BIG_PACK_SIZE))
+  def smallPack(using rng: ScalatroRng): Pack[A] =
+    Pack(rng.draw(pool, SMALL_PACK_SIZE))
+  def smallPack(blackList: Seq[A])(using rng: ScalatroRng): Pack[A] =
+    Pack(rng.draw(pool without blackList, SMALL_PACK_SIZE))
+  def bigPack(using rng: ScalatroRng): Pack[A] =
+    Pack(rng.draw(pool, SMALL_PACK_SIZE))
+  def bigPack(blackList: Seq[A])(using rng: ScalatroRng): Pack[A] =
+    Pack(rng.draw(pool without blackList, SMALL_PACK_SIZE))
 
-object CardsPack extends PackFactory[Card]:
-  val pool: Seq[Card] =
-    for
+class CardsPack(using SelectionPolicy[Card]) extends PackFactory[Card]:
+  val pool: Pool[Card] =
+    Pool(for
       suit <- Suit.values.toSeq
       rank <- Rank.values.toSeq
-    yield Card(rank, suit)
+    yield Card(rank, suit))
 
-object PlanetPack extends PackFactory[Planet]:
-  val pool: Seq[Planet] = Planet.values.toSeq
+class PlanetPack(using SelectionPolicy[Planet]) extends PackFactory[Planet]:
+  val pool: Pool[Planet] = Pool(Planet.values)
 
-object JokerPack extends PackFactory[Joker]:
-  val pool: Seq[Joker] = JokerType.values.toSeq
+class JokerPack(using SelectionPolicy[Joker]) extends PackFactory[Joker]:
+  val pool: Pool[Joker] = Pool(JokerType.values.toSeq)

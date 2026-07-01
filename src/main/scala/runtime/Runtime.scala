@@ -1,22 +1,22 @@
 package scalatro
 package runtime
 
-import app.{Cmd, Model, Msg, Update}
 import app.Msg.RoundAction
+import app.{Cmd, Model, Msg, Update}
 import controller.SingleRoundController
 import model.game.GameState
+import model.rng.ScalatroRng
+import model.rng.Types.Seed
 import model.round.Round
 import model.shop.Shop
-import view.{FxView, GameViews, View}
+import view.{FxView, GameViews}
 
 import cats.effect.IO
 import cats.effect.std.Queue
 import cats.effect.unsafe.implicits.global
 
-import scala.util.Random
-
-class Runtime(screens: GameViews, seed: Long = Random.nextLong()):
-  private given Random = Random(seed)
+class Runtime(screens: GameViews, seed: Seed = Seed.random):
+  private given ScalatroRng = ScalatroRng(seed)
 
   def run: IO[Unit] =
     for
@@ -28,7 +28,11 @@ class Runtime(screens: GameViews, seed: Long = Random.nextLong()):
       _ <- loop(model0, queue, view)
     yield ()
 
-  private def loop(model: Model, queue: Queue[IO, Msg], view: FxView): IO[Unit] =
+  private def loop(
+      model: Model,
+      queue: Queue[IO, Msg],
+      view: FxView
+  ): IO[Unit] =
     for
       msg <- queue.take
       (next, cmd) = Update.update(model, msg)

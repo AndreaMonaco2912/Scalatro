@@ -2,6 +2,7 @@ package scalatro
 package model.game
 
 import model.commons.*
+import model.rng.ScalatroRng
 
 import scala.util.Random
 
@@ -12,7 +13,7 @@ case class GameState(
     jokers: Seq[Joker],
     levels: HandTypeLevels
 ):
-  def shuffleDeck(using Random): GameState =
+  def shuffleDeck(using ScalatroRng): GameState =
     this.copy(deck = deck.shuffle)
 
   def advanceBlind: GameState =
