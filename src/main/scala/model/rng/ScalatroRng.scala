@@ -14,6 +14,7 @@ trait ScalatroRng:
 
 object ScalatroRng:
   def apply(seed: Seed): ScalatroRng = ScalatroRngImpl(seed)
+  def default: ScalatroRng = ScalatroRngImpl(Seed(42))
 
   private class ScalatroRngImpl(seed: Seed) extends ScalatroRng:
     private val randomMap: RandomMap = RandomMap(seed)

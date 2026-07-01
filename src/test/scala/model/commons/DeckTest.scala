@@ -4,11 +4,13 @@ package model.commons
 import scala.util.Random
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
+import model.rng.ScalatroRng
+import model.rng.Types.Seed
 
 class DeckTest extends AnyFlatSpec, Matchers:
   import Deck.*
   import Rank.*
-  given Random = Random(0L)
+  given ScalatroRng = ScalatroRng(Seed(42))
   val pokerDeckFullSize = 52
 
   "A Deck" should "contain 52 cards" in:

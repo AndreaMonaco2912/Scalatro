@@ -8,6 +8,7 @@ import model.game.{GameState, HandInformation}
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
+import model.rng.ScalatroRng
 
 /** A test spec for [[Round]] */
 class RoundSpec extends AnyFlatSpec with Matchers with MockFactory:
@@ -43,7 +44,7 @@ class RoundSpec extends AnyFlatSpec with Matchers with MockFactory:
     updatedRound.gameState shouldBe initialRound.gameState
 
   "Modifying the deck" should "return a new Round with the updated deck" in:
-    val newDeck = Deck().shuffle(using scala.util.Random(0))
+    val newDeck = Deck().shuffle(using ScalatroRng.default)
     val updatedRound = initialRound.modify(deck = newDeck)
 
     updatedRound.deck shouldBe newDeck

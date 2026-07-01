@@ -6,12 +6,12 @@ import model.game.ShopInformation
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-
-import scala.util.Random
+import model.rng.ScalatroRng
+import model.rng.SelectionPolicy.UniformSelection
 
 class ShopTest extends AnyFlatSpec, Matchers:
 
-  given Random = Random(0L)
+  given ScalatroRng = ScalatroRng.default
 
   private val smallPackSize = 3
 
@@ -34,4 +34,6 @@ class ShopTest extends AnyFlatSpec, Matchers:
     )
 
   it should "offer an empty joker pack when every joker is owned" in:
-    shopOwning(JokerPack.pool).jokerPack.items shouldBe empty
+    shopOwning(
+      JokerPack(using UniformSelection[Joker]).pool.values
+    ).jokerPack.items shouldBe empty
