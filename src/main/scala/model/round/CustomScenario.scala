@@ -1,14 +1,15 @@
 package scalatro
 package model.round
 
-import model.commons.{Card, HandTypeLevels, Joker}
+import model.commons.{Card, Deck, HandType, HandTypeLevels, Joker, Level}
 import model.game.GameStateBuilder
 
-/** The entry point for the custom scenario DSL.
+/** The entry point for the [[CustomScenario]] DSL.
   *
   * Example:
   * {{{
-  * val currentRound = Cards(A of S, K of H) withJokers Seq(myJoker) onLevels HandTypeLevels.initial .buildRound
+  * val customScenario = Cards(A of S, K of H) withJokers Seq(myJoker)
+ *     onLevels(HC lv 3, TP lv 2, SF lv 5)
   * }}}
   */
 object Cards:
@@ -20,6 +21,52 @@ object Cards:
     *   a new, immutable [[CustomScenario]] to continue the configuration chain
     */
   def apply(cards: Card*): CustomScenario = CustomScenario(cards)
+
+object HandLevelBuilder:
+  /** Shorthand for [[HandType.HighCard]]. */
+  val HC: HandType = HandType.HighCard
+
+  /** Shorthand for [[HandType.Pair]]. */
+  val P: HandType = HandType.Pair
+
+  /** Shorthand for [[HandType.TwoPair]]. */
+  val TP: HandType = HandType.TwoPair
+
+  /** Shorthand for [[HandType.ThreeOfAKind]]. */
+  val TOK: HandType = HandType.ThreeOfAKind
+
+  /** Shorthand for [[HandType.Straight]]. */
+  val ST: HandType = HandType.Straight
+
+  /** Shorthand for [[HandType.Flush]]. */
+  val FL: HandType = HandType.Flush
+
+  /** Shorthand for [[HandType.FullHouse]]. */
+  val FH: HandType = HandType.FullHouse
+
+  /** Shorthand for [[HandType.FourOfAKind]]. */
+  val FOK: HandType = HandType.FourOfAKind
+
+  /** Shorthand for [[HandType.StraightFlush]]. */
+  val SF: HandType = HandType.StraightFlush
+
+  /** Shorthand for [[HandType.FiveOfAKind]]. */
+  val FIOK: HandType = HandType.FiveOfAKind
+
+  /** Shorthand for [[HandType.FlushHouse]]. */
+  val FLH: HandType = HandType.FlushHouse
+
+  /** Shorthand for [[HandType.FlushFive]]. */
+  val FF: HandType = HandType.FlushFive
+
+  extension (handType: HandType)
+    /** Associates a [[HandType]] with a [[Level]].
+     *
+     * @param level the level to assign
+     * @return a pair of ([[HandType]], [[Level]])
+     */
+    infix def lv(level: Level): (HandType, Level) = handType -> Level(level)
+
 
 /** An immutable builder for quickly setting up a [[Round]] context.
   *
@@ -47,15 +94,14 @@ case class CustomScenario(
     this.copy(jokers = newJokers)
 
   /** Sets the hand levels for the current context.
-    *
-    * @param newLevels
-    *   the [[HandTypeLevels]] tracking the level of each hand type
+    *  
+    * @param entries the hand type / level pairs
     * @return
     *   a new [[CustomScenario]] containing the specified levels
     */
-  infix def onLevels(newLevels: HandTypeLevels): CustomScenario =
-    this.copy(levels = newLevels)
-
+  infix def onLevels(entries: (HandType, Level)*): CustomScenario =
+    this.copy(levels = levels ++ entries.toMap)
+  
   /** Terminal method that compiles the fluent chain into a full [[Round]]
     * object.
     *
@@ -72,5 +118,6 @@ case class CustomScenario(
     RoundBuilder.configure {
       import model.round.RoundBuilder.DSL.*
       HandInRound := this.cards
+      DeckInRound := Deck(Deck().cards diff this.cards) 
       GameStateInRound := customState
     }
