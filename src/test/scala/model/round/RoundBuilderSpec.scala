@@ -12,8 +12,8 @@ class RoundBuilderSpec extends AnyFlatSpec with Matchers:
 
   "RoundBuilder" should "correctly build a round with all custom values" in {
     val customScore = Score(42)
-    val customHand = Seq(A | S, K | H, 10 | D, 5 | C)
-    val customDeck = Deck(Seq(2 | S, A | H, J | D, 6 | C))
+    val customHand = Seq(A of S, K of H, 10 of D, 5 of C)
+    val customDeck = Deck(Seq(2 of S, A of H, J of D, 6 of C))
     val customState = GameState.initial
 
     val currentRound = RoundBuilder.configure {
@@ -30,7 +30,7 @@ class RoundBuilderSpec extends AnyFlatSpec with Matchers:
   }
 
   it should "retain default values for omitted configurations" in {
-    val customHand = Seq(2 | H, 3 | H)
+    val customHand = Seq(2 of H, 3 of H)
 
     val currentRound = RoundBuilder.configure {
       HandInRound := customHand

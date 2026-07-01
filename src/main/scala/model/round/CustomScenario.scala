@@ -8,7 +8,7 @@ import model.game.GameStateBuilder
   *
   * Example:
   * {{{
-  * val currentRound = Cards(A | S, K | H) withJokers Seq(myJoker) onLevels HandTypeLevels.initial .buildRound
+  * val currentRound = Cards(A of S, K of H) withJokers Seq(myJoker) onLevels HandTypeLevels.initial .buildRound
   * }}}
   */
 object Cards:

@@ -3,8 +3,8 @@ package model.commons
 
 /** A DSL for building [[Card]] instances. * Example usage:
   * {{{
-  * val fiveOfHearts = 5 | H
-  * val aceOfSpades = A | S
+  * val fiveOfHearts = 5 of H
+  * val aceOfSpades = A of S
   * }}}
   */
 object CardBuilder:
@@ -29,7 +29,7 @@ object CardBuilder:
       * @throws IllegalArgumentException
       *   if the integer is not between 2 and 10
       */
-    def |(suit: Suit): Card = value match
+    infix def of(suit: Suit): Card = value match
       case 2  => Card(Rank.Two, suit)
       case 3  => Card(Rank.Three, suit)
       case 4  => Card(Rank.Four, suit)
@@ -49,25 +49,25 @@ object CardBuilder:
     /** @param suit
       *   the suit of the card
       */
-    def |(suit: Suit): Card = Card(Rank.Jack, suit)
+    infix def of(suit: Suit): Card = Card(Rank.Jack, suit)
 
   /** Builder for a Queen. */
   object Q:
     /** @param suit
       *   the suit of the card
       */
-    def |(suit: Suit): Card = Card(Rank.Queen, suit)
+    infix def of(suit: Suit): Card = Card(Rank.Queen, suit)
 
   /** Builder for a King. */
   object K:
     /** @param suit
       *   the suit of the card
       */
-    def |(suit: Suit): Card = Card(Rank.King, suit)
+    infix def of(suit: Suit): Card = Card(Rank.King, suit)
 
   /** Builder for an Ace. */
   object A:
     /** @param suit
       *   the suit of the card
       */
-    def |(suit: Suit): Card = Card(Rank.Ace, suit)
+    infix def of(suit: Suit): Card = Card(Rank.Ace, suit)
