@@ -117,8 +117,13 @@ class FxController extends Initializable, Bindable[RoundAction]:
         multLabel.setText(handType.handScore.mult.customToString)
         handLabel.setText(handType.handType.toString)
         handLevelLabel.setText(s"lvl.${handType.level}")
-        playButton.setDisable(!playAvailable || selectedCards.isEmpty)
-        discardButton.setDisable(!discardAvailable || selectedCards.isEmpty)
+        val numSelectedCards = selectedCards.length
+        playButton.setDisable(
+          !playAvailable || selectedCards.isEmpty || numSelectedCards > 5
+        )
+        discardButton.setDisable(
+          !discardAvailable || selectedCards.isEmpty || numSelectedCards > 5
+        )
       case _ =>
         chipsLabel.setText("0")
         multLabel.setText("0")
