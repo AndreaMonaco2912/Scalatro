@@ -12,8 +12,9 @@ import cats.effect.unsafe.implicits.global
 import javafx.animation.*
 import javafx.application.Platform
 import javafx.fxml.{FXML, Initializable}
+import javafx.scene.Node
 import javafx.scene.control.*
-import javafx.scene.image.ImageView
+import javafx.scene.image.{Image, ImageView}
 import javafx.scene.input.{ClipboardContent, TransferMode}
 import javafx.scene.layout.HBox
 import javafx.util.Duration
@@ -25,6 +26,9 @@ import scala.compiletime.uninitialized
 
 @SuppressWarnings(Array("org.wartremover.warts.Null"))
 class FxController extends Initializable, Bindable[RoundAction]:
+
+  @FXML private var jokerSlots: HBox = uninitialized
+//  @FXML private var handSlots: HBox = uninitialized
 
   // Card graphics
   @FXML private var card1: ImageView = uninitialized
@@ -47,18 +51,18 @@ class FxController extends Initializable, Bindable[RoundAction]:
   @FXML private var cardBtn8: ToggleButton = uninitialized
 
   // Joker graphics
-  @FXML private var joker1: ImageView = uninitialized
-  @FXML private var joker2: ImageView = uninitialized
-  @FXML private var joker3: ImageView = uninitialized
-  @FXML private var joker4: ImageView = uninitialized
-  @FXML private var joker5: ImageView = uninitialized
-
-  // Joker toggle buttons
-  @FXML private var jokerBtn1: ToggleButton = uninitialized
-  @FXML private var jokerBtn2: ToggleButton = uninitialized
-  @FXML private var jokerBtn3: ToggleButton = uninitialized
-  @FXML private var jokerBtn4: ToggleButton = uninitialized
-  @FXML private var jokerBtn5: ToggleButton = uninitialized
+//  @FXML private var joker1: ImageView = uninitialized
+//  @FXML private var joker2: ImageView = uninitialized
+//  @FXML private var joker3: ImageView = uninitialized
+//  @FXML private var joker4: ImageView = uninitialized
+//  @FXML private var joker5: ImageView = uninitialized
+//
+//  // Joker toggle buttons
+//  @FXML private var jokerBtn1: ToggleButton = uninitialized
+//  @FXML private var jokerBtn2: ToggleButton = uninitialized
+//  @FXML private var jokerBtn3: ToggleButton = uninitialized
+//  @FXML private var jokerBtn4: ToggleButton = uninitialized
+//  @FXML private var jokerBtn5: ToggleButton = uninitialized
 
   // Info labels
   @FXML private var roundNumLabel: Label = uninitialized
@@ -95,15 +99,15 @@ class FxController extends Initializable, Bindable[RoundAction]:
     cardBtn8
   )
 
-  private def jokerViews: List[ImageView] =
-    List(joker1, joker2, joker3, joker4, joker5)
+//  private def jokerViews: List[ImageView] =
+//    List(joker1, joker2, joker3, joker4, joker5)
 
-  private def jokerButtons: List[ToggleButton] =
-    List(jokerBtn1, jokerBtn2, jokerBtn3, jokerBtn4, jokerBtn5)
+//  private def jokerButtons: List[ToggleButton] =
+//    List(jokerBtn1, jokerBtn2, jokerBtn3, jokerBtn4, jokerBtn5)
 
   private var handSlots: List[(ToggleButton, Card)] = List()
 
-  private var jokerSlots: List[(ToggleButton, Joker)] = List()
+//  private var jokerSlots: List[(ToggleButton, Joker)] = List()
 
   private var lastKnownRound: Option[Round] = None
   private var cardOrderer: Option[CardOrderer] = None
@@ -236,11 +240,19 @@ class FxController extends Initializable, Bindable[RoundAction]:
         btn.setVisible(false)
       }
 
-      jokerViews.foreach(_.setImage(null))
-      jokerButtons.foreach { btn =>
-        btn.setSelected(false)
-        btn.setVisible(false)
-      }
+//      jokerViews.foreach(_.setImage(null))
+//      jokerButtons.foreach { btn =>
+//        btn.setSelected(false)
+//        btn.setVisible(false)
+//      }
+//
+//      handSlots.getChildren.clear()
+//      round.hand.toSeq.foreach(c =>
+//        val cardNode = renderCard(c)
+//        val toggleButton = new ToggleButton()
+//        toggleButton.getStyleClass.add("card-button")
+//        handSlots.getChildren.add(cardNode)
+//      )
 
       handSlots = round.hand.toList.zip(cardButtons).map { case (card, btn) =>
         setCardImage(cardViews(cardButtons.indexOf(btn)), card)
@@ -248,13 +260,18 @@ class FxController extends Initializable, Bindable[RoundAction]:
         (btn, card)
       }
 
-      jokerSlots = round.gameState.jokers.toList.zip(jokerButtons).map {
-        case (joker, btn) =>
-          setJokerImage(jokerViews(jokerButtons.indexOf(btn)), joker)
-          btn.setVisible(true)
-          btn.setTooltip(new Tooltip(joker.description))
-          (btn, joker)
-      }
+      jokerSlots.getChildren.clear()
+      round.gameState.jokers.foreach(joker =>
+        val node = renderJoker(joker)
+        jokerSlots.getChildren.add(node)
+      )
+//      jokerSlots = round.gameState.jokers.toList.zip(jokerButtons).map {
+//        case (joker, btn) =>
+//          setJokerImage(jokerViews(jokerButtons.indexOf(btn)), joker)
+//          btn.setVisible(true)
+//          btn.setTooltip(new Tooltip(joker.description))
+//          (btn, joker)
+//      }
 
       setHandType(None)
     }
@@ -334,11 +351,29 @@ class FxController extends Initializable, Bindable[RoundAction]:
     offer(RoundAction.DiscardCards(selectedCards))
     cardOrderer.foreach(onOrder)
 
+
   private def onOrder(cardOrderer: CardOrderer): Unit =
     offer(RoundAction.OrderHand(cardOrderer))
 
-  private def setJokerImage(imageView: ImageView, joker: Joker): Unit =
-    imageView.setImage(Images.joker(joker))
+  protected def imageNode(image: Image): ImageView =
+    val iv = new ImageView(image)
+    iv.setFitWidth(85)
+    iv.setFitHeight(125)
+    iv.setPreserveRatio(true)
+    iv.getStyleClass.add("pack-card")
+    iv
 
+  private def renderJoker(joker: Joker): Node =
+    val iv = imageNode(Images.joker(joker))
+    Tooltip.install(iv,new Tooltip(joker.description))
+    iv
+
+//  private def setJokerImage(imageView: ImageView, joker: Joker): Unit =
+//    imageView.setImage(Images.joker(joker))
+//
   private def setCardImage(imageView: ImageView, card: Card): Unit =
     imageView.setImage(Images.card(card))
+
+//  private def renderCard(card: Card): Node =
+//    val iv = imageNode(Images.card(card))
+//    iv
