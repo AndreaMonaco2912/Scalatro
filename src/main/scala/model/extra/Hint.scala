@@ -34,21 +34,22 @@ object Hint:
   )(using ScoreConfig): LazyList[(Seq[Card], Score)] =
     val indices: Term = hand.indices
     val goal: Term = s"combos($indices, Combo)"
-    for
-      solveInfo <- allCombinationsEngine(goal)
-      comboTerm = Scala2P.extractTerm(solveInfo, "Combo")
-//      _ = System.out.println(comboTerm)
-      comboIndices = comboTerm.toString
+
+    def getIndicesFromSolveInfo(solveInfo: SolveInfo) =
+      Scala2P
+        .extractTerm(solveInfo, "Combo")
+        .toString
         .stripPrefix("[")
         .stripSuffix("]")
         .split(",")
         .filter(_.nonEmpty)
         .map(_.trim.toInt)
         .toSeq
-//      _ = System.out.println(comboIndices)
+
+    for
+      solveInfo <- allCombinationsEngine(goal)
+      comboIndices = getIndicesFromSolveInfo(solveInfo)
       if comboIndices.nonEmpty && comboIndices.size <= 5
       combo = comboIndices.map(hand)
-//      _ = System.out.println(combo)
       score = calculateScore(combo)
-//      _ = System.out.println(score)
     yield combo -> score
