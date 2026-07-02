@@ -7,7 +7,7 @@ import org.scalatest.matchers.should.Matchers
 import model.commons.Score
 import model.commons.Score.Score
 
-class BlindTest extends AnyFlatSpec, Matchers:
+class BlindSpec extends AnyFlatSpec, Matchers:
 
   val start: Blind = Blind.first
 
