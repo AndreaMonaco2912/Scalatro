@@ -1,7 +1,6 @@
 package scalatro
 package app
 
-import model.commons.Score.Score
 import model.commons.{Card, CardOrderer, Joker, Planet}
 import model.game.GameState
 import model.round.Round
@@ -51,6 +50,6 @@ object Msg:
     case SkipPack
 
   enum InternalEffect extends Msg:
-    case RoundWon(round: Round, gameState: GameState)
-    case RoundLost(round: Round, gameState: GameState, finalScore: Score)
+    case RoundWon(round: Round)
+    case RoundLost(round: Round)
     case ShopReady(gameState: GameState, shop: Shop)

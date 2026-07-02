@@ -19,10 +19,10 @@ class FxView(screens: GameViews, dispatch: Msg => Unit) extends View:
   private var gameplay: Option[FxController] = None
 
   def render(model: Model): IO[Unit] = model match
-    case Model.RoundWon(round, gs) =>
+    case Model.RoundWon(round) =>
       enterRoundEnd(Screen.Won, screens.roundWon, round)
 //      enter(Screen.Won, screens.roundWon)(_.onMessage(dispatch))
-    case Model.RoundLost(round, _, _) =>
+    case Model.RoundLost(round) =>
       enterRoundEnd(Screen.Lost, screens.roundLost, round)
 //      enter(Screen.Lost, screens.roundLost)(_.onMessage(dispatch))
     case Model.InShop(_, _) =>
