@@ -4,6 +4,7 @@ package view.fxController
 import app.Msg.RoundEndAction
 import model.round.RoundState
 
+import javafx.application.Platform
 import javafx.fxml.{FXML, Initializable}
 import javafx.scene.control.{Button, Label}
 import javafx.scene.layout.VBox
@@ -13,9 +14,7 @@ import java.util.ResourceBundle
 import scala.compiletime.uninitialized
 
 @SuppressWarnings(Array("org.wartremover.warts.Null"))
-abstract class FxRoundEndController
-    extends Initializable,
-      Dispatcher:
+abstract class FxRoundEndController extends Initializable, Dispatcher:
 
   @FXML private var deckHost: VBox = uninitialized
 
@@ -37,16 +36,18 @@ abstract class FxRoundEndController
   // TODO: valutare se mantenere hands e discards remaining solo nel round won
   // e se mostrare ulteriori informazioni nel round lost (es. blind raggiunto)
   def showStats(roundState: RoundState): Unit =
-    scoreLabel.setText(s"You scored: ${roundState.score.asDouble.toString}")
-    targetScoreLabel.setText(
-      s"Score at least: ${roundState.gameState.blind.targetScore.asDouble.toString}"
-    )
-    handsRemainingLabel.setText(
-      s"Remaining hands: ${roundState.remainingPlays.toString}"
-    )
-    discardsRemainingLabel.setText(
-      s"Remaining discards: ${roundState.remainingDiscards.toString}"
-    )
+    Platform.runLater { () =>
+      scoreLabel.setText(s"You scored: ${roundState.score.asDouble.toString}")
+      targetScoreLabel.setText(
+        s"Score at least: ${roundState.gameState.blind.targetScore.asDouble.toString}"
+      )
+      handsRemainingLabel.setText(
+        s"Remaining hands: ${roundState.remainingPlays.toString}"
+      )
+      discardsRemainingLabel.setText(
+        s"Remaining discards: ${roundState.remainingDiscards.toString}"
+      )
+    }
 
 @SuppressWarnings(Array("org.wartremover.warts.Null"))
 class FxRoundWonController extends FxRoundEndController:
