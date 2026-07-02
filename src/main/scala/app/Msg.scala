@@ -1,9 +1,10 @@
 package scalatro
 package app
 
-import model.commons.{Card, CardOrderer, Deck, Joker, Planet}
 import model.commons.Score.Score
-import model.game.{Blind, GameState}
+import model.commons.{Card, CardOrderer, Joker, Planet}
+import model.game.GameState
+import model.round.Round
 import model.shop.Shop
 
 sealed trait Msg
@@ -50,6 +51,6 @@ object Msg:
     case SkipPack
 
   enum InternalEffect extends Msg:
-    case RoundWon(gameState: GameState)
-    case RoundLost(gameState: GameState, finalScore: Score)
+    case RoundWon(round: Round, gameState: GameState)
+    case RoundLost(round: Round, gameState: GameState, finalScore: Score)
     case ShopReady(gameState: GameState, shop: Shop)

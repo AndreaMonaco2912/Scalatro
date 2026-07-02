@@ -16,18 +16,18 @@ object Update:
 
   private def fromEffect(effect: Msg.InternalEffect): (Model, Cmd) =
     effect match
-      case Msg.InternalEffect.RoundWon(gs) =>
-        (Model.RoundWon(gs), Cmd.NoOp)
-      case Msg.InternalEffect.RoundLost(gs, score) =>
-        (Model.RoundLost(gs, score), Cmd.NoOp)
+      case Msg.InternalEffect.RoundWon(round, gs) =>
+        (Model.RoundWon(round, gs), Cmd.NoOp)
+      case Msg.InternalEffect.RoundLost(round, gs, score) =>
+        (Model.RoundLost(round, gs, score), Cmd.NoOp)
       case Msg.InternalEffect.ShopReady(gs, shop) =>
         (Model.InShop(gs, shop), Cmd.NoOp)
 
   private def fromAction(model: Model, msg: Msg): (Model, Cmd) =
     (model, msg) match
-      case (Model.RoundWon(gs), Msg.RoundEndAction.NextRound) =>
+      case (Model.RoundWon(round, gs), Msg.RoundEndAction.NextRound) =>
         (model, Cmd.BuildShop(gs))
-      case (Model.RoundLost(_, _), Msg.RoundEndAction.Restart) =>
+      case (Model.RoundLost(_, _, _), Msg.RoundEndAction.Restart) =>
         (model, Cmd.Deal(GameState.initial))
       case (m: Model.InShop, action: Msg.ShopAction) =>
         inShop(m, action)
@@ -69,8 +69,8 @@ object Update:
         (model, Cmd.Deal(gs.advanceBlind))
 
   private def deckOf(model: Model): Option[Deck] = model match
-    case Model.RoundWon(gs)       => Some(gs.deck)
-    case Model.RoundLost(gs, _)   => Some(gs.deck)
-    case Model.InShop(gs, _)      => Some(gs.deck)
-    case Model.OpeningPack(gs, _) => Some(gs.deck)
-    case _                        => None
+    case Model.RoundWon(_, gs)     => Some(gs.deck)
+    case Model.RoundLost(_, gs, _) => Some(gs.deck)
+    case Model.InShop(gs, _)       => Some(gs.deck)
+    case Model.OpeningPack(gs, _)  => Some(gs.deck)
+    case _                         => None

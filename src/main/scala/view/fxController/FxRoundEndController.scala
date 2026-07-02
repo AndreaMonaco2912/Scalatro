@@ -2,9 +2,10 @@ package scalatro
 package view.fxController
 
 import app.Msg.RoundEndAction
+import model.round.Round
 
 import javafx.fxml.{FXML, Initializable}
-import javafx.scene.control.Button
+import javafx.scene.control.{Button, Label}
 import javafx.scene.layout.VBox
 
 import java.net.URL
@@ -19,12 +20,32 @@ abstract class FxRoundEndController
 
   @FXML private var deckHost: VBox = uninitialized
 
+  @FXML private var roundStatsBox: VBox = uninitialized
+  @FXML private var scoreLabel: Label = uninitialized
+  @FXML private var targetScoreLabel: Label = uninitialized
+  @FXML private var handsRemainingLabel: Label = uninitialized
+  @FXML private var discardsRemainingLabel: Label = uninitialized
+
   protected def button: Button
   protected def message: RoundEndAction
 
   override def initialize(url: URL, rb: ResourceBundle): Unit =
     button.setOnAction(_ => dispatch(message))
     mountDeck(deckHost)
+
+  // TODO: valutare se mantenere hands e discards remaining solo nel round won
+  // e se mostrare ulteriori informazioni nel round lost (es. blind raggiunto)
+  def showStats(round: Round): Unit =
+    scoreLabel.setText(s"You scored: ${round.score.asDouble.toString}")
+    targetScoreLabel.setText(
+      s"Score at least: ${round.gameState.blind.targetScore.asDouble.toString}"
+    )
+    handsRemainingLabel.setText(
+      s"Remaining hands: ${round.remainingPlays.toString}"
+    )
+    discardsRemainingLabel.setText(
+      s"Remaining discards: ${round.remainingDiscards.toString}"
+    )
 
 @SuppressWarnings(Array("org.wartremover.warts.Null"))
 class FxRoundWonController extends FxRoundEndController:

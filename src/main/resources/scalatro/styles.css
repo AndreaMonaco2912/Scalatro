@@ -154,3 +154,9 @@
 .deck-trigger:hover {
     -fx-translate-y: -6;
 }
+
+.stat-text {
+    color: white;
+    -fx-font-size: 30px;
+    -fx-font-weight: bold;
+}

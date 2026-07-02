@@ -12,9 +12,16 @@
       spacing="40"
       style="-fx-background-color: black;">
 
-    <Label text="Hai Perso"
+    <Label text="You lost!"
            textFill="WHITE"
-           style="-fx-font-size: 48px; -fx-font-weight: bold;" />
+           style="-fx-font-size: 48px; -fx-font-weight: bold;"/>
+
+    <VBox fx:id="roundStatsBox" alignment="BOTTOM_CENTER">
+        <Label fx:id="targetScoreLabel" styleClass="stat-text"/>
+        <Label fx:id="scoreLabel" styleClass="stat-text"/>
+        <Label fx:id="handsRemainingLabel" styleClass="stat-text"/>
+        <Label fx:id="discardsRemainingLabel" styleClass="stat-text"/>
+    </VBox>
 
     <Button fx:id="restartButton"
             text="RESTART"
@@ -22,6 +29,6 @@
                    -fx-background-color: #2e2e2e;
                    -fx-text-fill: white;
                    -fx-padding: 12 30 12 30;
-                   -fx-background-radius: 8;" />
+                   -fx-background-radius: 8;"/>
 
 </VBox>

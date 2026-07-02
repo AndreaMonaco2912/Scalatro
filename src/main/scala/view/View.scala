@@ -2,8 +2,9 @@ package scalatro
 package view
 
 import app.{Model, Msg, OpenPack}
-import view.fxController.{FxController, FxPackController}
 import model.commons.Deck
+import model.round.Round
+import view.fxController.{FxController, FxPackController, FxRoundEndController}
 
 import cats.effect.IO
 
@@ -18,10 +19,12 @@ class FxView(screens: GameViews, dispatch: Msg => Unit) extends View:
   private var gameplay: Option[FxController] = None
 
   def render(model: Model): IO[Unit] = model match
-    case Model.RoundWon(_) =>
-      enter(Screen.Won, screens.roundWon)(_.onMessage(dispatch))
-    case Model.RoundLost(_, _) =>
-      enter(Screen.Lost, screens.roundLost)(_.onMessage(dispatch))
+    case Model.RoundWon(round, gs) =>
+      enterRoundEnd(Screen.Won, screens.roundWon, round)
+//      enter(Screen.Won, screens.roundWon)(_.onMessage(dispatch))
+    case Model.RoundLost(round, _, _) =>
+      enterRoundEnd(Screen.Lost, screens.roundLost, round)
+//      enter(Screen.Lost, screens.roundLost)(_.onMessage(dispatch))
     case Model.InShop(_, _) =>
       enter(Screen.ShopScreen, screens.shop)(_.onMessage(dispatch))
 
@@ -44,6 +47,19 @@ class FxView(screens: GameViews, dispatch: Msg => Unit) extends View:
   private def enter[C](screen: Screen, load: IO[C])(wire: C => Unit): IO[Unit] =
     if current.contains(screen) then IO.unit
     else load.flatMap(ctrl => IO { wire(ctrl); current = Some(screen) })
+
+  private def enterRoundEnd(
+      screen: Screen,
+      load: IO[FxRoundEndController],
+      round: Round
+  ): IO[Unit] =
+    if current.contains(screen) then IO.unit
+    else
+      load.flatMap: ctrl =>
+        IO:
+          ctrl.onMessage(dispatch)
+          ctrl.showStats(round)
+          current = Some(screen)
 
   private def enterPack[A](
       screen: Screen,

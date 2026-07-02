@@ -4,8 +4,6 @@ package model.game
 import model.commons.*
 import model.rng.ScalatroRng
 
-import scala.util.Random
-
 case class GameState(
     handInformation: HandInformation,
     deck: Deck,

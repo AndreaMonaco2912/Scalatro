@@ -9,8 +9,8 @@ import model.shop.Shop
 
 enum Model:
   case Playing
-  case RoundWon(gameState: GameState)
-  case RoundLost(gameState: GameState, finalScore: Score)
+  case RoundWon(round: Round, gameState: GameState)
+  case RoundLost(round: Round, gameState: GameState, finalScore: Score)
   case InShop(gameState: GameState, shop: Shop)
   case OpeningPack(gameState: GameState, pack: OpenPack)
   case ShowDeck(deck: Deck, previousState: Model)
