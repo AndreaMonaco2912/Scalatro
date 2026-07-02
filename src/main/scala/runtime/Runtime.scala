@@ -3,11 +3,10 @@ package runtime
 
 import app.Msg.RoundAction
 import app.{Cmd, Model, Msg, Update}
-import controller.SingleRoundController
 import model.game.GameState
 import model.rng.ScalatroRng
 import model.rng.Types.Seed
-import model.round.Round
+import model.round.{Round, RoundManager}
 import model.shop.Shop
 import view.{FxView, GameViews}
 
@@ -58,12 +57,8 @@ class Runtime(screens: GameViews, seed: Seed = Seed.random):
       ctrl <- view.enterGameplay
       roundQueue <- Queue.unbounded[IO, RoundAction]
       _ <- IO(ctrl.setActionQueue(roundQueue))
-      controller = SingleRoundController(
-        r => IO(ctrl.update(r)),
-        roundQueue,
-        gs.shuffleDeck
-      )
-      finalRound <- controller.start()
+      roundManager = RoundManager(r => IO(ctrl.update(r)), roundQueue.take)
+      finalRound <- roundManager.startRound(Round(gs.shuffleDeck))
       _ <- queue.offer(outcome(finalRound))
     yield ()
 

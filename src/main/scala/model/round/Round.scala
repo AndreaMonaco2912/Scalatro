@@ -2,8 +2,8 @@ package scalatro
 package model.round
 
 import model.commons.Score.Score
-import model.commons.{Card, CardOrderer, Deck}
-import model.game.{Blind, GameState}
+import model.commons.{Card, Deck, Score}
+import model.game.GameState
 //TODO valutare se mettere maxSize = 5 e minSize = 1
 /** The game's hand: the collection of cards the player can choose from */
 type Hand = Seq[Card]
@@ -56,7 +56,7 @@ trait Round:
   def isFinished: Boolean
 
 object Round:
-  /** Creates a new [[Round]] using the default implementation
+  /** Creates a new [[Round]]
     * @param score
     *   the score
     * @param hand
@@ -73,9 +73,26 @@ object Round:
       hand: Hand,
       deck: Deck,
       gameState: GameState
-  ): Round = // TODO: round should be created taking here only GameState, not in Controller.scala
+  ): Round =
     RoundImpl(
       score,
+      hand,
+      deck,
+      gameState.handInformation.handNum,
+      gameState.handInformation.discardNum,
+      gameState
+    )
+
+  /** Creates a new [[Round]], initialized with the settings in GameState
+    * @param gameState
+    *   the game state
+    * @return
+    *   the round
+    */
+  def apply(gameState: GameState): Round =
+    val (hand, deck) = gameState.deck.draw(gameState.handInformation.handSize)
+    RoundImpl(
+      Score.zero,
       hand,
       deck,
       gameState.handInformation.handNum,
