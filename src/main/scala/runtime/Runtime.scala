@@ -6,7 +6,7 @@ import app.{Cmd, Model, Msg, Update}
 import model.game.GameState
 import model.rng.ScalatroRng
 import model.rng.Types.Seed
-import model.round.{Round, RoundManager}
+import model.round.{RoundState, RoundManager}
 import model.shop.Shop
 import view.{FxView, GameViews}
 
@@ -58,11 +58,11 @@ class Runtime(screens: GameViews, seed: Seed = Seed.random):
       roundQueue <- Queue.unbounded[IO, RoundAction]
       _ <- IO(ctrl.setActionQueue(roundQueue))
       roundManager = RoundManager(r => IO(ctrl.update(r)), roundQueue.take)
-      finalRound <- roundManager.startRound(Round(gs.shuffleDeck))
+      finalRound <- roundManager.startRound(RoundState(gs.shuffleDeck))
       _ <- queue.offer(outcome(finalRound))
     yield ()
 
-  private def outcome(round: Round): Msg =
-    if round.gameState.blind.isBeaten(round.score)
-    then Msg.InternalEffect.RoundWon(round)
-    else Msg.InternalEffect.RoundLost(round)
+  private def outcome(roundState: RoundState): Msg =
+    if roundState.gameState.blind.isBeaten(roundState.score)
+    then Msg.InternalEffect.RoundWon(roundState)
+    else Msg.InternalEffect.RoundLost(roundState)

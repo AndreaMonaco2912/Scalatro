@@ -8,7 +8,7 @@ import model.game.GameState
 import model.commons.CardBuilder.*
 import model.round.RoundBuilder.DSL.*
 
-class RoundBuilderSpec extends AnyFlatSpec with Matchers:
+class RoundStateBuilderSpec extends AnyFlatSpec with Matchers:
 
   "RoundBuilder" should "correctly build a round with all custom values" in {
     val customScore = Score(42)

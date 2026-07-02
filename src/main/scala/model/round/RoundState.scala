@@ -9,7 +9,7 @@ import model.game.GameState
 type Hand = Seq[Card]
 
 /** A trait for indicating the current state of the round */
-trait Round:
+trait RoundState:
   /** The current score */
   def score: Score
 
@@ -28,7 +28,10 @@ trait Round:
   /** The game state of this round */
   def gameState: GameState
 
-  /** @param score
+  /** Modify some parameters of this [[RoundState]], returning a new instance
+    * with the updated values
+    *
+    * @param score
     *   the new score
     * @param hand
     *   the new hand
@@ -39,7 +42,7 @@ trait Round:
     * @param remainingDiscards
     *   the new remaining discards
     * @return
-    *   the modified round
+    *   the modified round state
     */
   def modify(
       score: Score = score,
@@ -47,7 +50,7 @@ trait Round:
       deck: Deck = deck,
       remainingPlays: Int = remainingPlays,
       remainingDiscards: Int = remainingDiscards
-  ): Round
+  ): RoundState
 
   /** Checks if the round is considered finished
     * @return
@@ -55,8 +58,9 @@ trait Round:
     */
   def isFinished: Boolean
 
-object Round:
-  /** Creates a new [[Round]]
+object RoundState:
+  /** Creates a new [[RoundState]]
+    *
     * @param score
     *   the score
     * @param hand
@@ -66,15 +70,15 @@ object Round:
     * @param gameState
     *   the game state
     * @return
-    *   the round
+    *   the round state
     */
   def apply(
       score: Score,
       hand: Hand,
       deck: Deck,
       gameState: GameState
-  ): Round =
-    RoundImpl(
+  ): RoundState =
+    RoundStateImpl(
       score,
       hand,
       deck,
@@ -83,15 +87,16 @@ object Round:
       gameState
     )
 
-  /** Creates a new [[Round]], initialized with the settings in GameState
+  /** Creates a new [[RoundState]], initialized with the settings in GameState
+    *
     * @param gameState
     *   the game state
     * @return
-    *   the round
+    *   the round state
     */
-  def apply(gameState: GameState): Round =
+  def apply(gameState: GameState): RoundState =
     val (hand, deck) = gameState.deck.draw(gameState.handInformation.handSize)
-    RoundImpl(
+    RoundStateImpl(
       Score.zero,
       hand,
       deck,
@@ -100,22 +105,29 @@ object Round:
       gameState
     )
 
-  private case class RoundImpl(
+  private case class RoundStateImpl(
       score: Score,
       hand: Hand,
       deck: Deck,
       remainingPlays: Int,
       remainingDiscards: Int,
       gameState: GameState
-  ) extends Round:
+  ) extends RoundState:
     override def modify(
         score: Score,
         hand: Hand,
         deck: Deck,
         remainingPlays: Int,
         remainingDiscards: Int
-    ): Round =
-      RoundImpl(score, hand, deck, remainingPlays, remainingDiscards, gameState)
+    ): RoundState =
+      RoundStateImpl(
+        score,
+        hand,
+        deck,
+        remainingPlays,
+        remainingDiscards,
+        gameState
+      )
 
     override def isFinished: Boolean =
       gameState.blind.isBeaten(score) || remainingPlays == 0

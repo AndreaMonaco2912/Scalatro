@@ -5,7 +5,7 @@ import model.commons.Score.Score
 import model.commons.{Deck, Score}
 import model.game.GameState
 
-/** A DSL for building a [[Round]] with a readable and declarative syntax.
+/** A DSL for building a [[RoundState]] with a readable and declarative syntax.
   *
   * Example:
   * {{{
@@ -23,24 +23,24 @@ class RoundBuilder:
   private var deck: Deck = Deck()
   private var gameState: GameState = GameState.initial
 
-  /** Builds the final immutable [[Round]] using the configured parameters.
+  /** Builds the final immutable [[RoundState]] using the configured parameters.
     *
     * @return
-    *   the constructed [[Round]]
+    *   the constructed [[RoundState]]
     */
-  def build: Round = Round(score, hand, deck, gameState)
+  def build: RoundState = RoundState(score, hand, deck, gameState)
 
 object RoundBuilder:
 
   /** Creates a builder, makes it available in the implicit scope of the block,
-    * runs the block to apply configurations, and builds the [[Round]].
+    * runs the block to apply configurations, and builds the [[RoundState]].
     *
     * @param configuration
     *   the context function containing DSL assignments
     * @return
-    *   the fully constructed [[Round]]
+    *   the fully constructed [[RoundState]]
     */
-  def configure(configuration: RoundBuilder ?=> Unit): Round =
+  def configure(configuration: RoundBuilder ?=> Unit): RoundState =
     val builder = RoundBuilder()
     configuration(using builder)
     builder.build

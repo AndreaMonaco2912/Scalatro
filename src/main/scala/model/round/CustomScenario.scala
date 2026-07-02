@@ -68,7 +68,7 @@ object HandLevelBuilder:
     infix def lv(level: Level): (HandType, Level) = handType -> Level(level)
 
 
-/** An immutable builder for quickly setting up a [[Round]] context.
+/** An immutable builder for quickly setting up a [[RoundState]] context.
   *
   * @param cards
   *   the sequence of cards in the player's hand
@@ -102,13 +102,13 @@ case class CustomScenario(
   infix def onLevels(entries: (HandType, Level)*): CustomScenario =
     this.copy(levels = levels ++ entries.toMap)
   
-  /** Terminal method that compiles the fluent chain into a full [[Round]]
+  /** Terminal method that compiles the fluent chain into a full [[RoundState]]
     * object.
     *
     * @return
-    *   the fully constructed, immutable [[Round]]
+    *   the fully constructed, immutable [[RoundState]]
     */
-  def buildRound: Round =
+  def buildRound: RoundState =
     val customState = GameStateBuilder.configure {
       import model.game.GameStateBuilder.DSL.*
       Jokers := this.jokers

@@ -2,7 +2,7 @@ package scalatro
 package view.fxController
 
 import model.commons.*
-import model.round.Round
+import model.round.RoundState
 import app.Msg.RoundAction
 import view.Images
 
@@ -54,13 +54,13 @@ class FxController extends Initializable, Bindable[RoundAction]:
 
   private var handSlots: List[(ToggleButton, Card)] = List()
 
-  private var lastKnownRound: Option[Round] = None
+  private var lastKnownRoundState: Option[RoundState] = None
   private var cardOrderer: Option[CardOrderer] = None
 
-  private def playAvailable: Boolean = lastKnownRound match
+  private def playAvailable: Boolean = lastKnownRoundState match
     case Some(round) => round.remainingPlays > 0
     case _           => false
-  private def discardAvailable: Boolean = lastKnownRound match
+  private def discardAvailable: Boolean = lastKnownRoundState match
     case Some(round) => round.remainingDiscards > 0
     case _           => false
 
@@ -73,7 +73,7 @@ class FxController extends Initializable, Bindable[RoundAction]:
   extension (cards: Seq[Card])
     private def levelledHandType: LevelledHandType =
       val handType = HandType.detect(cards)
-      val levels: HandTypeLevels = lastKnownRound match
+      val levels: HandTypeLevels = lastKnownRoundState match
         case Some(round) => round.gameState.levels
         case _           => HandTypeLevels.initial
       val handTypeLevel = levels.getLevel(handType)
@@ -133,23 +133,23 @@ class FxController extends Initializable, Bindable[RoundAction]:
         discardButton.setDisable(true)
 
   /** Update all UI nodes to reflect the new Round state. */
-  def update(round: Round): Unit =
+  def update(roundState: RoundState): Unit =
     Platform.runLater { () =>
       goalLabel.setText(
-        round.gameState.blind.targetScore.asDouble.customToString
+        roundState.gameState.blind.targetScore.asDouble.customToString
       )
-      roundScoreLabel.setText(round.score.asDouble.customToString)
-      deckLabel.setText(s"${round.deck.size} left")
-      handsRemainingLabel.setText(round.remainingPlays.toString)
-      discardsRemainingLabel.setText(round.remainingDiscards.toString)
-      roundNumLabel.setText(s"Round ${round.gameState.blind.roundNum}")
+      roundScoreLabel.setText(roundState.score.asDouble.customToString)
+      deckLabel.setText(s"${roundState.deck.size} left")
+      handsRemainingLabel.setText(roundState.remainingPlays.toString)
+      discardsRemainingLabel.setText(roundState.remainingDiscards.toString)
+      roundNumLabel.setText(s"Round ${roundState.gameState.blind.roundNum}")
 
-      lastKnownRound = Some(round)
-      playButton.setDisable(round.remainingPlays <= 0)
-      discardButton.setDisable(round.remainingDiscards <= 0)
+      lastKnownRoundState = Some(roundState)
+      playButton.setDisable(roundState.remainingPlays <= 0)
+      discardButton.setDisable(roundState.remainingDiscards <= 0)
 
       // Cards overlap
-      val handSize = round.hand.size
+      val handSize = roundState.hand.size
       val maxNormalCards = 8
       if handSize > maxNormalCards then
         val negativeSpacing = -15.0 - ((handSize - maxNormalCards) * 2.0)
@@ -158,14 +158,14 @@ class FxController extends Initializable, Bindable[RoundAction]:
 
       // Rebuild the card slots from the current hand, mirroring jokerSlotsBox
       handSlotsBox.getChildren.clear()
-      handSlots = round.hand.toList.zipWithIndex.map { case (card, index) =>
+      handSlots = roundState.hand.toList.zipWithIndex.map { case (card, index) =>
         val btn = renderCardButton(card, index)
         handSlotsBox.getChildren.add(btn)
         (btn, card)
       }
 
       // Jokers overlap
-      val numJokers = round.gameState.jokers.length
+      val numJokers = roundState.gameState.jokers.length
       val maxNormalJokers = 7
       if numJokers > maxNormalJokers then
         val negativeSpacing = -15.0 - ((numJokers - maxNormalJokers) * 2.0)
@@ -173,7 +173,7 @@ class FxController extends Initializable, Bindable[RoundAction]:
       else jokerSlotsBox.setSpacing(15.0)
 
       jokerSlotsBox.getChildren.clear()
-      round.gameState.jokers.foreach(joker =>
+      roundState.gameState.jokers.foreach(joker =>
         val node = renderJoker(joker)
         jokerSlotsBox.getChildren.add(node)
       )

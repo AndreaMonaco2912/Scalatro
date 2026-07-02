@@ -21,8 +21,8 @@ class TurnActionsSpec extends AnyFlatSpec with Matchers with MockFactory:
 
   private val initialHand: Seq[Card] = Seq(c1, c2, c3)
   private val initialDeck: Deck = Deck(Seq(c4, c5, c6))
-  private val initialRound: Round =
-    Round(Score.zero, initialHand, initialDeck, GameState.initial)
+  private val initialRoundState: RoundState =
+    RoundState(Score.zero, initialHand, initialDeck, GameState.initial)
   private val simulatedScore = Score(123456)
 
   /** Creates a [[ScoreConfig]] that has mocked [[HandScoreCalculator]].
@@ -63,40 +63,40 @@ class TurnActionsSpec extends AnyFlatSpec with Matchers with MockFactory:
     cardOrderer
 
   "discardCards" should "remove discarded cards and add drawn replacements to hand" in:
-    val result = discardCards(Seq(c1)).runS(initialRound).value
+    val result = discardCards(Seq(c1)).runS(initialRoundState).value
     result.hand shouldBe Seq(c2, c3, c4)
 
   it should "remove the drawn cards from the deck" in:
-    val result = discardCards(Seq(c1)).runS(initialRound).value
+    val result = discardCards(Seq(c1)).runS(initialRoundState).value
     result.deck shouldBe Deck(Seq(c5, c6))
 
   it should "decrease remaining discards by 1" in:
-    val result = discardCards(Seq(c1)).runS(initialRound).value
-    result.remainingDiscards shouldBe initialRound.remainingDiscards - 1
+    val result = discardCards(Seq(c1)).runS(initialRoundState).value
+    result.remainingDiscards shouldBe initialRoundState.remainingDiscards - 1
 
   "playCards" should "remove played cards and add drawn replacements to hand" in:
     given ScoreConfig = nUsagesScoreConfig(1)
-    val result = playCards(Seq(c1)).runS(initialRound).value
+    val result = playCards(Seq(c1)).runS(initialRoundState).value
     result.hand shouldBe Seq(c2, c3, c4)
 
   it should "remove the drawn cards from the deck" in:
     given ScoreConfig = nUsagesScoreConfig(1)
-    val result = playCards(Seq(c1)).runS(initialRound).value
+    val result = playCards(Seq(c1)).runS(initialRoundState).value
     result.deck shouldBe Deck(Seq(c5, c6))
 
   it should "decrease remaining plays by 1" in:
     given ScoreConfig = nUsagesScoreConfig(1)
-    val result = playCards(Seq(c1)).runS(initialRound).value
-    result.remainingPlays shouldBe initialRound.remainingPlays - 1
+    val result = playCards(Seq(c1)).runS(initialRoundState).value
+    result.remainingPlays shouldBe initialRoundState.remainingPlays - 1
 
   it should "increase the round score based on the played cards" in:
     given ScoreConfig = nUsagesScoreConfig(2)
     val cardsToPlay = Seq(c1)
-    val result = playCards(cardsToPlay).runS(initialRound).value
-    result.score shouldBe initialRound.score
+    val result = playCards(cardsToPlay).runS(initialRoundState).value
+    result.score shouldBe initialRoundState.score
       + Score.calculateScore(cardsToPlay)
 
   "orderCards" should "order the cards in hand using a the provided CardOrderer" in:
     given cardOrderer: CardOrderer = nUsagesCardOrderer(initialHand, 2)
-    val result = orderCards.runS(initialRound).value
+    val result = orderCards.runS(initialRoundState).value
     result.hand shouldBe cardOrderer.order(initialHand)

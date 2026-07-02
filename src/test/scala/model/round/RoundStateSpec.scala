@@ -10,10 +10,10 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import model.rng.ScalatroRng
 
-/** A test spec for [[Round]] */
-class RoundSpec extends AnyFlatSpec with Matchers with MockFactory:
+/** A test spec for [[RoundState]] */
+class RoundStateSpec extends AnyFlatSpec with Matchers with MockFactory:
 
-  private def initialRound: Round = Round(
+  private def initialRound: RoundState = RoundState(
     score = Score.zero,
     hand = Seq(),
     deck = Deck(),
@@ -82,7 +82,7 @@ class RoundSpec extends AnyFlatSpec with Matchers with MockFactory:
       handInformation =
         HandInformation(handSize = 5, handNum = 7, discardNum = 2)
     )
-    val round = Round(Score.zero, Seq(), Deck(), gameState)
+    val round = RoundState(Score.zero, Seq(), Deck(), gameState)
 
     round.remainingPlays shouldBe gameState.handInformation.handNum
 
@@ -91,7 +91,7 @@ class RoundSpec extends AnyFlatSpec with Matchers with MockFactory:
       handInformation =
         HandInformation(handSize = 5, handNum = 7, discardNum = 2)
     )
-    val round = Round(Score.zero, Seq(), Deck(), gameState)
+    val round = RoundState(Score.zero, Seq(), Deck(), gameState)
 
     round.remainingDiscards shouldBe gameState.handInformation.discardNum
 

@@ -5,7 +5,7 @@ import model.commons.*
 import model.game.{Blind, GameState}
 import app.Msg.RoundAction
 import app.Msg.RoundAction.{DiscardCards, PlayCards}
-import model.round.{Round, RoundManager}
+import model.round.{RoundState, RoundManager}
 
 import cats.effect.IO
 import cats.effect.std.Queue
@@ -35,15 +35,15 @@ class RoundManagerSpec extends AnyFlatSpec with Matchers with MockFactory:
   private given ScoreConfig = ScoreConfig.default
 
   private def runSequence(
-      initialRound: Round,
-      actions: Seq[RoundAction],
-      render: Round => IO[Unit] = _ => IO.unit
-  ): Round =
+                           initialRoundState: RoundState,
+                           actions: Seq[RoundAction],
+                           render: RoundState => IO[Unit] = _ => IO.unit
+  ): RoundState =
     val testProgram = for
       queue <- Queue.unbounded[IO, RoundAction]
       _ <- actions.traverse_(action => queue.offer(action))
       manager = RoundManager(render, queue.take)
-      finalRound <- manager.startRound(initialRound)
+      finalRound <- manager.startRound(initialRoundState)
       queueFinalSize <- queue.size
     yield
       queueFinalSize shouldBe 0 // all actions must have been consumed
@@ -51,8 +51,8 @@ class RoundManagerSpec extends AnyFlatSpec with Matchers with MockFactory:
 
     testProgram.unsafeRunSync()
 
-  private def roundWithBlindScore(targetScore: Score.Score): Round =
-    Round(
+  private def roundWithBlindScore(targetScore: Score.Score): RoundState =
+    RoundState(
       Score.zero,
       initialHand,
       initialDeck,
@@ -60,13 +60,13 @@ class RoundManagerSpec extends AnyFlatSpec with Matchers with MockFactory:
     )
 
   private def assertRoundFinished(
-      round: Round,
-      expectedScore: Score.Score,
-      consumedCards: Card*
+                                   roundState: RoundState,
+                                   expectedScore: Score.Score,
+                                   consumedCards: Card*
   ): Unit =
-    round.score shouldBe expectedScore
-    consumedCards.foreach(card => round.hand should not contain card)
-    round.isFinished shouldBe true
+    roundState.score shouldBe expectedScore
+    consumedCards.foreach(card => roundState.hand should not contain card)
+    roundState.isFinished shouldBe true
 
   /** A render mock function expecting to be called, in order, with exactly
     * `rounds`
@@ -75,14 +75,14 @@ class RoundManagerSpec extends AnyFlatSpec with Matchers with MockFactory:
     * @return
     *   the render function
     */
-  private def mockRenderSequence(rounds: Round*): Round => IO[Unit] =
-    val render = mockFunction[Round, IO[Unit]]
+  private def mockRenderSequence(rounds: RoundState*): RoundState => IO[Unit] =
+    val render = mockFunction[RoundState, IO[Unit]]
     inSequence:
       rounds.foreach(round => render expects round returning IO.unit)
     render
 
   "A RoundManager" should "return immediately if the initial round is already finished, rendering only once" in:
-    val initialRound = Round(
+    val initialRound = RoundState(
       initialGameState.blind.targetScore,
       initialHand,
       initialDeck,

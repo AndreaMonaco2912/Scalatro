@@ -3,7 +3,7 @@ package app
 
 import model.commons.{Card, CardOrderer, Joker, Planet}
 import model.game.GameState
-import model.round.Round
+import model.round.RoundState
 import model.shop.Shop
 
 sealed trait Msg
@@ -52,6 +52,6 @@ object Msg:
     case SkipPack
 
   enum InternalEffect extends Msg:
-    case RoundWon(round: Round)
-    case RoundLost(round: Round)
+    case RoundWon(roundState: RoundState)
+    case RoundLost(roundState: RoundState)
     case ShopReady(gameState: GameState, shop: Shop)
