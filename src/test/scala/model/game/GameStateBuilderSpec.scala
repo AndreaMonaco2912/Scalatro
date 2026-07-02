@@ -1,12 +1,12 @@
 package scalatro
-package model.commons
+package model.game
+
+import model.commons.{Deck, HandTypeLevels, Joker}
+import model.game.GameStateBuilder.DSL.*
+import model.game.{Blind, GameState, GameStateBuilder}
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import model.commons.{Deck, HandTypeLevels, Joker}
-
-import model.game.{Blind, GameState, GameStateBuilder}
-import model.game.GameStateBuilder.DSL.*
 
 class GameStateBuilderSpec extends AnyFlatSpec with Matchers:
 
