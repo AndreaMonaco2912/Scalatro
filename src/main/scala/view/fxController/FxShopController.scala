@@ -14,13 +14,15 @@ import java.util.ResourceBundle
 import scala.compiletime.uninitialized
 
 @SuppressWarnings(Array("org.wartremover.warts.Null"))
-class FxShopController extends Initializable, Dispatcher, ClickableDeck:
+class FxShopController extends Initializable, Dispatcher:
   @FXML private var cardPackButton: Button = uninitialized
   @FXML private var planetPackButton: Button = uninitialized
   @FXML private var jokerPackButton: Button = uninitialized
   @FXML private var skipButton: Button = uninitialized
   @FXML private var handLevelsButton: Button = uninitialized
   @FXML private var deckHost: VBox = uninitialized
+
+  private val clickableDeck = ClickableDeck(dispatch)
 
   protected def imageNode(image: Image): ImageView =
     val iv = new ImageView(image)
@@ -38,7 +40,7 @@ class FxShopController extends Initializable, Dispatcher, ClickableDeck:
     jokerPackButton.setOnAction(_ => dispatch(ShopAction.OpenJokerPack))
     skipButton.setOnAction(_ => dispatch(ShopAction.SkipShop))
     handLevelsButton.setOnAction(_ => dispatch(ManagementAction.ShowLevels))
-    mountDeck(deckHost)
+    clickableDeck.mount(deckHost)
 
   private def renderStandardPack: ImageView =
     imageNode(Images.pack("Standard", "Normal", 1))

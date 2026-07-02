@@ -20,12 +20,13 @@ import scala.compiletime.uninitialized
 @SuppressWarnings(Array("org.wartremover.warts.Null"))
 abstract class FxPackController[A]
     extends Initializable,
-      Dispatcher,
-      ClickableDeck:
+      Dispatcher:
 
   @FXML private var packBox: HBox = uninitialized
   @FXML private var skipButton: Button = uninitialized
   @FXML private var deckHost: VBox = uninitialized
+
+  private val clickableDeck = ClickableDeck(dispatch)
 
   protected def renderItem(item: A): Node
   protected def selectMsg(item: A): PackSelection
@@ -40,7 +41,7 @@ abstract class FxPackController[A]
 
   override def initialize(url: URL, rb: ResourceBundle): Unit =
     skipButton.setOnAction(_ => dispatch(PackSelection.SkipPack))
-    mountDeck(deckHost)
+    clickableDeck.mount(deckHost)
 
   def showItems(items: Seq[A]): Unit =
     Platform.runLater { () =>

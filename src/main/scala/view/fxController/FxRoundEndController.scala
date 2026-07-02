@@ -15,8 +15,7 @@ import scala.compiletime.uninitialized
 @SuppressWarnings(Array("org.wartremover.warts.Null"))
 abstract class FxRoundEndController
     extends Initializable,
-      Dispatcher,
-      ClickableDeck:
+      Dispatcher:
 
   @FXML private var deckHost: VBox = uninitialized
 
@@ -26,12 +25,14 @@ abstract class FxRoundEndController
   @FXML private var handsRemainingLabel: Label = uninitialized
   @FXML private var discardsRemainingLabel: Label = uninitialized
 
+  private val clickableDeck = ClickableDeck(dispatch)
+
   protected def button: Button
   protected def message: RoundEndAction
 
   override def initialize(url: URL, rb: ResourceBundle): Unit =
     button.setOnAction(_ => dispatch(message))
-    mountDeck(deckHost)
+    clickableDeck.mount(deckHost)
 
   // TODO: valutare se mantenere hands e discards remaining solo nel round won
   // e se mostrare ulteriori informazioni nel round lost (es. blind raggiunto)
