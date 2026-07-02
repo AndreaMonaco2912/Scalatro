@@ -2,9 +2,7 @@ package scalatro
 package view
 
 import app.{Model, Msg, OpenPack}
-import model.commons.{Deck, HandTypeLevels}
-import model.round.Round
-import view.fxController.{FxController, FxPackController, FxRoundEndController}
+import view.fxController.{Dispatcher, FxController}
 
 import cats.effect.IO
 
@@ -21,21 +19,22 @@ class FxView(screens: GameViews, dispatch: Msg => Unit) extends View:
 
   def render(model: Model): IO[Unit] = model match
     case Model.RoundWon(round) =>
-      enterRoundEnd(Screen.Won, screens.roundWon, round)
+      enter(Screen.Won, screens.roundWon)(_.showStats(round))
     case Model.RoundLost(round) =>
-      enterRoundEnd(Screen.Lost, screens.roundLost, round)
+      enter(Screen.Lost, screens.roundLost)(_.showStats(round))
     case Model.InShop(_, _) =>
-      enter(Screen.ShopScreen, screens.shop)(_.onMessage(dispatch))
-
+      enter(Screen.ShopScreen, screens.shop)(_ => ())
     case Model.OpeningPack(_, OpenPack.Cards(pack)) =>
-      enterPack(Screen.CardPack, screens.cardPack, pack.items)
+      enter(Screen.CardPack, screens.cardPack)(_.showItems(pack.items))
     case Model.OpeningPack(_, OpenPack.Planets(pack)) =>
-      enterPack(Screen.PlanetPack, screens.planetPack, pack.items)
+      enter(Screen.PlanetPack, screens.planetPack)(_.showItems(pack.items))
     case Model.OpeningPack(_, OpenPack.Jokers(pack)) =>
-      enterPack(Screen.JokerPack, screens.jokerPack, pack.items)
-    case Model.ShowDeck(deck, _)     => enterDeck(deck)
-    case Model.ShowLevels(levels, _) => enterHandLevels(levels)
-    case Model.Playing               => IO.unit
+      enter(Screen.JokerPack, screens.jokerPack)(_.showItems(pack.items))
+    case Model.ShowDeck(deck, _) =>
+      enter(Screen.Deck, screens.deck)(_.showCards(deck.sort))
+    case Model.ShowLevels(levels, _) =>
+      enter(Screen.HandLevels, screens.handLevels)(_.showLevels(levels))
+    case Model.Playing => IO.unit
 
   def enterGameplay: IO[FxController] =
     screens.gameplay.flatMap: ctrl =>
@@ -44,46 +43,13 @@ class FxView(screens: GameViews, dispatch: Msg => Unit) extends View:
         current = Some(Screen.Gameplay)
         ctrl
 
-  private def enter[C](screen: Screen, load: IO[C])(wire: C => Unit): IO[Unit] =
-    if current.contains(screen) then IO.unit
-    else load.flatMap(ctrl => IO { wire(ctrl); current = Some(screen) })
-
-  private def enterRoundEnd(
-      screen: Screen,
-      load: IO[FxRoundEndController],
-      round: Round
+  private def enter[C <: Dispatcher](screen: Screen, load: IO[C])(
+      show: C => Unit
   ): IO[Unit] =
     if current.contains(screen) then IO.unit
     else
       load.flatMap: ctrl =>
         IO:
           ctrl.onMessage(dispatch)
-          ctrl.showStats(round)
+          show(ctrl)
           current = Some(screen)
-
-  private def enterPack[A](
-      screen: Screen,
-      load: IO[FxPackController[A]],
-      items: Seq[A]
-  ): IO[Unit] =
-    if current.contains(screen) then IO.unit
-    else
-      load.flatMap: ctrl =>
-        IO:
-          ctrl.onMessage(dispatch)
-          ctrl.showItems(items)
-          current = Some(screen)
-
-  private def enterDeck(deck: Deck): IO[Unit] =
-    screens.deck.flatMap: ctrl =>
-      IO:
-        ctrl.onMessage(dispatch)
-        ctrl.showCards(deck.sort)
-        current = Some(Screen.Deck)
-
-  private def enterHandLevels(levels: HandTypeLevels): IO[Unit] =
-    screens.handLevels.flatMap: ctrl =>
-      IO:
-        ctrl.onMessage(dispatch)
-        ctrl.showLevels(levels)
-        current = Some(Screen.HandLevels)
