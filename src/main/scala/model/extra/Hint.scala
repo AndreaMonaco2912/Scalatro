@@ -8,14 +8,18 @@ import model.round.Hand
 import Scala2P.{*, given}
 import alice.tuprolog.{SolveInfo, Term}
 
+import scala.language.implicitConversions
+
 object Hint:
 
-  private val allCombinationsEngine: Term => LazyList[SolveInfo] =
-    mkPrologEngine("""
+  private val allCombinationsTheory: String = """
     combos([], []).
     combos([H|T],[H|T2]) :- combos(T,T2).
     combos([_|T],T2) :- combos(T,T2).
-  """)
+  """
+
+  private val allCombinationsEngine: Term => LazyList[SolveInfo] =
+    mkPrologEngine(allCombinationsTheory)
 
   def best(hand: Hand)(using ScoreConfig): Seq[Card] =
     require(hand.sizeIs > 0, "Hand must have at least one card")
@@ -49,7 +53,7 @@ object Hint:
     for
       solveInfo <- allCombinationsEngine(goal)
       comboIndices = getIndicesFromSolveInfo(solveInfo)
-      if comboIndices.nonEmpty && comboIndices.size <= 5
+      if comboIndices.nonEmpty && comboIndices.sizeIs <= 5
       combo = comboIndices.map(hand)
       score = calculateScore(combo)
     yield combo -> score
