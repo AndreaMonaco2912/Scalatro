@@ -2,13 +2,12 @@ package scalatro
 package view.fxController
 
 import app.Msg.ManagementAction
-import model.commons.{Card, Deck}
-import view.Images
+import model.commons.Deck
+import view.{ImageViews, Images}
 
 import javafx.application.Platform
 import javafx.fxml.{FXML, Initializable}
 import javafx.scene.control.Button
-import javafx.scene.image.ImageView
 import javafx.scene.layout.FlowPane
 
 import java.net.URL
@@ -27,11 +26,7 @@ class FxDeckController extends Initializable, Dispatcher:
     Platform.runLater { () =>
       deckPane.getChildren.clear()
       cards.foreach { card =>
-        val iv = new ImageView(Images.card(card))
-        iv.setFitWidth(60)
-        iv.setFitHeight(88)
-        iv.setPreserveRatio(true)
-        iv.getStyleClass.add("pack-card")
+        val iv = ImageViews(Images.card(card), 60, 88, Some("pack-card"))
         deckPane.getChildren.add(iv)
       }
     }

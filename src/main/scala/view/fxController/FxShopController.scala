@@ -7,7 +7,7 @@ import javafx.fxml.{FXML, Initializable}
 import javafx.scene.control.Button
 import javafx.scene.image.{Image, ImageView}
 import javafx.scene.layout.VBox
-import view.Images
+import view.{ImageViews, Images}
 
 import java.net.URL
 import java.util.ResourceBundle
@@ -25,11 +25,7 @@ class FxShopController extends Initializable, Dispatcher:
   private val clickableDeck = ClickableDeck(dispatch)
 
   protected def imageNode(image: Image): ImageView =
-    val iv = new ImageView(image)
-    iv.setFitWidth(136)
-    iv.setFitHeight(200)
-    iv.setPreserveRatio(true)
-    iv
+    ImageViews(image, 136, 200)
 
   override def initialize(url: URL, rb: ResourceBundle): Unit =
     cardPackButton.setGraphic(renderStandardPack)

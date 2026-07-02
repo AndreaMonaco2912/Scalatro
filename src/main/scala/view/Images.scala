@@ -3,7 +3,7 @@ package view
 
 import model.commons.{Card, Joker, Planet, Rank}
 
-import javafx.scene.image.Image
+import javafx.scene.image.{Image, ImageView}
 
 object Images:
 
@@ -34,3 +34,17 @@ object Images:
     load(Resources.pack(s"${category}_${size}_$version"))
 
   def deckBack: Image = load(Resources.deckBack)
+
+object ImageViews:
+  def apply(
+      image: Image,
+      width: Double,
+      height: Double,
+      styleClass: Option[String] = None
+  ): ImageView =
+    val iv = new ImageView(image)
+    iv.setFitWidth(width)
+    iv.setFitHeight(height)
+    iv.setPreserveRatio(true)
+    styleClass.foreach(iv.getStyleClass.add)
+    iv

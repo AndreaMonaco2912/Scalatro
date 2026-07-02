@@ -4,7 +4,7 @@ package view.fxController
 import model.commons.*
 import model.round.RoundState
 import app.Msg.RoundAction
-import view.Images
+import view.{ImageViews, Images}
 
 import cats.effect.IO
 import cats.effect.std.Queue
@@ -260,12 +260,7 @@ class FxController extends Initializable, Bindable[RoundAction]:
     offer(RoundAction.OrderHand(cardOrderer))
 
   protected def imageNode(image: Image): ImageView =
-    val iv = new ImageView(image)
-    iv.setFitWidth(85)
-    iv.setFitHeight(125)
-    iv.setPreserveRatio(true)
-    iv.getStyleClass.add("pack-card")
-    iv
+    ImageViews(image, 85, 125, Some("pack-card"))
 
   private def renderJoker(joker: Joker): Node =
     val iv = imageNode(Images.joker(joker))

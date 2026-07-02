@@ -3,7 +3,7 @@ package view.fxController
 
 import app.Msg.PackSelection
 import model.commons.*
-import view.Images
+import view.{ImageViews, Images}
 
 import javafx.application.Platform
 import javafx.fxml.{FXML, Initializable}
@@ -18,9 +18,7 @@ import java.util.ResourceBundle
 import scala.compiletime.uninitialized
 
 @SuppressWarnings(Array("org.wartremover.warts.Null"))
-abstract class FxPackController[A]
-    extends Initializable,
-      Dispatcher:
+abstract class FxPackController[A] extends Initializable, Dispatcher:
 
   @FXML private var packBox: HBox = uninitialized
   @FXML private var skipButton: Button = uninitialized
@@ -32,12 +30,7 @@ abstract class FxPackController[A]
   protected def selectMsg(item: A): PackSelection
 
   protected def imageNode(image: Image): ImageView =
-    val iv = new ImageView(image)
-    iv.setFitWidth(85)
-    iv.setFitHeight(125)
-    iv.setPreserveRatio(true)
-    iv.getStyleClass.add("pack-card")
-    iv
+    ImageViews(image, 85, 125, Some("pack-card"))
 
   override def initialize(url: URL, rb: ResourceBundle): Unit =
     skipButton.setOnAction(_ => dispatch(PackSelection.SkipPack))
