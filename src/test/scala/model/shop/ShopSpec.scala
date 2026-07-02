@@ -9,7 +9,7 @@ import org.scalatest.matchers.should.Matchers
 import model.rng.ScalatroRng
 import model.rng.SelectionPolicy.UniformSelection
 
-class ShopTest extends AnyFlatSpec, Matchers:
+class ShopSpec extends AnyFlatSpec, Matchers:
 
   given ScalatroRng = ScalatroRng.default
 
