@@ -160,3 +160,12 @@
     -fx-font-size: 30px;
     -fx-font-weight: bold;
 }
+
+.hand-level-row .label {
+    -fx-font-size: 15px;
+}
+
+.scroll-pane,
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}

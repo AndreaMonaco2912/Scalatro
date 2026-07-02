@@ -12,6 +12,8 @@ object Msg:
   enum ManagementAction extends Msg:
     case ShowDeck
     case CloseDeck
+    case ShowLevels
+    case CloseLevels
 
   /** An action the user can perform during the round */
   enum RoundAction extends Msg:

@@ -2,7 +2,7 @@ package scalatro
 package app
 
 import model.game.GameState
-import model.commons.Deck
+import model.commons.{Deck, HandTypeLevels}
 
 object Update:
 
@@ -35,8 +35,12 @@ object Update:
         (model, Cmd.Deal(applySelection(gs, selection).advanceBlind))
       case (Model.ShowDeck(_, prev), Msg.ManagementAction.CloseDeck) =>
         (prev, Cmd.NoOp)
+      case (Model.ShowLevels(_, prev), Msg.ManagementAction.CloseLevels) =>
+        (prev, Cmd.NoOp)
       case (m, Msg.ManagementAction.ShowDeck) =>
         deckOf(m).fold((m, Cmd.NoOp))(d => (Model.ShowDeck(d, m), Cmd.NoOp))
+      case (m, Msg.ManagementAction.ShowLevels) =>
+        levelsOf(m).fold((m, Cmd.NoOp))(l => (Model.ShowLevels(l, m), Cmd.NoOp))
 
       case _ => (model, Cmd.NoOp)
 
@@ -74,3 +78,10 @@ object Update:
     case Model.InShop(gs, _)      => Some(gs.deck)
     case Model.OpeningPack(gs, _) => Some(gs.deck)
     case _                        => None
+
+  private def levelsOf(model: Model): Option[HandTypeLevels] = model match
+    case Model.RoundWon(round) => Some(round.gameState.levels)
+    case Model.RoundLost(round) => Some(round.gameState.levels)
+    case Model.InShop(gs, _) => Some(gs.levels)
+    case Model.OpeningPack(gs, _) => Some(gs.levels)
+    case _ => None

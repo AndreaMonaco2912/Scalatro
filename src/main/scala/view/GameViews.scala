@@ -38,3 +38,7 @@ class GameViews(scene: Scene):
   def jokerPack: IO[FxJokerPackController] = switchTo(Resources.Fxml.jokerPack)
 
   def deck: IO[FxDeckController] = switchTo(Resources.Fxml.deck)
+
+  def handLevels: IO[FxHandLevelsController] = switchTo(
+    Resources.Fxml.handLevels
+  )

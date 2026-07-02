@@ -2,7 +2,7 @@ package scalatro
 package view
 
 import app.{Model, Msg, OpenPack}
-import model.commons.Deck
+import model.commons.{Deck, HandTypeLevels}
 import model.round.Round
 import view.fxController.{FxController, FxPackController, FxRoundEndController}
 
@@ -12,7 +12,8 @@ trait View:
   def render(model: Model): IO[Unit]
 
 private enum Screen:
-  case Gameplay, Won, Lost, ShopScreen, CardPack, PlanetPack, JokerPack, Deck
+  case Gameplay, Won, Lost, ShopScreen, CardPack, PlanetPack, JokerPack, Deck,
+    HandLevels
 
 class FxView(screens: GameViews, dispatch: Msg => Unit) extends View:
   private var current: Option[Screen] = None
@@ -21,10 +22,8 @@ class FxView(screens: GameViews, dispatch: Msg => Unit) extends View:
   def render(model: Model): IO[Unit] = model match
     case Model.RoundWon(round) =>
       enterRoundEnd(Screen.Won, screens.roundWon, round)
-//      enter(Screen.Won, screens.roundWon)(_.onMessage(dispatch))
     case Model.RoundLost(round) =>
       enterRoundEnd(Screen.Lost, screens.roundLost, round)
-//      enter(Screen.Lost, screens.roundLost)(_.onMessage(dispatch))
     case Model.InShop(_, _) =>
       enter(Screen.ShopScreen, screens.shop)(_.onMessage(dispatch))
 
@@ -34,8 +33,9 @@ class FxView(screens: GameViews, dispatch: Msg => Unit) extends View:
       enterPack(Screen.PlanetPack, screens.planetPack, pack.items)
     case Model.OpeningPack(_, OpenPack.Jokers(pack)) =>
       enterPack(Screen.JokerPack, screens.jokerPack, pack.items)
-    case Model.ShowDeck(deck, _) => enterDeck(deck)
-    case Model.Playing           => IO.unit
+    case Model.ShowDeck(deck, _)     => enterDeck(deck)
+    case Model.ShowLevels(levels, _) => enterHandLevels(levels)
+    case Model.Playing               => IO.unit
 
   def enterGameplay: IO[FxController] =
     screens.gameplay.flatMap: ctrl =>
@@ -80,3 +80,10 @@ class FxView(screens: GameViews, dispatch: Msg => Unit) extends View:
         ctrl.onMessage(dispatch)
         ctrl.showCards(deck.sort)
         current = Some(Screen.Deck)
+
+  private def enterHandLevels(levels: HandTypeLevels): IO[Unit] =
+    screens.handLevels.flatMap: ctrl =>
+      IO:
+        ctrl.onMessage(dispatch)
+        ctrl.showLevels(levels)
+        current = Some(Screen.HandLevels)
