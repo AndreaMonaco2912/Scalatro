@@ -32,6 +32,7 @@ object Types:
     extension [T](pool: Pool[T])
       def values: IndexedSeq[T] = pool
       def size: Int = pool.size
-      infix def without(values: Iterable[T]): Pool[T] = pool.filterNot(values.toSet)
+      infix def -[U >: T](other: Pool[U]): Pool[T] = pool.filterNot(other.toSet)
+      infix def +[U >: T](other: Pool[U]): Pool[U] = pool ++ other
 
 export Types.*

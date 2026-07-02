@@ -15,16 +15,16 @@ trait PackFactory[A <: Weighable](using SelectionPolicy[A]):
     Pack(rng.draw(pool, n))
   def apply(n: Int, blackList: Seq[A])(using rng: ScalatroRng): Pack[A] =
     require(n >= 0, s"cannot present a pack with a negative amount of cards")
-    Pack(rng.draw(pool without blackList, n))
+    Pack(rng.draw(pool - Pool(blackList), n))
 
   def smallPack(using rng: ScalatroRng): Pack[A] =
     Pack(rng.draw(pool, SMALL_PACK_SIZE))
   def smallPack(blackList: Seq[A])(using rng: ScalatroRng): Pack[A] =
-    Pack(rng.draw(pool without blackList, SMALL_PACK_SIZE))
+    Pack(rng.draw(pool - Pool(blackList), SMALL_PACK_SIZE))
   def bigPack(using rng: ScalatroRng): Pack[A] =
     Pack(rng.draw(pool, SMALL_PACK_SIZE))
   def bigPack(blackList: Seq[A])(using rng: ScalatroRng): Pack[A] =
-    Pack(rng.draw(pool without blackList, SMALL_PACK_SIZE))
+    Pack(rng.draw(pool - Pool(blackList), SMALL_PACK_SIZE))
 
 class CardsPack(using SelectionPolicy[Card]) extends PackFactory[Card]:
   val pool: Pool[Card] =
