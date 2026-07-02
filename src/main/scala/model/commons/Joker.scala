@@ -1,8 +1,9 @@
 package scalatro
 package model.commons
 
-import model.round.Hand
 import model.game.{GameState, HandInformation}
+import model.rng.Weighable
+import model.round.Hand
 
 /** The information needed to apply the effects of a joker
   */
@@ -32,7 +33,7 @@ object JokerContext:
 
 type JokerEffect[A] = Effect[A, JokerContext]
 
-sealed trait Joker:
+sealed trait Joker extends Weighable:
 
   /** @return
     *   The name of the joker

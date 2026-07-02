@@ -7,8 +7,8 @@ import model.rng.SelectionPolicy.UniformSelection
 import scala.util.Random
 
 trait ScalatroRng:
-  def draw[T: SelectionPolicy](pool: Pool[T], amount: Int): Seq[T]
-  def shuffle[T](elems: Seq[T]): Seq[T] =
+  def draw[T <: Weighable: SelectionPolicy](pool: Pool[T], amount: Int): Seq[T]
+  def shuffle[T <: Weighable](elems: Seq[T]): Seq[T] =
     given UniformSelection[T]
     draw(Pool(elems), elems.size)
 
@@ -19,7 +19,10 @@ object ScalatroRng:
   private class ScalatroRngImpl(seed: Seed) extends ScalatroRng:
     private val randomMap: RandomMap = RandomMap(seed)
 
-    def draw[T: SelectionPolicy as policy](pool: Pool[T], amount: Int): Seq[T] =
+    def draw[T <: Weighable: SelectionPolicy as policy](
+        pool: Pool[T],
+        amount: Int
+    ): Seq[T] =
       if amount <= 0 || pool.size == 0 then Seq.empty
       else
         // Already checked that amount < pool.size

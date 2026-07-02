@@ -1,6 +1,8 @@
 package scalatro
 package model.commons
 
+import model.rng.Weighable
+
 enum Suit:
   case Spades, Hearts, Clubs, Diamonds
 
@@ -19,7 +21,7 @@ enum Rank(val value: Int):
   case King extends Rank(13)
   case Ace extends Rank(14)
 
-trait Card:
+trait Card extends Weighable:
   def rank: Rank
   def suit: Suit
   def onScored(prevHandScore: HandScore): HandScore

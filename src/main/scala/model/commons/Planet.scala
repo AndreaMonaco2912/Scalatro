@@ -1,6 +1,8 @@
 package scalatro
 package model.commons
 
+import model.rng.Weighable
+
 type Level = Int
 
 /** The level of a poker hand */
@@ -52,7 +54,8 @@ object HandTypeLevels:
   *   the hand score which gets added to the base score of the hand for each
   *   level
   */
-enum Planet(val handType: HandType, val increase: HandScore, val name: String):
+enum Planet(val handType: HandType, val increase: HandScore, val name: String)
+    extends Weighable:
   case Pluto extends Planet(HandType.HighCard, HandScore(10, 1), "Pluto")
   case Mercury extends Planet(HandType.Pair, HandScore(15, 1), "Mercury")
   case Uranus extends Planet(HandType.TwoPair, HandScore(20, 1), "Uranus")

@@ -2,11 +2,11 @@ package scalatro
 package model.commons
 
 import model.rng.Types.Pool
-import model.rng.{ScalatroRng, SelectionPolicy}
+import model.rng.{ScalatroRng, SelectionPolicy, Weighable}
 
 case class Pack[A](items: Seq[A])
 
-trait PackFactory[A](using SelectionPolicy[A]):
+trait PackFactory[A <: Weighable](using SelectionPolicy[A]):
   private val SMALL_PACK_SIZE = 3
   private val BIG_PACK_SIZE = 5
   def pool: Pool[A]

@@ -5,31 +5,9 @@ import model.commons.*
 import model.commons.Rank.*
 import model.commons.Suit.*
 
-object PresetPolicies:
-  import SelectionPolicy.*
-  def boostAces: SelectionPolicy[Card] =
-    new UniformSelection[Card] with BoostRank(Ace):
-      override def description: String = "Boosts Aces"
-  def boostHearts: SelectionPolicy[Card] =
-    new UniformSelection[Card] with BoostSuit(Hearts):
-      override def description: String = "Boosts Hearts"
-  def noFaces: SelectionPolicy[Card] =
-    new UniformSelection[Card] with BoostFaces(Weight(0.0)):
-      override def description: String = "Disables face cards"
-  def crazyCards: SelectionPolicy[Card] =
-    new UniformSelection[Card]
-      with BoostRank(Ace)
-      with BoostSuit(Hearts, Weight(0.5))
-      with BoostCard(Card(Ten, Spades), Weight(0.0)):
-      override def description: String =
-        "Boosts Aces, nerfs Hearts, disables Ten of Spades"
+trait Weighable
 
-  def pairBiasedPlanets: SelectionPolicy[Planet] =
-    new UniformSelection[Planet]
-      with BoostPlanetHandType(HandType.Pair, Weight(100.0)):
-      override def description: String = "Boosts planets with Pair hand type"
-
-trait SelectionPolicy[T]:
+trait SelectionPolicy[T <: Weighable]:
   def weight(elem: T): Weight
   def description: String = "A selection policy"
 
@@ -37,7 +15,7 @@ object SelectionPolicy:
   val defaultBoostWeight: Weight = Weight(2.0)
 
   /** Base case with standard weight */
-  class UniformSelection[T] extends SelectionPolicy[T]:
+  class UniformSelection[T <: Weighable] extends SelectionPolicy[T]:
     def weight(elem: T): Weight = Weight(1.0)
 
   /** Boosts one rank, e.g., a "hot" rank or the ace. */
@@ -92,3 +70,27 @@ object SelectionPolicy:
       planet.handType match
         case `handType` => super.weight(planet) * bonus
         case _          => super.weight(planet)
+
+object PresetPolicies:
+  import SelectionPolicy.*
+  def boostAces: SelectionPolicy[Card] =
+    new UniformSelection[Card] with BoostRank(Ace):
+      override def description: String = "Boosts Aces"
+  def boostHearts: SelectionPolicy[Card] =
+    new UniformSelection[Card] with BoostSuit(Hearts):
+      override def description: String = "Boosts Hearts"
+  def noFaces: SelectionPolicy[Card] =
+    new UniformSelection[Card] with BoostFaces(Weight(0.0)):
+      override def description: String = "Disables face cards"
+  def crazyCards: SelectionPolicy[Card] =
+    new UniformSelection[Card]
+      with BoostRank(Ace)
+      with BoostSuit(Hearts, Weight(0.5))
+      with BoostCard(Card(Ten, Spades), Weight(0.0)):
+      override def description: String =
+        "Boosts Aces, nerfs Hearts, disables Ten of Spades"
+
+  def pairBiasedPlanets: SelectionPolicy[Planet] =
+    new UniformSelection[Planet]
+      with BoostPlanetHandType(HandType.Pair, Weight(100.0)):
+      override def description: String = "Boosts planets with Pair hand type"
