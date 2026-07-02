@@ -17,6 +17,7 @@ object ScalatroRng:
   def default: ScalatroRng = ScalatroRngImpl(Seed(42))
 
   private class ScalatroRngImpl(seed: Seed) extends ScalatroRng:
+    import RandomMap.*
     private val randomMap: RandomMap = RandomMap(seed)
 
     def draw[T <: Weighable: SelectionPolicy as policy](
@@ -27,7 +28,7 @@ object ScalatroRng:
       else
         // Already checked that amount < pool.size
         @SuppressWarnings(Array("org.wartremover.warts.IterableOps"))
-        val rng = randomMap(pool.values.head.getClass)
+        val rng = randomMap(pool.values.head)
         WeightedSampling.selectWithoutReplacement(
           pool.values,
           amount,
@@ -43,9 +44,20 @@ object ScalatroRng:
         classOf[Card] -> Random(random.nextLong()),
         classOf[Planet] -> Random(random.nextLong()),
         classOf[Joker] -> Random(random.nextLong())
-      ).withDefaultValue(Random(random.nextLong()))
+      )
+
+    extension (randomMap: RandomMap)
+      def apply(value: AnyRef): Random = value match
+        case _: Card   => randomMap(classOf[Card])
+        case _: Planet => randomMap(classOf[Planet])
+        case _: Joker  => randomMap(classOf[Joker])
+        case _         =>
+          throw new IllegalArgumentException(s"No random generator for $value")
 
   private object WeightedSampling:
+    /** Implementation of Efraimidis–Spirakis A-Res [reservoir
+      * sampling](https://en.wikipedia.org/wiki/Reservoir_sampling) algorithm
+      */
     def selectWithoutReplacement[T](
         elems: IndexedSeq[T],
         amount: Int,
@@ -55,9 +67,10 @@ object ScalatroRng:
       val n = amount.max(0).min(elems.size)
       elems.indices
         .map(i => (key(weightOf(elems(i)).value, random), i))
-        .sortBy(-_._1)
+        .sortBy(_._1)
         .take(n)
         .map((_, i) => elems(i))
 
     private def key(weight: Double, random: Random): Double =
-      if weight <= 0.0 then 0.0 else math.pow(random.nextDouble(), 1.0 / weight)
+      if weight <= 0.0 then Double.PositiveInfinity
+      else -math.log(random.nextDouble()) / weight
