@@ -13,9 +13,12 @@ import scala.language.implicitConversions
 object Hint:
 
   private val allCombinationsTheory: String = """
-    combos([], []).
-    combos([H|T],[H|T2]) :- combos(T,T2).
-    combos([_|T],T2) :- combos(T,T2).
+    between(Low, High, Low) :- Low =< High.
+    between(Low, High, X) :- Low < High, Low1 is Low + 1, between(Low1, High, X).
+
+    combos(0, _, []).
+    combos(N, [H|T], [H|T2]) :- N > 0, N1 is N - 1, combos(N1, T, T2).
+    combos(N, [_|T], T2) :- N > 0, combos(N, T, T2).
   """
 
   private val allCombinationsEngine: Term => LazyList[SolveInfo] =
@@ -27,33 +30,33 @@ object Hint:
       (acc, cur) match
         case (None, best)                                 => Some(best)
         case (Some((bestHand, bestScore)), (hand, score)) =>
-          if score >= bestScore && hand.sizeIs < bestHand.size then Some(cur)
+          if score > bestScore then Some(cur)
+          else if score == bestScore && hand.sizeIs < bestHand.size then Some(cur)
           else acc
     } match
       case Some((bestHand, _)) => bestHand
       case None => throw new IllegalArgumentException("empty hand")
 
+  private def getIndicesFromSolveInfo(solveInfo: SolveInfo): Seq[Int] =
+    Scala2P
+      .extractTerm(solveInfo, "Combo")
+      .toString
+      .stripPrefix("[")
+      .stripSuffix("]")
+      .split(",")
+      .map(_.trim.toInt)
+      .toSeq
+
   private def rankedPlays(
       hand: Hand
   )(using ScoreConfig): LazyList[(Seq[Card], Score)] =
     val indices: Term = hand.indices
-    val goal: Term = s"combos($indices, Combo)"
-
-    def getIndicesFromSolveInfo(solveInfo: SolveInfo) =
-      Scala2P
-        .extractTerm(solveInfo, "Combo")
-        .toString
-        .stripPrefix("[")
-        .stripSuffix("]")
-        .split(",")
-        .filter(_.nonEmpty)
-        .map(_.trim.toInt)
-        .toSeq
+    val maxLen: Int = math.min(hand.size, 5)
+    val goal: Term = s"between(1, $maxLen, N), combos(N, $indices, Combo)"
 
     for
       solveInfo <- allCombinationsEngine(goal)
       comboIndices = getIndicesFromSolveInfo(solveInfo)
-      if comboIndices.nonEmpty && comboIndices.sizeIs <= 5
       combo = comboIndices.map(hand)
       score = calculateScore(combo)
     yield combo -> score
