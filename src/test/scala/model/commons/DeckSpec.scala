@@ -1,15 +1,14 @@
 package scalatro
 package model.commons
 
-import scala.util.Random
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import model.rng.ScalatroRng
 import model.rng.Types.Seed
 
-class DeckTest extends AnyFlatSpec, Matchers:
+class DeckSpec extends AnyFlatSpec, Matchers:
   import Deck.*
-  import Rank.*
+  import CardBuilder.*
   given ScalatroRng = ScalatroRng(Seed(42))
   val pokerDeckFullSize = 52
 
@@ -24,6 +23,10 @@ class DeckTest extends AnyFlatSpec, Matchers:
       .values
       .toSet shouldBe Set(13)
 
+  it should "change the card order" in:
+    val d = Deck()
+    d.shuffle.cards should not equal d.cards
+
   it should "preserve every card when shuffled" in:
     val d = Deck()
     d.shuffle.cards.toSet shouldBe d.cards.toSet
@@ -33,6 +36,7 @@ class DeckTest extends AnyFlatSpec, Matchers:
     val (hand, rest) = Deck().draw(drawSize)
     hand.size shouldBe drawSize
     rest.size shouldBe pokerDeckFullSize - drawSize
+    (hand ++ rest.cards) should contain theSameElementsAs Deck().cards
 
   it should "reject drawing more than the deck holds" in:
     an[IllegalArgumentException] should be thrownBy Deck().draw(53)
@@ -40,12 +44,16 @@ class DeckTest extends AnyFlatSpec, Matchers:
   it should "reject a negative count" in:
     an[IllegalArgumentException] should be thrownBy Deck().draw(-1)
 
-//  "score" should "count face cards as 10" in:
-//    score(Card(Jack, Suit.Spades)) shouldBe Score(10)
-//    score(Card(King, Suit.Hearts)) shouldBe Score(10)
-//
-//  it should "count an ace as 11" in:
-//    score(Card(Ace, Suit.Clubs)) shouldBe Score(11)
-//
-//  it should "count number cards at face value" in:
-//    score(Card(Seven, Suit.Diamonds)) shouldBe Score(7)
+  "Deck(cards)" should "create a deck containing only the given cards in the given order" in:
+    val ordered = Seq(A of S, 2 of H, K of C)
+    val deck = Deck(ordered)
+    deck.cards shouldBe ordered
+
+  "add" should "append the given card to the deck" in:
+    val base = Deck(Seq(2 of H, 5 of C))
+    val result = base.add(A of S)
+    result.cards should contain theSameElementsAs base.cards :+ (A of S)
+
+  "sort" should "order by suit, then by descending rank within each suit" in:
+    val deck = Deck(Seq(2 of H, A of S, K of S, 5 of C))
+    deck.sort.cards shouldBe Seq(A of S, K of S, 2 of H, 5 of C)

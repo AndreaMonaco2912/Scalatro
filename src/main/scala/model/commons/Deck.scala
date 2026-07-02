@@ -3,9 +3,6 @@ package model.commons
 
 import model.rng.ScalatroRng
 
-import java.util.function.Consumer
-import scala.util.Random
-
 opaque type Deck = Seq[Card]
 
 object Deck:
