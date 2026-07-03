@@ -1,7 +1,7 @@
 package scalatro
 package model.commons
 
-import model.extra.Scala2P.{*, given}
+import model.api.Scala2P.{*, given}
 
 import alice.tuprolog.{SolveInfo, Term}
 

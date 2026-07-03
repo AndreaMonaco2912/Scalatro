@@ -5,8 +5,9 @@ import model.commons.Score.{Score, calculateScore}
 import model.commons.{Card, ScoreConfig}
 import model.round.Hand
 
-import Scala2P.{*, given}
+import model.api.Scala2P.{*, given}
 import alice.tuprolog.{SolveInfo, Term}
+import model.api.Scala2P
 
 import scala.language.implicitConversions
 

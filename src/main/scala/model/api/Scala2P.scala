@@ -1,5 +1,6 @@
 package scalatro
-package model.extra
+package model.api
+
 import alice.tuprolog.*
 
 object Scala2P:
