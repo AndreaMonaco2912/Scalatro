@@ -12,7 +12,7 @@ case class GameState(
     levels: HandTypeLevels
 ):
   def shuffleDeck(using ScalatroRng): GameState =
-    this.copy(deck = deck.shuffle)
+    this.copy(deck = deck.sort.shuffle)
 
   def advanceBlind: GameState =
     this.copy(blind = blind.next)

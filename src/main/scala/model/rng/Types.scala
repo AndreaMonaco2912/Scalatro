@@ -32,6 +32,7 @@ object Types:
     extension [T](pool: Pool[T])
       def values: IndexedSeq[T] = pool
       def size: Int = pool.size
+      infix def -(item: T): Pool[T] = pool.filterNot(_ == item)
       infix def -[U >: T](other: Pool[U]): Pool[T] = pool.filterNot(other.toSet)
       infix def +[U >: T](other: Pool[U]): Pool[U] = pool ++ other
 
