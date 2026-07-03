@@ -6,11 +6,22 @@ Priority,Item,Estimated initial size,Residual size
 Sprint 2,,,
 Priority,Item,Estimated initial size,Residual size
 1,After round screen,4,
-2,Joker cards,11,
-3,Planet cards,4+???,
+2,Joker cards,25,15
+3,Planet cards,4,
 4,Card packs,6,
 5,Shop with default packs,5,
 6,Playing hand animations,12,
 7,Game menu,6,
 8,Sorting hand cards,6,
 9,Advanced testing techniques,6,
+,,,
+Sprint 3,,,
+Priority,Item,Estimated initial size,Residual size
+1,Refactor model-view architecture,15,0
+2,Shop with default packs,3,0
+3,Joker cards,15,2
+4,Game menu for informations,10,0
+5,DSL for fast setup of game,15,2
+6,Random number generation,16,0
+7,Hint for best hand to play,8,2
+8,Sorting hand cards,2,0
