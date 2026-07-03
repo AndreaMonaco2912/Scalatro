@@ -17,11 +17,14 @@ Priority,Item,Estimated initial size,Residual size
 ,,,
 Sprint 3,,,
 Priority,Item,Estimated initial size,Residual size
-1,Refactor model-view architecture,15,0
+1,Refactor model-view architecture,20,2
 2,Shop with default packs,3,0
 3,Joker cards,15,2
 4,Game menu for informations,10,0
 5,DSL for fast setup of game,15,2
-6,Random number generation,16,0
+6,Random number generation,22,6
 7,Hint for best hand to play,8,2
 8,Sorting hand cards,2,0
+,,,
+Sprint 4,,,
+Priority,Item,Estimated initial size,Residual size
