@@ -72,5 +72,6 @@ object ScalatroRng:
         .map((_, i) => elems(i))
 
     private def key(weight: Double, random: Random): Double =
+      val u = random.nextDouble()
       if weight <= 0.0 then Double.PositiveInfinity
-      else -math.log(random.nextDouble()) / weight
+      else -math.log(u) / weight
