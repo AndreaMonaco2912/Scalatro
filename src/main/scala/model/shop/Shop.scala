@@ -4,7 +4,7 @@ package model.shop
 import model.commons.*
 import model.game.ShopInformation
 import model.rng.SelectionPolicy.UniformSelection
-import model.rng.{ScalatroRng, PresetPolicies, SelectionPolicy}
+import model.rng.{ScalatroRng, SelectionPolicy}
 
 case class Shop(
     cardPack: Pack[Card],
@@ -15,8 +15,8 @@ case class Shop(
 object Shop:
 
   def default(shopInformation: ShopInformation)(using ScalatroRng): Shop =
-    given SelectionPolicy[Card] = PresetPolicies.noFaces
-    given SelectionPolicy[Planet] = PresetPolicies.pairBiasedPlanets
+    given SelectionPolicy[Card] = UniformSelection[Card]
+    given SelectionPolicy[Planet] = UniformSelection[Planet]
     given SelectionPolicy[Joker] = UniformSelection[Joker]
     Shop(
       CardsPack().smallPack,
