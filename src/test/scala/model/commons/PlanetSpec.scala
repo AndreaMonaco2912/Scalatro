@@ -5,7 +5,7 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.Inspectors.forAll
 
-class PlanetTest extends AnyFlatSpec, Matchers:
+class PlanetSpec extends AnyFlatSpec, Matchers:
 
   val initialLevels: HandTypeLevels = HandTypeLevels.initial
 

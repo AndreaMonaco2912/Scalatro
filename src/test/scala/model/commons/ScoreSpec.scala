@@ -8,7 +8,7 @@ import model.commons.Score.Score
 import model.commons.Chips.Chips
 import model.commons.Mult.Mult
 
-class ScoreTest extends AnyFlatSpec, Matchers:
+class ScoreSpec extends AnyFlatSpec, Matchers:
 
   private given defaultScoreConfig: ScoreConfig = ScoreConfig.default
   private given calculator: HandScoreCalculator = defaultScoreConfig.calculator

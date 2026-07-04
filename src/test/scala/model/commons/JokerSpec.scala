@@ -4,7 +4,7 @@ package model.commons
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
-class JokerTest extends AnyFlatSpec, Matchers:
+class JokerSpec extends AnyFlatSpec, Matchers:
 
   val defaultHandScore: HandScore = HandScore(50, 20)
   val defaultJokerContext: JokerContext = JokerContext.default

@@ -4,7 +4,7 @@ package model.commons
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
-class HandTypeTest extends AnyFlatSpec, Matchers:
+class HandTypeSpec extends AnyFlatSpec, Matchers:
 
   "Flush Five" should "be detected with 5 cards of the same rank and suit" in:
     val c1: Card = Card(Rank.Six, Suit.Clubs)
