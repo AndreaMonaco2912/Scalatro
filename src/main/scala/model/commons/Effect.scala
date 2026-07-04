@@ -1,25 +1,29 @@
 package scalatro
 package model.commons
 
-object NoContext:
+trait EffectSource
+
+trait Context[S <: EffectSource]
+
+// non mi piace troppo. soluzione: rimuovere CardEffect o sistemare
+object NoContext extends Context[Nothing]:
   given NoContext.type = NoContext
 
-trait Effect[A, Ctx]:
-  def apply(value: A)(using Ctx): A
+trait Effect[A, C <: Context[? <: EffectSource]]:
+  def apply(value: A)(using C): A
 
 object Effect:
+  def identity[A, C <: Context[? <: EffectSource]]: Effect[A, C] =
+    new Effect[A, C]:
+      def apply(value: A)(using C): A = value
 
-  def identity[A, Ctx]: Effect[A, Ctx] =
-    new Effect[A, Ctx]:
-      def apply(value: A)(using Ctx): A = value
-
-  def apply[A, Ctx](f: (A, Ctx) => A): Effect[A, Ctx] =
-    new Effect[A, Ctx]:
-      def apply(value: A)(using context: Ctx): A =
+  def apply[A, C <: Context[? <: EffectSource]](f: (A, C) => A): Effect[A, C] =
+    new Effect[A, C]:
+      def apply(value: A)(using context: C): A =
         f(value, context)
 
-  extension [A, Ctx](self: Effect[A, Ctx])
-    def andThen(next: Effect[A, Ctx]): Effect[A, Ctx] =
-      new Effect[A, Ctx]:
-        def apply(value: A)(using Ctx): A =
+  extension [A, C <: Context[? <: EffectSource]](self: Effect[A, C])
+    def andThen(next: Effect[A, C]): Effect[A, C] =
+      new Effect[A, C]:
+        def apply(value: A)(using C): A =
           next(self(value))

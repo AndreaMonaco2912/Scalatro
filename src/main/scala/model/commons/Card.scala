@@ -23,9 +23,11 @@ enum Rank(val value: Int):
   case King extends Rank(13)
   case Ace extends Rank(14)
 
+object CardContext extends Context[Card]
+
 type CardEffect[A] = Effect[A, NoContext.type]
 
-trait Card extends Weighable:
+trait Card extends Weighable, EffectSource:
   def rank: Rank
   def suit: Suit
   def onScored: CardEffect[HandScore] = Effect.identity

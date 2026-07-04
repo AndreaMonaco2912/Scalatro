@@ -6,7 +6,7 @@ import model.rng.Weighable
 
 /** The information needed to apply the effects of a joker
   */
-trait JokerContext:
+trait JokerContext extends Context[Joker]:
   /** @return
     *   the cards played
     */
@@ -32,7 +32,7 @@ object JokerContext:
 
 type JokerEffect[A] = Effect[A, JokerContext]
 
-sealed trait Joker extends Weighable:
+sealed trait Joker extends Weighable, EffectSource:
 
   /** @return
     *   The name of the joker
