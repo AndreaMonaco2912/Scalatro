@@ -113,8 +113,8 @@ class FxController extends Initializable, Bindable[RoundAction]:
   private def setHandType(levelledHandType: Option[LevelledHandType]): Unit =
     levelledHandType match
       case Some(handType) =>
-        chipsLabel.setText(handType.handScore.chips.customToString)
-        multLabel.setText(handType.handScore.mult.customToString)
+        chipsLabel.setText(handType.handScore.chips.asDouble.customToString)
+        multLabel.setText(handType.handScore.mult.asDouble.customToString)
         handLabel.setText(handType.handType.toString)
         handLevelLabel.setText(s"lvl.${handType.level}")
         val numSelectedCards = selectedCards.length

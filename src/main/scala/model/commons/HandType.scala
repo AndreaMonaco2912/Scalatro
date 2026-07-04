@@ -2,18 +2,23 @@ package scalatro
 package model.commons
 
 enum HandType(val baseScore: HandScore, val name: String):
-  case HighCard extends HandType(HandScore(5, 1), "High Card")
-  case Pair extends HandType(HandScore(10, 2), "Pair")
-  case TwoPair extends HandType(HandScore(20, 2), "Two Pair")
-  case ThreeOfAKind extends HandType(HandScore(30, 3), "Three of a Kind")
-  case Straight extends HandType(HandScore(30, 4), "Straight")
-  case Flush extends HandType(HandScore(35, 4), "Flush")
-  case FullHouse extends HandType(HandScore(40, 4), "Full House")
-  case FourOfAKind extends HandType(HandScore(60, 7), "Four of a Kind")
-  case StraightFlush extends HandType(HandScore(100, 8), "Straight Flush")
-  case FiveOfAKind extends HandType(HandScore(120, 12), "Five of a Kind")
-  case FlushHouse extends HandType(HandScore(140, 14), "Flush House")
-  case FlushFive extends HandType(HandScore(160, 16), "Flush Five")
+  case HighCard extends HandType(HandScore(Chips(5), Mult(1)), "High Card")
+  case Pair extends HandType(HandScore(Chips(10), Mult(2)), "Pair")
+  case TwoPair extends HandType(HandScore(Chips(20), Mult(2)), "Two Pair")
+  case ThreeOfAKind
+      extends HandType(HandScore(Chips(30), Mult(3)), "Three of a Kind")
+  case Straight extends HandType(HandScore(Chips(30), Mult(4)), "Straight")
+  case Flush extends HandType(HandScore(Chips(35), Mult(4)), "Flush")
+  case FullHouse extends HandType(HandScore(Chips(40), Mult(4)), "Full House")
+  case FourOfAKind
+      extends HandType(HandScore(Chips(60), Mult(7)), "Four of a Kind")
+  case StraightFlush
+      extends HandType(HandScore(Chips(100), Mult(8)), "Straight Flush")
+  case FiveOfAKind
+      extends HandType(HandScore(Chips(120), Mult(12)), "Five of a Kind")
+  case FlushHouse
+      extends HandType(HandScore(Chips(140), Mult(14)), "Flush House")
+  case FlushFive extends HandType(HandScore(Chips(160), Mult(16)), "Flush Five")
 
   override def toString: String = name
 

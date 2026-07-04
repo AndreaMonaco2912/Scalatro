@@ -32,7 +32,7 @@ class FxHandLevelsController extends Initializable, Dispatcher:
         nameLabel.setPrefWidth(160)
         val levelLabel = new Label(s"lvl.${levels.getLevel(handType)}")
         val scoreLabel =
-          new Label(s"${score.chips.toInt} x ${score.mult.toInt}")
+          new Label(s"${score.chips.asDouble.toInt} x ${score.mult.asDouble.toInt}")
 
         val row = new HBox(16, nameLabel, levelLabel, scoreLabel)
         row.setAlignment(Pos.CENTER_LEFT)

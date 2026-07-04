@@ -4,9 +4,9 @@ package model.commons
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import model.commons.Score.Score
-
 import model.commons.Chips.Chips
 import model.commons.Mult.Mult
+import model.commons.CardBuilder.*
 
 class ScoreSpec extends AnyFlatSpec, Matchers:
 
@@ -14,28 +14,27 @@ class ScoreSpec extends AnyFlatSpec, Matchers:
   private given calculator: HandScoreCalculator = defaultScoreConfig.calculator
 
   "BasicHandScoreCalculator" should "multiply chips and mult together" in:
-    val chips: Chips = 50
-    val mult: Mult = 20
+    val chips: Chips = Chips(50)
+    val mult: Mult = Mult(20)
     Score(HandScore(chips, mult))(using
       BasicHandScoreCalculator
     ) shouldBe Score(
-      chips * mult
+      1000
     )
 
   "AvgSquaredHandScoreCalculator" should "square the average of chips and mult" in:
-    val chips: Chips = 50
-    val mult: Mult = 20
-    val avg = (chips + mult) / 2
+    val chips: Chips = Chips(50)
+    val mult: Mult = Mult(20)
     Score(HandScore(chips, mult))(using
       AvgSquaredHandScoreCalculator
-    ) shouldBe Score(avg * avg)
+    ) shouldBe Score(1225)
 
   "High Card" should "score base score + rank of the card" in:
     val cards = Seq(
       Card(Rank.Jack, Suit.Clubs)
     )
     val score: HandScore = Score.calculateHandScore(cards)
-    val expectedScore = HandScore(15,1)
+    val expectedScore = HandScore(Chips(15), Mult(1))
     score shouldBe expectedScore
 
   "Pair" should "score base score + rank of the 2 cards" in:
@@ -45,7 +44,7 @@ class ScoreSpec extends AnyFlatSpec, Matchers:
       c
     )
     val score: HandScore = Score.calculateHandScore(cards)
-    val expectedScore = HandScore(30,2)
+    val expectedScore = HandScore(Chips(30), Mult(2))
     score shouldBe expectedScore
 
   "Two Pair" should "score base score + rank of the 4 cards" in:
@@ -60,7 +59,7 @@ class ScoreSpec extends AnyFlatSpec, Matchers:
       c3
     )
     val score: HandScore = Score.calculateHandScore(cards)
-    val expectedScore = HandScore(60,2)
+    val expectedScore = HandScore(Chips(60), Mult(2))
     score shouldBe expectedScore
 
   "Three of a Kind" should "score base + rank of the 3 cards" in:
@@ -73,7 +72,7 @@ class ScoreSpec extends AnyFlatSpec, Matchers:
       c2
     )
     val score: HandScore = Score.calculateHandScore(cards)
-    val expectedScore = HandScore(60,3)
+    val expectedScore = HandScore(Chips(60), Mult(3))
     score shouldBe expectedScore
 
   "Straight" should "score base + rank of all cards" in:
@@ -92,7 +91,7 @@ class ScoreSpec extends AnyFlatSpec, Matchers:
       c5
     )
     val score: HandScore = Score.calculateHandScore(cards)
-    val expectedScore = HandScore(55,4)
+    val expectedScore = HandScore(Chips(55), Mult(4))
     score shouldBe expectedScore
 
   "Flush" should "score base + rank of all cards" in:
@@ -110,7 +109,7 @@ class ScoreSpec extends AnyFlatSpec, Matchers:
       c5
     )
     val score: HandScore = Score.calculateHandScore(cards)
-    val expectedScore = HandScore(65,4)
+    val expectedScore = HandScore(Chips(65), Mult(4))
     score shouldBe expectedScore
 
   "Full House" should "score base + rank of all cards" in:
@@ -124,7 +123,7 @@ class ScoreSpec extends AnyFlatSpec, Matchers:
       c2
     )
     val score: HandScore = Score.calculateHandScore(cards)
-    val expectedScore = HandScore(60,4)
+    val expectedScore = HandScore(Chips(60), Mult(4))
     score shouldBe expectedScore
 
   "Four of a Kind" should "score base + rank of the 4 cards" in:
@@ -138,7 +137,7 @@ class ScoreSpec extends AnyFlatSpec, Matchers:
       c2
     )
     val score: HandScore = Score.calculateHandScore(cards)
-    val expectedScore = HandScore(68,7)
+    val expectedScore = HandScore(Chips(68), Mult(7))
     score shouldBe expectedScore
 
   "Straight Flush" should "score base + rank of all cards" in:
@@ -156,7 +155,7 @@ class ScoreSpec extends AnyFlatSpec, Matchers:
       c5
     )
     val score: HandScore = Score.calculateHandScore(cards)
-    val expectedScore = HandScore(125,8)
+    val expectedScore = HandScore(Chips(125), Mult(8))
     score shouldBe expectedScore
 
   "Five of a Kind" should "score base + rank of all cards" in:
@@ -170,7 +169,7 @@ class ScoreSpec extends AnyFlatSpec, Matchers:
       c2
     )
     val score: HandScore = Score.calculateHandScore(cards)
-    val expectedScore = HandScore(175,12)
+    val expectedScore = HandScore(Chips(175), Mult(12))
     score shouldBe expectedScore
 
   "Flush House" should "score base + rank of all cards" in:
@@ -184,7 +183,7 @@ class ScoreSpec extends AnyFlatSpec, Matchers:
       c2
     )
     val score: HandScore = Score.calculateHandScore(cards)
-    val expectedScore = HandScore(160,14)
+    val expectedScore = HandScore(Chips(160), Mult(14))
     score shouldBe expectedScore
 
   "Flush Five" should "score base + rank of all cards" in:
@@ -197,7 +196,7 @@ class ScoreSpec extends AnyFlatSpec, Matchers:
       c
     )
     val score: HandScore = Score.calculateHandScore(cards)
-    val expectedScore = HandScore(170,16)
+    val expectedScore = HandScore(Chips(170), Mult(16))
     score shouldBe expectedScore
 //
 //  "High Card level N" should "score base + N * score increase + chips of the card" in:

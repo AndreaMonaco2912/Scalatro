@@ -2,6 +2,7 @@ package scalatro
 package model.commons
 
 import model.commons.Effect.andThen
+import model.commons.HandScore
 import model.rng.Weighable
 
 enum Suit:
@@ -39,6 +40,6 @@ object Card:
       })
 
     private def getBaseChips: Chips.Chips = this.rank match
-      case Rank.Jack | Rank.Queen | Rank.King => 10
-      case Rank.Ace                           => 11
-      case r                                  => r.value
+      case Rank.Jack | Rank.Queen | Rank.King => Chips(10)
+      case Rank.Ace                           => Chips(11)
+      case r                                  => Chips(r.value)

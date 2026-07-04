@@ -5,19 +5,34 @@ import model.commons.Chips.Chips
 import model.commons.Mult.Mult
 import model.commons.Score.Score
 
+import scala.annotation.targetName
+
 object Chips:
-  type Chips = Double
+  opaque type Chips = Double
 
   def apply(d: Double): Chips =
     require(d >= 0.0, "Chips must be positive")
     d
 
+  extension (c: Chips)
+    def +(other: Chips): Chips = Chips(c + other)
+    def asDouble: Double = c
+
+  val zero: Chips = Chips(0.0)
+
 object Mult:
-  type Mult = Double
+  opaque type Mult = Double
 
   def apply(d: Double): Mult =
     require(d >= 0.0, "Mult must be positive")
     d
+
+  extension (m: Mult)
+    def +(other: Mult): Mult = Mult(m + other)
+    def *(other: Mult): Mult = Mult(m * other)
+    def asDouble: Double = m
+
+  val zero: Mult = Mult(0.0)
 
 /** A trait for representing the component which calculates the score of a hand
   */
@@ -42,7 +57,9 @@ object HandScoreCalculator:
   * the chips and the multiplier
   */
 object BasicHandScoreCalculator extends HandScoreCalculator:
-  override def calculate(chips: Chips, mult: Mult): Score = Score(chips * mult)
+  override def calculate(chips: Chips, mult: Mult): Score = Score(
+    chips.asDouble * mult.asDouble
+  )
 
 /** Hand score calculator in which the score is given by squaring the average of
   * the chips and the multiplier
@@ -50,7 +67,7 @@ object BasicHandScoreCalculator extends HandScoreCalculator:
 object AvgSquaredHandScoreCalculator extends HandScoreCalculator:
 
   override def calculate(chips: Chips, mult: Mult): Score =
-    val avg = (chips + mult) / 2
+    val avg = (chips.asDouble + mult.asDouble) / 2
     Score(avg * avg)
 
 /** The score given by playing a hand
@@ -66,10 +83,25 @@ case class HandScore(chips: Chips, mult: Mult):
 object HandScore:
   import Chips.Chips, Mult.Mult
 
+  def apply(chips: Chips): HandScore = HandScore(chips, Mult.zero)
+
+  @targetName("fromMult")
+  def apply(mult: Mult): HandScore = HandScore(Chips.zero, mult)
+
   extension (hs: HandScore)
     def +(other: HandScore): HandScore =
       HandScore(hs.chips + other.chips, hs.mult + other.mult)
-    def *(mult: Double): HandScore = HandScore(hs.chips * mult, hs.mult * mult)
+    @targetName("addChips")
+    def +(chips: Chips): HandScore = HandScore(hs.chips + chips, hs.mult)
+    @targetName("addMult")
+    def +(mult: Mult): HandScore = HandScore(hs.chips, hs.mult + mult)
+    def *(mult: Mult): HandScore = HandScore(hs.chips, hs.mult * mult)
+    def *(level: Level): HandScore = HandScore(
+      Chips(hs.chips.asDouble * level),
+      Mult(hs.mult.asDouble * level)
+    )
+
+  val zero: HandScore = HandScore(Chips.zero, Mult.zero)
 
 /** The configuration needed to calculate the score
   * @param jokers
