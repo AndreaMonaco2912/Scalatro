@@ -1,6 +1,7 @@
 package scalatro
 package model.commons
 
+import model.commons.Effect.andThen
 import model.rng.Weighable
 
 enum Suit:
@@ -21,17 +22,21 @@ enum Rank(val value: Int):
   case King extends Rank(13)
   case Ace extends Rank(14)
 
+type CardEffect[A] = Effect[A, NoContext.type]
+
 trait Card extends Weighable:
   def rank: Rank
   def suit: Suit
-  def onScored(prevHandScore: HandScore): HandScore
+  def onScored: CardEffect[HandScore] = Effect.identity
 
 object Card:
   def apply(rank: Rank, suit: Suit): Card = CardImpl(rank, suit)
 
   private case class CardImpl(rank: Rank, suit: Suit) extends Card:
-    override def onScored(prevHandScore: HandScore): HandScore =
-      HandScore(this.getBaseChips + prevHandScore.chips, prevHandScore.mult)
+    override def onScored: CardEffect[HandScore] =
+      super.onScored.andThen(Effect { (handScore, _) =>
+        HandScore(this.getBaseChips + handScore.chips, handScore.mult)
+      })
 
     private def getBaseChips: Chips.Chips = this.rank match
       case Rank.Jack | Rank.Queen | Rank.King => 10

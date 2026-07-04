@@ -1,6 +1,9 @@
 package scalatro
 package model.commons
 
+object NoContext:
+  given NoContext.type = NoContext
+
 trait Effect[A, Ctx]:
   def apply(value: A)(using Ctx): A
 
