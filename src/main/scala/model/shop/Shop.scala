@@ -3,7 +3,7 @@ package model.shop
 
 import model.commons.*
 import model.game.ShopInformation
-import model.rng.SelectionPolicy.UniformSelection
+import model.rng.seed.SelectionPolicies
 import model.rng.{ScalatroRng, SelectionPolicy}
 
 case class Shop(
@@ -14,10 +14,13 @@ case class Shop(
 
 object Shop:
 
-  def default(shopInformation: ShopInformation)(using ScalatroRng): Shop =
-    given SelectionPolicy[Card] = UniformSelection[Card]
-    given SelectionPolicy[Planet] = UniformSelection[Planet]
-    given SelectionPolicy[Joker] = UniformSelection[Joker]
+  def default(shopInformation: ShopInformation)(using
+      rng: ScalatroRng,
+      selectionPolicies: SelectionPolicies
+  ): Shop =
+    given SelectionPolicy[Card] = selectionPolicies.cardPolicy
+    given SelectionPolicy[Planet] = selectionPolicies.planetPolicy
+    given SelectionPolicy[Joker] = selectionPolicies.jokerPolicy
     Shop(
       CardsPack().smallPack,
       PlanetPack().smallPack,

@@ -6,7 +6,8 @@ import app.{Cmd, Model, Msg, Update}
 import model.game.GameState
 import model.rng.ScalatroRng
 import model.rng.Types.Seed
-import model.round.{RoundState, RoundManager}
+import model.rng.seed.SelectionPolicies
+import model.round.{RoundManager, RoundState}
 import model.shop.Shop
 import view.{FxView, GameViews}
 
@@ -45,6 +46,7 @@ class Runtime(screens: GameViews, seed: Seed = Seed.random):
       case Cmd.NoOp          => IO.unit
       case Cmd.Deal(gs)      => runRound(view, queue, gs)
       case Cmd.BuildShop(gs) =>
+        given SelectionPolicies = gs.selectionPolicies
         IO(Shop.default(gs.shopInformation))
           .flatMap(s => queue.offer(Msg.InternalEffect.ShopReady(gs, s)))
 
