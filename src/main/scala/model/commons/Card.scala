@@ -36,10 +36,10 @@ object Card:
   private case class CardImpl(rank: Rank, suit: Suit) extends Card:
     override def onScored: CardEffect[HandScore] =
       super.onScored.andThen(Effect { (handScore, _) =>
-        HandScore(this.getBaseChips + handScore.chips, handScore.mult)
+        HandScore(this.baseChips + handScore.chips, handScore.mult)
       })
 
-    private def getBaseChips: Chips.Chips = this.rank match
+    private def baseChips: Chips.Chips = this.rank match
       case Rank.Jack | Rank.Queen | Rank.King => Chips(10)
       case Rank.Ace                           => Chips(11)
       case r                                  => Chips(r.value)
