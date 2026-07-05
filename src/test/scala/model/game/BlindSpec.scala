@@ -17,7 +17,7 @@ class BlindSpec extends AnyFlatSpec, Matchers:
 
   it should "scale the score by the increaseAmount" in:
     val result = start.next
-    result.targetScore shouldBe start.targetScore * Score(Blind.increaseAmount)
+    result.targetScore shouldBe start.targetScore * Blind.increaseAmount
 
   "isBeaten" should "be true if the achieved score meets the target" in:
     Blind.first.isBeaten(Blind.initialScore) shouldBe true

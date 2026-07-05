@@ -3,7 +3,7 @@ package model.commons
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import model.commons.Score.Score
+import model.commons.Score.{Score, getHandTypeBaseScore}
 import model.commons.Chips.Chips
 import model.commons.Mult.Mult
 import model.extra.CardBuilder.*
@@ -198,6 +198,29 @@ class ScoreSpec extends AnyFlatSpec, Matchers:
     val score: HandScore = Score.calculateHandScore(cards)
     val expectedScore = HandScore(Chips(170), Mult(16))
     score shouldBe expectedScore
+
+  it should "help me debug :skull:" in:
+    val cards = Seq(10 of S, 8 of S, 7 of S, 6 of S, 9 of S)
+    val jokers = Seq(JokerType.Arrowhead, JokerType.CleverJoker)
+    val levels = HandTypeLevels.initial
+    val handType: HandType = HandType.detect(cards)
+    val scoringCards = HandType.getScoringCards(cards)
+    val initialScore: HandScore = getHandTypeBaseScore(handType, levels)
+    val initialModifications: Seq[Modification[?]] = Seq.empty
+    val onHandPlayed = jokers.foldLeft(initialModifications) { (acc, joker) =>
+      acc ++ joker.onHandPlayed(cards).apply(cards)
+    }
+    val onCardScored = scoringCards.foldLeft(onHandPlayed) { (acc, card) =>
+      val afterCardSelf = acc ++ card.onScored
+      jokers.foldLeft(afterCardSelf) { (acc2, joker) =>
+        acc2 ++ joker.onCardScored(card).apply(card)
+      }
+    }
+    val allModifications = jokers.foldLeft(onCardScored) { (acc, joker) =>
+      acc ++ joker.afterHandPlayed(cards).apply(cards)
+    }
+    println(allModifications)
+
 //
 //  "High Card level N" should "score base + N * score increase + chips of the card" in:
 //    val level: Level = 5

@@ -23,26 +23,17 @@ enum Rank(val value: Int):
   case King extends Rank(13)
   case Ace extends Rank(14)
 
-case class CardContext(handScore: HandScore) extends Context[Card]
-
-object CardContext:
-  def default: CardContext = CardContext(HandScore.zero)
-
-type CardEffect = Effect[CardContext]
-
-trait Card extends Weighable, EffectSource:
+trait Card extends Weighable:
   def rank: Rank
   def suit: Suit
-  def onScored: CardEffect = Effect.identity
+  def onScored: Seq[Modification[?]]
 
 object Card:
   def apply(rank: Rank, suit: Suit): Card = CardImpl(rank, suit)
 
   private case class CardImpl(rank: Rank, suit: Suit) extends Card:
-    override def onScored: CardEffect =
-      super.onScored.andThen(Effect { context =>
-        context.copy(handScore = context.handScore + this.baseChips)
-      })
+    override def onScored: Seq[Modification[?]] =
+      Seq(HandScoreModification.FlatChips(this.baseChips))
 
     private def baseChips: Chips.Chips = this.rank match
       case Rank.Jack | Rank.Queen | Rank.King => Chips(10)
