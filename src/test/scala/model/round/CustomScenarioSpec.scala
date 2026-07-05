@@ -1,13 +1,14 @@
 package scalatro
 package model.round
 
+import model.commons.JokerType.{CrazyJoker, DeviousJoker}
+import model.commons.{Deck, HandType, HandTypeLevels, Joker}
+import model.extra.CardBuilder.*
+import model.extra.Cards
+import model.extra.HandLevelBuilder.*
+
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import model.commons.{Deck, HandType, HandTypeLevels, Joker}
-import model.commons.CardBuilder.*
-import model.commons.JokerType.{CrazyJoker, DeviousJoker}
-
-import model.round.HandLevelBuilder.*
 
 class CustomScenarioSpec extends AnyFlatSpec with Matchers:
 

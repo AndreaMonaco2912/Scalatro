@@ -5,7 +5,7 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import model.rng.{ScalatroRng, SelectionPolicy}
 import model.rng.SelectionPolicy.UniformSelection
-import model.commons.CardBuilder.*
+import model.extra.CardBuilder.*
 
 class PackSpec extends AnyFlatSpec, Matchers:
   given SelectionPolicy[Card] = UniformSelection[Card]

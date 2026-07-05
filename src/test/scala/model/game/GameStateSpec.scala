@@ -12,7 +12,7 @@ import model.commons.{
   Planet,
   getLevel
 }
-import model.commons.CardBuilder.*
+import model.extra.CardBuilder.*
 import model.rng.ScalatroRng
 
 class GameStateSpec extends AnyFlatSpec, Matchers:

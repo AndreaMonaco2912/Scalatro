@@ -1,9 +1,10 @@
 package scalatro
 package model.commons
 
+import model.extra.CardBuilder.*
+
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import model.commons.CardBuilder.*
 
 class CardBuilderSpec extends AnyFlatSpec with Matchers:
 

@@ -3,13 +3,15 @@ package model.game
 
 import model.commons.*
 import model.rng.ScalatroRng
+import model.rng.seed.SelectionPolicies
 
 case class GameState(
     handInformation: HandInformation,
     deck: Deck,
     blind: Blind,
     jokers: Seq[Joker],
-    levels: HandTypeLevels
+    levels: HandTypeLevels,
+    selectionPolicies: SelectionPolicies
 ):
   def shuffleDeck(using ScalatroRng): GameState =
     this.copy(deck = deck.sort.shuffle)
@@ -51,5 +53,6 @@ object GameState:
       Deck(),
       Blind.first,
       Seq.empty,
-      HandTypeLevels.initial
+      HandTypeLevels.initial,
+      SelectionPolicies.default
     )

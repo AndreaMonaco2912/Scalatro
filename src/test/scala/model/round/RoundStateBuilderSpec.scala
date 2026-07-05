@@ -1,12 +1,14 @@
 package scalatro
 package model.round
 
+import model.commons.{Deck, Score}
+import model.extra.CardBuilder.*
+import model.extra.RoundBuilder
+import model.extra.RoundBuilder.DSL.*
+import model.game.GameState
+
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import model.commons.{Deck, Score}
-import model.game.GameState
-import model.commons.CardBuilder.*
-import model.round.RoundBuilder.DSL.*
 
 class RoundStateBuilderSpec extends AnyFlatSpec with Matchers:
 

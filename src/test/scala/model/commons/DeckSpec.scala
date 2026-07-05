@@ -8,7 +8,7 @@ import model.rng.Types.Seed
 
 class DeckSpec extends AnyFlatSpec, Matchers:
   import Deck.*
-  import CardBuilder.*
+  import model.extra.CardBuilder.*
   given ScalatroRng = ScalatroRng(Seed(42))
   val pokerDeckFullSize = 52
 

@@ -1,8 +1,9 @@
 package scalatro
-package model.round
+package model.extra
 
-import model.commons.{Card, Deck, HandType, HandTypeLevels, Joker, Level}
-import model.game.GameStateBuilder
+import model.commons.*
+import model.extra.GameStateBuilder
+import model.round.RoundState
 
 /** The entry point for the [[CustomScenario]] DSL.
   *
@@ -110,13 +111,13 @@ case class CustomScenario(
     */
   def buildRound: RoundState =
     val customState = GameStateBuilder.configure {
-      import model.game.GameStateBuilder.DSL.*
+      import GameStateBuilder.DSL.*
       Jokers := this.jokers
       Levels := this.levels
     }
 
     RoundBuilder.configure {
-      import model.round.RoundBuilder.DSL.*
+      import RoundBuilder.DSL.*
       HandInRound := this.cards
       DeckInRound := Deck(Deck().cards diff this.cards) 
       GameStateInRound := customState

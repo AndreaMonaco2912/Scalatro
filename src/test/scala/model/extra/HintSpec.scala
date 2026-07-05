@@ -3,8 +3,8 @@ package model.extra
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import model.round.{Cards, Hand}
-import model.commons.CardBuilder.*
+import model.round.Hand
+import CardBuilder.*
 
 import model.commons.ScoreConfig
 

@@ -1,5 +1,7 @@
 package scalatro
-package model.commons
+package model.extra
+
+import model.commons.{Card, Rank, Suit}
 
 /** A DSL for building [[Card]] instances. * Example usage:
   * {{{

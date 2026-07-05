@@ -2,11 +2,12 @@ package scalatro
 package app
 
 import model.commons.*
-import model.commons.CardBuilder.*
-import model.game.{GameState, GameStateBuilder}
-import model.game.GameStateBuilder.DSL.*
-import model.round.{RoundBuilder, RoundState}
-import model.round.RoundBuilder.DSL.*
+import model.extra.CardBuilder.*
+import model.extra.GameStateBuilder.DSL.*
+import model.extra.RoundBuilder.DSL.*
+import model.extra.{GameStateBuilder, RoundBuilder}
+import model.game.GameState
+import model.round.RoundState
 import model.shop.Shop
 
 import org.scalatest.flatspec.AnyFlatSpec
