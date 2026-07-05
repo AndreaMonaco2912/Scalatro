@@ -4,33 +4,37 @@ package model.commons
 import model.commons.Mult.Mult
 import model.rng.Weighable
 
-/** The information needed to apply the effects of a joker
-  */
-trait JokerContext extends Context[Joker]:
-  /** @return
-    *   the cards played
-    */
-  def playedCards: Seq[Card]
+///** The information modifiable by the effects of a joker
+//  */
+//trait JokerContext extends Context[Joker]:
+//
+//  /** @return
+//    *   the hand score
+//    */
+//  def handScore: HandScore
+//
+//  /** @return
+//    *   the cards played
+//    */
+//  def playedCards: Seq[Card]
+//
+//  /** @return
+//    *   the level of hand types
+//    */
+//  def levels: HandTypeLevels
 
-  /** @return
-    *   the level of hand types
-    */
-  def levels: HandTypeLevels
+case class JokerContext(
+    playedCards: Seq[Card],
+    levels: HandTypeLevels,
+    handScore: HandScore
+) extends Context[Joker]
 
 object JokerContext:
 
-  private case class JokerContextImpl(
-      playedCards: Seq[Card],
-      levels: HandTypeLevels
-  ) extends JokerContext
-
-  def apply(playedCards: Seq[Card], levels: HandTypeLevels): JokerContext =
-    JokerContextImpl(playedCards, levels)
-
   def default: JokerContext =
-    JokerContextImpl(Seq.empty, HandTypeLevels.initial)
+    JokerContext(Seq.empty, HandTypeLevels.initial, HandScore.zero)
 
-type JokerEffect[A] = Effect[A, JokerContext]
+type JokerEffect = Effect[JokerContext]
 
 sealed trait Joker extends Weighable, EffectSource:
 
@@ -49,19 +53,19 @@ sealed trait Joker extends Weighable, EffectSource:
     * @return
     *   the new hand score
     */
-  def independent: JokerEffect[HandScore] = Effect.identity
+  def independent: JokerEffect = Effect.identity
 
   /** The effect applied when a card played is scored
     * @return
     *   the new hand score
     */
-  def onCardScored(card: Card): JokerEffect[HandScore] = Effect.identity
+  def onCardScored(card: Card): JokerEffect = Effect.identity
 
   /** The effect applied when a hand is played
     * @return
     *   the new hand score
     */
-  def onHandPlayed(cards: Seq[Card]): JokerEffect[HandScore] = Effect.identity
+  def onHandPlayed(cards: Seq[Card]): JokerEffect = Effect.identity
 
 /** Trait which, if the hand played is of the specified type, increases the hand
   * score by the addition of a certain amount
@@ -69,11 +73,11 @@ sealed trait Joker extends Weighable, EffectSource:
 sealed trait FlatHandTypeContained(handType: HandType, increase: HandScore)
     extends Joker:
 
-  override def independent: JokerEffect[HandScore] =
-    super.independent.andThen(Effect { (handScore, context) =>
+  override def independent: JokerEffect =
+    super.independent.andThen(Effect { context =>
       if HandType.contains(context.playedCards, handType)
-      then handScore + increase
-      else handScore
+      then context.copy(handScore = context.handScore + increase)
+      else context
     })
 
 /** Trait which, if the hand played is of the specified type, increases the hand
@@ -84,28 +88,31 @@ sealed trait MultiplicativeHandTypeContained(
     multiplier: Mult
 ) extends Joker:
 
-  override def independent: JokerEffect[HandScore] =
-    super.independent.andThen(Effect { (handScore, context) =>
-      (handScore, HandType.contains(context.playedCards, handType)) match
-        case (HandScore(chips, mult), true) =>
-          HandScore(chips, mult * multiplier)
-        case (handScore, _) => handScore
+  override def independent: JokerEffect =
+    super.independent.andThen(Effect { context =>
+      if HandType.contains(context.playedCards, handType)
+      then context.copy(handScore = context.handScore * multiplier)
+      else context
     })
 
 /** Trait which increases the score with an addition by a certain amount
   */
 sealed trait FlatScoreIncrease(increase: HandScore) extends Joker:
 
-  override def independent: JokerEffect[HandScore] =
-    super.independent.andThen(Effect { (handScore, _) => handScore + increase })
+  override def independent: JokerEffect =
+    super.independent.andThen(Effect { context =>
+      context.copy(handScore = context.handScore + increase)
+    })
 
 sealed trait FlatSuitScored(suit: Suit, increase: HandScore) extends Joker:
 
-  override def onCardScored(card: Card): JokerEffect[HandScore] =
+  override def onCardScored(card: Card): JokerEffect =
     super
       .onCardScored(card)
-      .andThen(Effect { (handScore, _) =>
-        if card.suit == suit then handScore + increase else handScore
+      .andThen(Effect { context =>
+        if card.suit == suit then
+          context.copy(handScore = context.handScore + increase)
+        else context
       })
 
 enum JokerType(val name: String, val description: String) extends Joker:

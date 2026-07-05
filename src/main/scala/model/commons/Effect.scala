@@ -1,29 +1,28 @@
 package scalatro
 package model.commons
 
+import model.game.GameState
+
 trait EffectSource
 
+// idea: aggiungere EffectDestination e fare in modo che EffectSource sia una case class con sottotipi di EffectDestination
+// aggiungere GlobalContext in modo che CardContext e JokerContext siano suoi sottotipi
+// in questo modo GlobalContext e' utilizzabile facilmente nelle foldLeft
 trait Context[S <: EffectSource]
 
-// non mi piace troppo. soluzione: rimuovere CardEffect o sistemare
-object NoContext extends Context[Nothing]:
-  given NoContext.type = NoContext
+//object GlobalContext extends Context[Nothing]:
+//  given GlobalContext.type = GameState
 
-trait Effect[A, C <: Context[? <: EffectSource]]:
-  def apply(value: A)(using C): A
+trait Effect[C <: Context[? <: EffectSource]]:
+  def apply(context: C): C
 
 object Effect:
-  def identity[A, C <: Context[? <: EffectSource]]: Effect[A, C] =
-    new Effect[A, C]:
-      def apply(value: A)(using C): A = value
+  def identity[C <: Context[? <: EffectSource]]: Effect[C] =
+    (context: C) => context
 
-  def apply[A, C <: Context[? <: EffectSource]](f: (A, C) => A): Effect[A, C] =
-    new Effect[A, C]:
-      def apply(value: A)(using context: C): A =
-        f(value, context)
+  def apply[C <: Context[? <: EffectSource]](f: C => C): Effect[C] =
+    (context: C) => f(context)
 
-  extension [A, C <: Context[? <: EffectSource]](self: Effect[A, C])
-    def andThen(next: Effect[A, C]): Effect[A, C] =
-      new Effect[A, C]:
-        def apply(value: A)(using C): A =
-          next(self(value))
+  extension [C <: Context[? <: EffectSource]](self: Effect[C])
+    def andThen(next: Effect[C]): Effect[C] =
+      (context: C) => next(self(context))

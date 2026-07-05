@@ -3,6 +3,8 @@ package model.commons
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
+import model.commons.HandScore
+import model.commons.JokerContext
 
 class JokerSpec extends AnyFlatSpec, Matchers:
 
