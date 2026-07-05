@@ -2,6 +2,7 @@ package scalatro
 package model.commons
 
 import model.rng.Weighable
+import model.round.{RoundState, RoundStateModification}
 
 sealed trait Joker extends Weighable:
 
@@ -15,22 +16,23 @@ sealed trait Joker extends Weighable:
     */
   def description: String
 
-//  /** The effect applied at the end of the hand played, before obtaining the
-//    * total hand score
-//    * @return
-//    *   the new hand score
-//    */
-//  def independent[A]: Effect[A] = Effect.identity
+  /** The effect applied at the start of a round
+    * @param round
+    *   the round
+    * @return
+    *   the modifications
+    */
+  def onRoundStart(round: RoundState): Seq[Modification[?]] = Seq.empty
 
   /** The effect applied when a card played is scored
     * @return
-    *   the new hand score
+    *   the modifications
     */
   def onCardScored(card: Card): Seq[Modification[?]] = Seq.empty
 
   /** The effect applied when a hand is played
     * @return
-    *   the new hand score
+    *   the modifications
     */
   def onHandPlayed(cards: Seq[Card]): Seq[Modification[?]] = Seq.empty
 
@@ -38,6 +40,7 @@ sealed trait Joker extends Weighable:
     * @param cards
     *   the cards played
     * @return
+    *   the modifications
     */
   def afterHandPlayed(cards: Seq[Card]): Seq[Modification[?]] = Seq.empty
 
@@ -63,6 +66,20 @@ sealed trait SuitScored[A](suit: Suit, modification: Modification[A])
     super.onCardScored(card) ++ Modification.when(
       card.suit == suit
     )(modification)
+
+sealed trait RanksScored[A](
+    ranks: Seq[Rank],
+    modifications: Seq[Modification[A]]
+) extends Joker:
+  override def onCardScored(card: Card): Seq[Modification[?]] =
+    super.onCardScored(card) ++ Modification.when(ranks.contains(card.rank))(
+      modifications
+    )
+
+sealed trait HandInformationModifier(modifications: Seq[Modification[?]])
+    extends Joker:
+  override def onRoundStart(round: RoundState): Seq[Modification[?]] =
+    modifications
 
 enum JokerType(val name: String, val description: String) extends Joker:
   case CleverJoker
@@ -128,3 +145,32 @@ enum JokerType(val name: String, val description: String) extends Joker:
         "Played cards with Club suit give +7 Mult when scored"
       )
       with SuitScored(Suit.Clubs, HandScoreModification.FlatMult(Mult(7)))
+  case Fibonacci
+      extends JokerType(
+        "Fibonacci",
+        "Each played Ace, 2, 3, 5, or 8 gives +8 Mult when scored"
+      )
+      with RanksScored(
+        Seq(Rank.Ace, Rank.Eight, Rank.Five, Rank.Three, Rank.Two),
+        Seq(HandScoreModification.FlatMult(Mult(8)))
+      )
+  case Scholar
+      extends JokerType(
+        "Scholar",
+        "Played Aces give +20 Chips and +4 Mult when scored"
+      )
+      with RanksScored(
+        Seq(Rank.Ace),
+        Seq(
+          HandScoreModification.FlatChips(Chips(20)),
+          HandScoreModification.FlatMult(Mult(4))
+        )
+      )
+  case Juggler
+      extends JokerType("Juggler", "+1 play and discard each round")
+      with HandInformationModifier(
+        Seq(
+          RoundStateModification.IncreaseHandsRemaining(1),
+          RoundStateModification.IncreaseDiscardsRemaining(1)
+        )
+      )

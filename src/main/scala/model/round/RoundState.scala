@@ -2,7 +2,7 @@ package scalatro
 package model.round
 
 import model.commons.Score.Score
-import model.commons.{Card, Deck, Score}
+import model.commons.{Card, Deck, Modification, Score}
 import model.game.GameState
 //TODO valutare se mettere maxSize = 5 e minSize = 1
 /** The game's hand: the collection of cards the player can choose from */
@@ -131,3 +131,11 @@ object RoundState:
 
     override def isFinished: Boolean =
       gameState.blind.isBeaten(score) || remainingPlays == 0
+
+trait RoundStateModification extends Modification[RoundState]
+
+object RoundStateModification:
+  case class IncreaseHandsRemaining(n : Int) extends RoundStateModification:
+    override def apply(value: RoundState): RoundState = value.modify(remainingPlays = value.remainingPlays + n)
+  case class IncreaseDiscardsRemaining(n : Int) extends RoundStateModification:
+    override def apply(value: RoundState): RoundState = value.modify(remainingDiscards = value.remainingDiscards + n)

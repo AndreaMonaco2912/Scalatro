@@ -1,9 +1,13 @@
 package scalatro
 package model.commons
 
+import model.commons.HandScore
+import model.game.GameState
+import model.round.{RoundState, RoundStateModification}
+import model.extra.CardBuilder.*
+
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import model.commons.HandScore
 
 class JokerSpec extends AnyFlatSpec, Matchers:
 
@@ -110,3 +114,27 @@ class JokerSpec extends AnyFlatSpec, Matchers:
     scores match
       case (scoreWithJoker, scoreWithoutJoker) =>
         scoreWithJoker shouldBe scoreWithoutJoker + Mult(14)
+
+  "Fibonacci" should "score +8 Mult for each Ace, 2, 3, 5, or 8 scored" in:
+    val joker = JokerType.Fibonacci
+    val cards = Seq(A of S, 8 of S, 5 of S, 3 of S, 2 of S)
+    val scores = getScores(cards, joker)
+    scores match
+      case (scoreWithJoker, scoreWithoutJoker) =>
+        scoreWithJoker shouldBe scoreWithoutJoker + Mult(40)
+
+  "Scholar" should "score +20 Chips and +4 Mult for each Ace scored" in:
+    val joker = JokerType.Scholar
+    val cards = Seq(A of S, A of S, 3 of S, 3 of S, 3 of S)
+    val scores = getScores(cards, joker)
+    scores match
+      case (scoreWithJoker, scoreWithoutJoker) =>
+        scoreWithJoker shouldBe scoreWithoutJoker + Chips(40) + Mult(8)
+
+  "Juggler" should "increase both plays and discards remaining by 1" in:
+    val gameState : GameState = GameState.initial
+    val round: RoundState = RoundState(gameState)
+    val remainingPlays = round.remainingPlays
+    val joker = JokerType.Juggler
+    val modifications = joker.onRoundStart(round)
+    joker.onRoundStart(round) shouldBe Seq(RoundStateModification.IncreaseHandsRemaining(1), RoundStateModification.IncreaseDiscardsRemaining(1))
