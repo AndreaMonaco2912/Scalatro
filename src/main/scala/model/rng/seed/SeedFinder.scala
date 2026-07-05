@@ -17,6 +17,13 @@ case class SelectionPolicies(
     jokerPolicy: SelectionPolicy[Joker]
 )
 
+object SelectionPolicies:
+  def default: SelectionPolicies = SelectionPolicies(
+    cardPolicy = new UniformSelection[Card],
+    planetPolicy = new UniformSelection[Planet],
+    jokerPolicy = new UniformSelection[Joker]
+  )
+
 object SeedFinder:
   def findSeed(
       constraints: Seq[SeedConstraint],
@@ -37,11 +44,7 @@ object SeedFinder:
 
 @main
 def findSeedMain(): Unit =
-  given SelectionPolicies(
-    cardPolicy = new UniformSelection[Card],
-    planetPolicy = new UniformSelection[Planet],
-    jokerPolicy = new UniformSelection[Joker]
-  )
+  given SelectionPolicies = SelectionPolicies.default
   val constraints = Seq(
     InitialHandWith(Seq(Card(Ace, Hearts), Card(Ace, Diamonds)), 1),
     JokerPackContains(JokerType.CleverJoker, 1),
