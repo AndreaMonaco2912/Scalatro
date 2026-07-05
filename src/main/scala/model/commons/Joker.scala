@@ -26,20 +26,20 @@ sealed trait Joker extends Weighable:
     * @return
     *   the new hand score
     */
-  def onCardScored(card: Card): Effect[Card] = Effect.identity
+  def onCardScored(card: Card): Seq[Modification[?]] = Seq.empty
 
   /** The effect applied when a hand is played
     * @return
     *   the new hand score
     */
-  def onHandPlayed(cards: Seq[Card]): Effect[Seq[Card]] = Effect.identity
+  def onHandPlayed(cards: Seq[Card]): Seq[Modification[?]] = Seq.empty
 
   /** The effect applied after a hand is played
     * @param cards
     *   the cards played
     * @return
     */
-  def afterHandPlayed(cards: Seq[Card]): Effect[Seq[Card]] = Effect.identity
+  def afterHandPlayed(cards: Seq[Card]): Seq[Modification[?]] = Seq.empty
 
 /** Trait which, if the hand played is of the specified type, increases the hand
   * score by the addition of a certain amount
@@ -49,18 +49,20 @@ sealed trait HandTypeContained(
     modification: HandScoreModification
 ) extends Joker:
 
-  override def afterHandPlayed(cards: Seq[Card]): Effect[Seq[Card]] =
-    super
-      .afterHandPlayed(cards)
-      .andThen(Effect(c => HandType.detect(c) == handType, modification))
+  override def afterHandPlayed(cards: Seq[Card]): Seq[Modification[?]] =
+    super.onHandPlayed(cards) ++ Modification.when(
+      HandType.detect(cards) == handType
+    )(modification)
 
 /** Trait which increases the score with an addition by a certain amount
   */
 sealed trait SuitScored[A](suit: Suit, modification: Modification[A])
     extends Joker:
 
-  override def onCardScored(card: Card): Effect[Card] =
-    super.onCardScored(card).andThen(Effect(c => c.suit == suit, modification))
+  override def onCardScored(card: Card): Seq[Modification[?]] =
+    super.onCardScored(card) ++ Modification.when(
+      card.suit == suit
+    )(modification)
 
 enum JokerType(val name: String, val description: String) extends Joker:
   case CleverJoker

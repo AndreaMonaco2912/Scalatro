@@ -1,8 +1,6 @@
 package scalatro
 package model.commons
 
-import model.commons.Effect.andThen
-import model.commons.HandScore
 import model.rng.Weighable
 
 enum Suit:

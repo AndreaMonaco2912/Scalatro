@@ -76,7 +76,7 @@ object AvgSquaredHandScoreCalculator extends HandScoreCalculator:
   * @param mult
   *   the multiplier
   */
-case class HandScore(chips: Chips, mult: Mult) extends Effectible:
+case class HandScore(chips: Chips, mult: Mult):
   def apply(chips: Chips, mult: Mult): HandScore =
     HandScore(chips, mult)
 
@@ -140,7 +140,7 @@ object ScoreConfig:
   def default: ScoreConfig =
     ScoreConfig(Seq.empty, HandTypeLevels.initial, BasicHandScoreCalculator)
 
-object Score extends Effectible:
+object Score:
   opaque type Score = Double
 
   def apply(d: Double): Score =
@@ -187,16 +187,16 @@ object Score extends Effectible:
     val initialModifications: Seq[Modification[?]] = Seq.empty
     val scoringCards = HandType.getScoringCards(cards)
     val onHandPlayed = jokers.foldLeft(initialModifications) { (acc, joker) =>
-      acc ++ joker.onHandPlayed(scoringCards).apply(scoringCards)
+      acc ++ joker.onHandPlayed(scoringCards)
     }
     val onCardScored = scoringCards.foldLeft(onHandPlayed) { (acc, card) =>
       val afterCardSelf = acc ++ card.onScored
       jokers.foldLeft(afterCardSelf) { (acc2, joker) =>
-        acc2 ++ joker.onCardScored(card).apply(card)
+        acc2 ++ joker.onCardScored(card)
       }
     }
     val allModifications = jokers.foldLeft(onCardScored) { (acc, joker) =>
-      acc ++ joker.afterHandPlayed(scoringCards).apply(scoringCards)
+      acc ++ joker.afterHandPlayed(scoringCards)
     }
     val scoreModifications: Seq[HandScoreModification] =
       allModifications.collect { case s: HandScoreModification => s }
