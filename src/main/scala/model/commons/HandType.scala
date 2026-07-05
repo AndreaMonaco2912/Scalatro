@@ -66,11 +66,24 @@ object HandType:
       case FlushFive | FlushHouse | FiveOfAKind | FullHouse | StraightFlush |
           Straight | Flush =>
         cards
-      case FourOfAKind  => ranks.values.find(_.sizeIs == 4).getOrElse(Seq.empty)
-      case ThreeOfAKind => ranks.values.find(_.sizeIs == 3).getOrElse(Seq.empty)
-      case TwoPair      => ranks.values.filter(_.sizeIs == 2).flatten.toSeq
-      case Pair         => ranks.values.find(_.sizeIs == 2).getOrElse(Seq.empty)
-      case HighCard     =>
+      case FourOfAKind =>
+        ranks.values
+          .find(_.sizeIs == 4)
+          .map(matches => cards.filter(matches.contains))
+          .getOrElse(Seq.empty)
+      case ThreeOfAKind =>
+        ranks.values
+          .find(_.sizeIs == 3)
+          .map(matches => cards.filter(matches.contains))
+          .getOrElse(Seq.empty)
+      case TwoPair =>
+        cards.filter(ranks.values.filter(_.sizeIs == 2).flatten.toSet.contains)
+      case Pair =>
+        ranks.values
+          .find(_.sizeIs == 2)
+          .map(matches => cards.filter(matches.contains))
+          .getOrElse(Seq.empty)
+      case HighCard =>
         cards.maxByOption(_.rank.ordinal) match
           case None    => Seq.empty
           case Some(c) => Seq(c)

@@ -1,6 +1,8 @@
 package scalatro
 package model.commons
 
+import model.extra.CardBuilder.*
+
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -280,3 +282,8 @@ class HandTypeSpec extends AnyFlatSpec, Matchers:
       HandType.Pair,
       HandType.HighCard
     )
+
+  "Get scoring cards" should "preserve card order" in:
+    val cards = Seq(10 of S, 8 of S, 7 of S, 6 of S, 9 of S)
+    val scoringCards = HandType.getScoringCards(cards)
+    scoringCards shouldBe cards
