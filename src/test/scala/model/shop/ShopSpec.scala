@@ -1,13 +1,14 @@
 package scalatro
 package model.shop
 
-import model.commons.{Deck, HandTypeLevels, Joker, JokerPack, JokerType}
+import model.commons.*
 import model.game.ShopInformation
+import model.rng.ScalatroRng
+import model.rng.SelectionPolicy.UniformSelection
+import model.rng.seed.SelectionPolicies
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import model.rng.ScalatroRng
-import model.rng.SelectionPolicy.UniformSelection
 
 class ShopSpec extends AnyFlatSpec, Matchers:
 
@@ -16,7 +17,11 @@ class ShopSpec extends AnyFlatSpec, Matchers:
   private val smallPackSize = 3
 
   private def shopOwning(blackList: Seq[Joker]): Shop =
-    Shop.default(ShopInformation(Deck(), HandTypeLevels.initial, blackList))
+    Shop.default(ShopInformation(Deck(), HandTypeLevels.initial, blackList))(
+      using
+      ScalatroRng.default,
+      SelectionPolicies.default
+    )
 
   "default" should "offer a card pack of the small pack size" in:
     shopOwning(Seq.empty).cardPack.items.length shouldBe smallPackSize
