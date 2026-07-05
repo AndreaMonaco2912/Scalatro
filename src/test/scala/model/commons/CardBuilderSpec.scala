@@ -3,7 +3,7 @@ package model.commons
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import model.commons.CardBuilder.*
+import scalatro.model.extra.CardBuilder.*
 
 class CardBuilderSpec extends AnyFlatSpec with Matchers:
 

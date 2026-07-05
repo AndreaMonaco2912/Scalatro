@@ -6,7 +6,7 @@ import org.scalatest.matchers.should.Matchers
 import model.commons.Score.Score
 import model.commons.Chips.Chips
 import model.commons.Mult.Mult
-import model.commons.CardBuilder.*
+import scalatro.model.extra.CardBuilder.*
 
 class ScoreSpec extends AnyFlatSpec, Matchers:
 

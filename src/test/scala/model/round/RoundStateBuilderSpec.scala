@@ -5,8 +5,10 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import model.commons.{Deck, Score}
 import model.game.GameState
-import model.commons.CardBuilder.*
-import model.round.RoundBuilder.DSL.*
+
+import scalatro.model.extra.CardBuilder.*
+import scalatro.model.extra.RoundBuilder
+import scalatro.model.extra.RoundBuilder.DSL.*
 
 class RoundStateBuilderSpec extends AnyFlatSpec with Matchers:
 

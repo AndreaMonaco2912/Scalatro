@@ -2,15 +2,16 @@ package scalatro
 package app
 
 import model.commons.*
-import model.commons.CardBuilder.*
-import model.game.{GameState, GameStateBuilder}
-import model.game.GameStateBuilder.DSL.*
-import model.round.{RoundBuilder, RoundState}
-import model.round.RoundBuilder.DSL.*
+import scalatro.model.extra.CardBuilder.*
+import model.game.GameState
+import scalatro.model.extra.GameStateBuilder.DSL.*
+import model.round.RoundState
+import scalatro.model.extra.RoundBuilder.DSL.*
 import model.shop.Shop
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
+import scalatro.model.extra.{GameStateBuilder, RoundBuilder}
 
 object UpdateDSL:
   extension (model: Model)

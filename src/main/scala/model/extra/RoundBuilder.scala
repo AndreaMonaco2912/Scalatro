@@ -1,9 +1,10 @@
 package scalatro
-package model.round
+package model.extra
 
 import model.commons.Score.Score
 import model.commons.{Deck, Score}
 import model.game.GameState
+import model.round.{Hand, RoundState}
 
 /** A DSL for building a [[RoundState]] with a readable and declarative syntax.
   *

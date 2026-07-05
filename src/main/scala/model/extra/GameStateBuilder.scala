@@ -1,7 +1,8 @@
 package scalatro
-package model.game
+package model.extra
 
 import model.commons.{Deck, HandTypeLevels, Joker}
+import model.game.{Blind, GameState, HandInformation}
 import model.rng.seed.SelectionPolicies
 
 /** A DSL for building a [[GameState]] with a readable syntax. * Example:

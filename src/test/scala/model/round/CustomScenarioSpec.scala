@@ -4,10 +4,12 @@ package model.round
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import model.commons.{Deck, HandType, HandTypeLevels, Joker}
-import model.commons.CardBuilder.*
+
+import scalatro.model.extra.CardBuilder.*
 import model.commons.JokerType.{CrazyJoker, DeviousJoker}
 
-import model.round.HandLevelBuilder.*
+import scalatro.model.extra.Cards
+import scalatro.model.extra.HandLevelBuilder.*
 
 class CustomScenarioSpec extends AnyFlatSpec with Matchers:
 
