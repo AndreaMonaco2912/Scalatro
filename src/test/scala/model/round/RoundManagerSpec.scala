@@ -30,15 +30,15 @@ class RoundManagerSpec extends AnyFlatSpec with Matchers with MockFactory:
   private val initialHand = Seq(c1, c2, c3, c4)
   private val initialDeck = Deck(Seq(c5, c6, c7))
 
-  private val roundNum = 1
+  private val anteNum = 1
   private val initialGameState = GameState.initial
 
   private given ScoreConfig = ScoreConfig.default
 
   private def runSequence(
-                           initialRoundState: RoundState,
-                           actions: Seq[RoundAction],
-                           render: RoundState => IO[Unit] = _ => IO.unit
+      initialRoundState: RoundState,
+      actions: Seq[RoundAction],
+      render: RoundState => IO[Unit] = _ => IO.unit
   ): RoundState =
     val testProgram = for
       queue <- Queue.unbounded[IO, RoundAction]
@@ -57,13 +57,15 @@ class RoundManagerSpec extends AnyFlatSpec with Matchers with MockFactory:
       Score.zero,
       initialHand,
       initialDeck,
-      initialGameState.copy(blindProgression = BlindProgression(roundNum, targetScore, SmallBlind))
+      initialGameState.copy(blindProgression =
+        BlindProgression(anteNum, targetScore, SmallBlind)
+      )
     )
 
   private def assertRoundFinished(
-                                   roundState: RoundState,
-                                   expectedScore: Score.Score,
-                                   consumedCards: Card*
+      roundState: RoundState,
+      expectedScore: Score.Score,
+      consumedCards: Card*
   ): Unit =
     roundState.score shouldBe expectedScore
     consumedCards.foreach(card => roundState.hand should not contain card)

@@ -14,28 +14,44 @@ import model.rng.Weighable
 import model.round.{RoundState, RoundStateModification}
 import model.game.BlindType.*
 
-case class BlindProgression(roundNum: Int, targetScore: Score, blind: Blind):
+case class BlindProgression(anteNum: Int, targetScore: Score, blind: Blind):
+
+  def roundNum: Int =
+    (anteNum - 1) * 3 + BlindProgression.blindPosition(blind) + 1
+
   def isBeaten(achieved: Score): Boolean = achieved >= targetScore
 
   def next: BlindProgression =
+    val nextBlind = blind match
+      case SmallBlind => BigBlind
+      case BigBlind   => TheNeedle
+      case TheNeedle  => SmallBlind
+
+    val nextAnte = if blind == TheNeedle then anteNum + 1 else anteNum
     BlindProgression(
-      roundNum + 1,
-      targetScore * BlindProgression.increaseAmount,
-      BlindProgression.nextBlind(blind)
+      nextAnte,
+      BlindProgression.scoreFor(nextAnte, nextBlind),
+      nextBlind
     )
 
 object BlindProgression:
-  val increaseAmount = 1.5
   val initialScore: Score = Score(300)
-  private val initialRound = 1
+  private val initialAnte = 1
 
   def first: BlindProgression =
-    BlindProgression(initialRound, initialScore, SmallBlind)
+    BlindProgression(initialAnte, initialScore, SmallBlind)
 
-  private def nextBlind(current: Blind) = current match
-    case SmallBlind => BigBlind
-    case BigBlind   => TheNeedle
-    case TheNeedle  => SmallBlind
+  private def scoreFor(anteNum: Int, blind: Blind): Score =
+    val small = initialScore * Math.pow(3, anteNum - 1)
+    blind match
+      case SmallBlind => small
+      case TheNeedle  => small * 2
+      case BigBlind   => (small + small * 2) / 2
+
+  private def blindPosition(blind: Blind): Int = blind match
+    case SmallBlind => 0
+    case BigBlind   => 1
+    case TheNeedle  => 2
 
 trait Blind extends Weighable:
   /** @return
@@ -75,7 +91,7 @@ enum BlindType(val name: String, val description: String) extends Blind:
   case TheFlint
       extends BlindType(
         "The Flint",
-        "Base Chips and Mult for played poker hands are halved for the entire round "
+        "Base Chips and Mult for played poker hands are halved for the entire round"
       )
 
   override def onRoundStart(round: RoundState): Seq[Modification] = this match
