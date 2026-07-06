@@ -65,6 +65,6 @@ class Runtime(screens: GameViews, seed: Seed = Seed.random):
     yield ()
 
   private def outcome(roundState: RoundState): Msg =
-    if roundState.gameState.blind.isBeaten(roundState.score)
+    if roundState.gameState.blindProgression.isBeaten(roundState.score)
     then Msg.InternalEffect.RoundWon(roundState)
     else Msg.InternalEffect.RoundLost(roundState)

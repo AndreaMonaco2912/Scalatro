@@ -21,14 +21,14 @@ class GameStateSpec extends AnyFlatSpec, Matchers:
   given ScalatroRng = ScalatroRng.default
 
   "initial" should "start at the first blind" in:
-    start.blind shouldBe Blind.first
+    start.blindProgression shouldBe BlindProgression.first
 
   it should "start with a full deck" in:
     start.deck.cards should contain theSameElementsAs Deck().cards
 
   "advanceBlind" should "replace the blind with its next" in:
     val result = start.advanceBlind
-    result.blind shouldBe start.blind.next
+    result.blindProgression shouldBe start.blindProgression.next
 
   "shuffle" should "preserve all the cards" in:
     val result = start.shuffleDeck

@@ -96,7 +96,7 @@ class RoundStateSpec extends AnyFlatSpec with Matchers with MockFactory:
     round.remainingDiscards shouldBe gameState.handInformation.discardNum
 
   "A Round" should "be finished when the blind is beaten" in:
-    val beatingScore = GameState.initial.blind.targetScore
+    val beatingScore = GameState.initial.blindProgression.targetScore
     val round = initialRound.modify(score = beatingScore)
 
     round.isFinished shouldBe true

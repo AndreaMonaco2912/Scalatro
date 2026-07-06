@@ -7,9 +7,9 @@ import org.scalatest.matchers.should.Matchers
 import model.commons.Score
 import model.commons.Score.Score
 
-class BlindSpec extends AnyFlatSpec, Matchers:
+class BlindProgressionSpec extends AnyFlatSpec, Matchers:
 
-  val start: Blind = Blind.first
+  val start: BlindProgression = BlindProgression.first
 
   "next" should "increment the round number by one" in:
     val result = start.next
@@ -17,10 +17,10 @@ class BlindSpec extends AnyFlatSpec, Matchers:
 
   it should "scale the score by the increaseAmount" in:
     val result = start.next
-    result.targetScore shouldBe start.targetScore * Blind.increaseAmount
+    result.targetScore shouldBe start.targetScore * BlindProgression.increaseAmount
 
   "isBeaten" should "be true if the achieved score meets the target" in:
-    Blind.first.isBeaten(Blind.initialScore) shouldBe true
+    BlindProgression.first.isBeaten(BlindProgression.initialScore) shouldBe true
 
   it should "fail when the achieved score is below the target" in:
-    Blind.first.isBeaten(Blind.initialScore - Score(1)) shouldBe false
+    BlindProgression.first.isBeaten(BlindProgression.initialScore - Score(1)) shouldBe false

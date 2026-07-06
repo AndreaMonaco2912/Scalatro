@@ -8,7 +8,7 @@ import model.rng.seed.SelectionPolicies
 case class GameState(
     handInformation: HandInformation,
     deck: Deck,
-    blind: Blind,
+    blindProgression: BlindProgression,
     jokers: Seq[Joker],
     levels: HandTypeLevels,
     selectionPolicies: SelectionPolicies
@@ -17,7 +17,7 @@ case class GameState(
     this.copy(deck = deck.sort.shuffle)
 
   def advanceBlind: GameState =
-    this.copy(blind = blind.next)
+    this.copy(blindProgression = blindProgression.next)
 
   def scoreConfig: ScoreConfig =
     ScoreConfig(jokers, levels, BasicHandScoreCalculator)
@@ -51,7 +51,7 @@ object GameState:
     GameState(
       initialHand,
       Deck(),
-      Blind.first,
+      BlindProgression.first,
       Seq.empty,
       HandTypeLevels.initial,
       SelectionPolicies.default

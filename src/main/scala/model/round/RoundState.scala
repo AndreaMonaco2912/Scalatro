@@ -130,13 +130,27 @@ object RoundState:
       )
 
     override def isFinished: Boolean =
-      gameState.blind.isBeaten(score) || remainingPlays == 0
+      gameState.blindProgression.isBeaten(score) || remainingPlays == 0
 
 trait RoundStateModification extends Modification:
   type T = RoundState
 
 object RoundStateModification:
-  case class IncreaseHandsRemaining(n : Int) extends RoundStateModification:
-    override def apply(value: RoundState): RoundState = value.modify(remainingPlays = value.remainingPlays + n)
-  case class IncreaseDiscardsRemaining(n : Int) extends RoundStateModification:
-    override def apply(value: RoundState): RoundState = value.modify(remainingDiscards = value.remainingDiscards + n)
+  case class IncreaseRemainingPlays(n: Int) extends RoundStateModification:
+    override def apply(value: RoundState): RoundState =
+      value.modify(remainingPlays = value.remainingPlays + n)
+  case class IncreaseRemainingDiscards(n: Int) extends RoundStateModification:
+    override def apply(value: RoundState): RoundState =
+      value.modify(remainingDiscards = value.remainingDiscards + n)
+  case class DecreaseRemainingPlays(n: Int) extends RoundStateModification:
+    override def apply(value: RoundState): RoundState =
+      value.modify(remainingPlays = value.remainingPlays - n)
+  case class DecreaseRemainingDiscards(n: Int) extends RoundStateModification:
+    override def apply(value: RoundState): RoundState =
+      value.modify(remainingDiscards = value.remainingDiscards - n)
+  case class setRemainingPlays(n: Int) extends RoundStateModification:
+    override def apply(value: RoundState): RoundState =
+      value.modify(remainingPlays = n)
+  case class setRemainingDiscards(n: Int) extends RoundStateModification:
+    override def apply(value: RoundState): RoundState =
+      value.modify(remainingDiscards = n)

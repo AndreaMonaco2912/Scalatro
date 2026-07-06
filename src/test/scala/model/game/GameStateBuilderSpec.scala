@@ -4,7 +4,7 @@ package model.game
 import model.commons.{Deck, HandTypeLevels, Joker}
 import model.extra.GameStateBuilder
 import model.extra.GameStateBuilder.DSL.*
-import model.game.{Blind, GameState}
+import model.game.{BlindProgression, GameState}
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
@@ -13,7 +13,7 @@ class GameStateBuilderSpec extends AnyFlatSpec with Matchers:
 
   "GameStateBuilder" should "correctly build a state with all custom values" in:
     val customDeck = Deck()
-    val customBlind = Blind.first
+    val customBlind = BlindProgression.first
     val customJokers = Seq.empty[Joker]
     val customLevels = HandTypeLevels.initial
 
@@ -31,7 +31,7 @@ class GameStateBuilderSpec extends AnyFlatSpec with Matchers:
     state.handInformation.handNum shouldBe 5
     state.handInformation.discardNum shouldBe 2
     state.deck shouldBe customDeck
-    state.blind shouldBe customBlind
+    state.blindProgression shouldBe customBlind
     state.jokers shouldBe customJokers
     state.levels shouldBe customLevels
 

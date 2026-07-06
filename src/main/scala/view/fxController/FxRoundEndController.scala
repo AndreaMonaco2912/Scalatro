@@ -39,7 +39,7 @@ abstract class FxRoundEndController extends Initializable, Dispatcher:
     Platform.runLater { () =>
       scoreLabel.setText(s"You scored: ${roundState.score.asDouble.toString}")
       targetScoreLabel.setText(
-        s"Score at least: ${roundState.gameState.blind.targetScore.asDouble.toString}"
+        s"Score at least: ${roundState.gameState.blindProgression.targetScore.asDouble.toString}"
       )
       handsRemainingLabel.setText(
         s"Remaining hands: ${roundState.remainingPlays.toString}"

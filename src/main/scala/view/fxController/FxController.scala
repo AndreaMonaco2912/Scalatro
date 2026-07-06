@@ -136,13 +136,13 @@ class FxController extends Initializable, Bindable[RoundAction]:
   def update(roundState: RoundState): Unit =
     Platform.runLater { () =>
       goalLabel.setText(
-        roundState.gameState.blind.targetScore.asDouble.customToString
+        roundState.gameState.blindProgression.targetScore.asDouble.customToString
       )
       roundScoreLabel.setText(roundState.score.asDouble.customToString)
       deckLabel.setText(s"${roundState.deck.size} left")
       handsRemainingLabel.setText(roundState.remainingPlays.toString)
       discardsRemainingLabel.setText(roundState.remainingDiscards.toString)
-      roundNumLabel.setText(s"Round ${roundState.gameState.blind.roundNum}")
+      roundNumLabel.setText(s"Round ${roundState.gameState.blindProgression.roundNum}")
 
       lastKnownRoundState = Some(roundState)
       playButton.setDisable(roundState.remainingPlays <= 0)

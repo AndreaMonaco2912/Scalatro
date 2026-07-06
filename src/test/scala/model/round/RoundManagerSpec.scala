@@ -2,10 +2,10 @@ package scalatro
 package model.round
 
 import model.commons.*
-import model.game.{Blind, GameState}
+import model.game.{BlindProgression, GameState}
 import app.Msg.RoundAction
 import app.Msg.RoundAction.{DiscardCards, PlayCards}
-import model.round.{RoundState, RoundManager}
+import model.round.{RoundManager, RoundState}
 
 import cats.effect.IO
 import cats.effect.std.Queue
@@ -14,6 +14,7 @@ import cats.syntax.all.*
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
+import model.game.BlindType.SmallBlind
 
 /** A test spec for [[RoundManager]] */
 class RoundManagerSpec extends AnyFlatSpec with Matchers with MockFactory:
@@ -56,7 +57,7 @@ class RoundManagerSpec extends AnyFlatSpec with Matchers with MockFactory:
       Score.zero,
       initialHand,
       initialDeck,
-      initialGameState.copy(blind = Blind(roundNum, targetScore))
+      initialGameState.copy(blindProgression = BlindProgression(roundNum, targetScore, SmallBlind))
     )
 
   private def assertRoundFinished(
@@ -83,7 +84,7 @@ class RoundManagerSpec extends AnyFlatSpec with Matchers with MockFactory:
 
   "A RoundManager" should "return immediately if the initial round is already finished, rendering only once" in:
     val initialRound = RoundState(
-      initialGameState.blind.targetScore,
+      initialGameState.blindProgression.targetScore,
       initialHand,
       initialDeck,
       initialGameState

@@ -2,7 +2,7 @@ package scalatro
 package model.extra
 
 import model.commons.{Deck, HandTypeLevels, Joker}
-import model.game.{Blind, GameState, HandInformation}
+import model.game.{BlindProgression, GameState, HandInformation}
 import model.rng.seed.SelectionPolicies
 
 /** A DSL for building a [[GameState]] with a readable syntax. * Example:
@@ -23,7 +23,7 @@ class GameStateBuilder:
   private var remainingHands: Int = GameState.initialHandNum
   private var remainingDiscards: Int = GameState.initialDiscardNum
   private var deck: Deck = Deck()
-  private var blind: Blind = Blind.first
+  private var blindProgression: BlindProgression = BlindProgression.first
   private var jokers: Seq[Joker] = Seq.empty
   private var levels: HandTypeLevels = HandTypeLevels.initial
 
@@ -37,7 +37,7 @@ class GameStateBuilder:
       this.remainingDiscards
     ),
     deck = this.deck,
-    blind = this.blind,
+    blindProgression = this.blindProgression,
     jokers = this.jokers,
     levels = this.levels,
     selectionPolicies = SelectionPolicies.default
@@ -80,9 +80,9 @@ object GameStateBuilder:
         b.deck = deck
 
     object BlindInGame:
-      /** @param blind the target [[Blind]] for the round */
-      infix def :=(blind: Blind)(using b: GameStateBuilder): Unit =
-        b.blind = blind
+      /** @param blindProgression the target [[BlindProgression]] for the round */
+      infix def :=(blindProgression: BlindProgression)(using b: GameStateBuilder): Unit =
+        b.blindProgression = blindProgression
 
     object Jokers:
       /** @param jokers the sequence of [[Joker]]s currently held */
