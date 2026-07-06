@@ -1,18 +1,17 @@
 package scalatro
 package model.commons
 
-import scala.annotation.tailrec
-
-trait Modification[A]:
-  def apply(value: A): A
+trait Modification:
+  type T
+  def apply(value: T): T
 
 object Modification:
   def when[A](condition: Boolean)(
-      modification: Modification[A]
-  ): Seq[Modification[A]] =
+      modification: Modification
+  ): Seq[Modification] =
     when(condition)(Seq(modification))
 
   def when[A](condition: Boolean)(
-      modifications: Seq[Modification[A]]
-  ): Seq[Modification[A]] =
+      modifications: Seq[Modification]
+  ): Seq[Modification] =
     if condition then modifications else Seq.empty

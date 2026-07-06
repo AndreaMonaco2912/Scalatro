@@ -132,7 +132,8 @@ object RoundState:
     override def isFinished: Boolean =
       gameState.blind.isBeaten(score) || remainingPlays == 0
 
-trait RoundStateModification extends Modification[RoundState]
+trait RoundStateModification extends Modification:
+  type T = RoundState
 
 object RoundStateModification:
   case class IncreaseHandsRemaining(n : Int) extends RoundStateModification:

@@ -22,19 +22,19 @@ sealed trait Joker extends Weighable:
     * @return
     *   the modifications
     */
-  def onRoundStart(round: RoundState): Seq[Modification[?]] = Seq.empty
+  def onRoundStart(round: RoundState): Seq[Modification] = Seq.empty
 
   /** The effect applied when a card played is scored
     * @return
     *   the modifications
     */
-  def onCardScored(card: Card): Seq[Modification[?]] = Seq.empty
+  def onCardScored(card: Card): Seq[Modification] = Seq.empty
 
   /** The effect applied when a hand is played
     * @return
     *   the modifications
     */
-  def onHandPlayed(cards: Seq[Card]): Seq[Modification[?]] = Seq.empty
+  def onHandPlayed(cards: Seq[Card]): Seq[Modification] = Seq.empty
 
   /** The effect applied after a hand is played
     * @param cards
@@ -42,7 +42,7 @@ sealed trait Joker extends Weighable:
     * @return
     *   the modifications
     */
-  def afterHandPlayed(cards: Seq[Card]): Seq[Modification[?]] = Seq.empty
+  def afterHandPlayed(cards: Seq[Card]): Seq[Modification] = Seq.empty
 
 /** Trait which, if the hand played is of the specified type, increases the hand
   * score by the addition of a certain amount
@@ -52,33 +52,33 @@ sealed trait HandTypeContained(
     modification: HandScoreModification
 ) extends Joker:
 
-  override def afterHandPlayed(cards: Seq[Card]): Seq[Modification[?]] =
+  override def afterHandPlayed(cards: Seq[Card]): Seq[Modification] =
     super.onHandPlayed(cards) ++ Modification.when(
       HandType.detect(cards) == handType
     )(modification)
 
 /** Trait which increases the score with an addition by a certain amount
   */
-sealed trait SuitScored[A](suit: Suit, modification: Modification[A])
+sealed trait SuitScored[A](suit: Suit, modification: Modification)
     extends Joker:
 
-  override def onCardScored(card: Card): Seq[Modification[?]] =
+  override def onCardScored(card: Card): Seq[Modification] =
     super.onCardScored(card) ++ Modification.when(
       card.suit == suit
     )(modification)
 
 sealed trait RanksScored[A](
     ranks: Seq[Rank],
-    modifications: Seq[Modification[A]]
+    modifications: Seq[Modification]
 ) extends Joker:
-  override def onCardScored(card: Card): Seq[Modification[?]] =
+  override def onCardScored(card: Card): Seq[Modification] =
     super.onCardScored(card) ++ Modification.when(ranks.contains(card.rank))(
       modifications
     )
 
-sealed trait HandInformationModifier(modifications: Seq[Modification[?]])
+sealed trait HandInformationModifier(modifications: Seq[Modification])
     extends Joker:
-  override def onRoundStart(round: RoundState): Seq[Modification[?]] =
+  override def onRoundStart(round: RoundState): Seq[Modification] =
     modifications
 
 enum JokerType(val name: String, val description: String) extends Joker:

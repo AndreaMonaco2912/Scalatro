@@ -103,7 +103,8 @@ object HandScore:
 
   val zero: HandScore = HandScore(Chips.zero, Mult.zero)
 
-trait HandScoreModification extends Modification[HandScore]
+trait HandScoreModification extends Modification:
+  type T = HandScore
 
 object HandScoreModification:
   case class FlatChips(chips: Chips) extends HandScoreModification:
@@ -113,7 +114,8 @@ object HandScoreModification:
   case class MultiplicativeMult(mult: Mult) extends HandScoreModification:
     override def apply(value: HandScore): HandScore = value * mult
 
-trait ScoreModification extends Modification[Score]
+trait ScoreModification extends Modification:
+  type T = Score
 
 object ScoreModification:
   case class MultiplicativeIncrease(factor: Double) extends ScoreModification:
@@ -184,7 +186,7 @@ object Score:
     val levels = scoreConfig.levels
     val handType: HandType = HandType.detect(cards)
     val initialScore: HandScore = getHandTypeBaseScore(handType, levels)
-    val initialModifications: Seq[Modification[?]] = Seq.empty
+    val initialModifications: Seq[Modification] = Seq.empty
     val scoringCards = HandType.getScoringCards(cards)
     val onHandPlayed = jokers.foldLeft(initialModifications) { (acc, joker) =>
       acc ++ joker.onHandPlayed(scoringCards)
