@@ -1,7 +1,14 @@
 package scalatro
 package model.game
 
-import model.commons.{Card, Chips, HandScoreModification, Modification, Mult, Score}
+import model.commons.{
+  Card,
+  Chips,
+  HandScoreModification,
+  Modification,
+  Mult,
+  Score
+}
 import model.commons.Score.Score
 import model.rng.Weighable
 import model.round.{RoundState, RoundStateModification}
@@ -61,30 +68,24 @@ trait Blind extends Weighable:
     */
   def onHandPlayed(cards: Seq[Card]): Seq[Modification] = Seq.empty
 
-trait HandInformationModifier(modifications: Seq[Modification]) extends Blind:
-  override def onRoundStart(round: RoundState): Seq[Modification] =
-    modifications
-
-trait HandScoreModifier(modifications: Seq[Modification]) extends Blind:
-  override def onHandPlayed(cards: Seq[Card]): Seq[Modification] =
-    modifications
-
 enum BlindType(val name: String, val description: String) extends Blind:
   case SmallBlind extends BlindType("Small Blind", "No special effect")
   case BigBlind extends BlindType("Big Blind", "No special effect")
-  case TheNeedle
-      extends BlindType("The Needle", "Play only 1 hand ")
-      with HandInformationModifier(
-        Seq(RoundStateModification.setRemainingPlays(1))
-      )
+  case TheNeedle extends BlindType("The Needle", "Play only 1 hand")
   case TheFlint
       extends BlindType(
         "The Flint",
         "Base Chips and Mult for played poker hands are halved for the entire round "
       )
-      with HandScoreModifier(
-        Seq(
-          HandScoreModification.MultiplicativeChips(Chips(0.5)),
-          HandScoreModification.MultiplicativeMult(Mult(0.5))
-        )
+
+  override def onRoundStart(round: RoundState): Seq[Modification] = this match
+    case TheNeedle => Seq(RoundStateModification.setRemainingPlays(1))
+    case _         => Seq.empty
+
+  override def onHandPlayed(cards: Seq[Card]): Seq[Modification] = this match
+    case TheFlint =>
+      Seq(
+        HandScoreModification.MultiplicativeChips(Chips(0.5)),
+        HandScoreModification.MultiplicativeMult(Mult(0.5))
       )
+    case _ => Seq.empty
