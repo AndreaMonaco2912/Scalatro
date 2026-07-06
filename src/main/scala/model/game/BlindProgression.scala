@@ -34,6 +34,10 @@ case class BlindProgression(anteNum: Int, targetScore: Score, blind: Blind):
       nextBlind
     )
 
+  def isBoss: Boolean = blind match
+    case SmallBlind | BigBlind => false
+    case _                     => true
+
 object BlindProgression:
   val initialScore: Score = Score(300)
   private val initialAnte = 1

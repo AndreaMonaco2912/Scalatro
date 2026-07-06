@@ -21,17 +21,30 @@
             </padding>
 
             <!-- Current blind name -->
-            <Label text="SMALL BLIND" textFill="#f5c842">
+            <Label fx:id="blindNameLabel" textFill="#f5c842">
                 <font>
                     <Font name="System Bold" size="15.0"/>
                 </font>
             </Label>
-
-            <Label fx:id="roundNumLabel" textFill="#f5c842">
+            
+            <Label fx:id="blindDescLabel" textFill="#f5c842">
                 <font>
                     <Font name="System Bold" size="15.0"/>
                 </font>
             </Label>
+            <!-- Current round and ante number -->
+            <HBox spacing="25.0">
+                <Label fx:id="roundNumLabel" textFill="#f5c842">
+                    <font>
+                        <Font name="System Bold" size="15.0"/>
+                    </font>
+                </Label>
+                <Label fx:id="anteNumLabel" textFill="#f5c842" alignment="BASELINE_RIGHT">
+                    <font>
+                        <Font name="System Bold" size="15.0"/>
+                    </font>
+                </Label>
+            </HBox>
 
             <!-- Score to beat -->
             <VBox alignment="CENTER" spacing="5.0" styleClass="score-box">

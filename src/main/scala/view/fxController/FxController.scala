@@ -32,7 +32,10 @@ class FxController extends Initializable, Bindable[RoundAction]:
   @FXML private var handSlotsBox: HBox = uninitialized
 
   // Info labels
+  @FXML private var blindNameLabel: Label = uninitialized
+  @FXML private var blindDescLabel: Label = uninitialized
   @FXML private var roundNumLabel: Label = uninitialized
+  @FXML private var anteNumLabel: Label = uninitialized
   @FXML private var roundScoreLabel: Label = uninitialized
   @FXML private var goalLabel: Label = uninitialized
   @FXML private var chipsLabel: Label = uninitialized
@@ -135,6 +138,16 @@ class FxController extends Initializable, Bindable[RoundAction]:
   /** Update all UI nodes to reflect the new Round state. */
   def update(roundState: RoundState): Unit =
     Platform.runLater { () =>
+      blindNameLabel.setText(
+        roundState.gameState.blindProgression.blind.name
+      )
+
+      if roundState.gameState.blindProgression.isBoss then
+        blindDescLabel.setText(roundState.gameState.blindProgression.blind.description)
+        blindDescLabel.setVisible(true)
+      else
+        blindDescLabel.setVisible(false)
+
       goalLabel.setText(
         roundState.gameState.blindProgression.targetScore.asDouble.customToString
       )
@@ -142,7 +155,12 @@ class FxController extends Initializable, Bindable[RoundAction]:
       deckLabel.setText(s"${roundState.deck.size} left")
       handsRemainingLabel.setText(roundState.remainingPlays.toString)
       discardsRemainingLabel.setText(roundState.remainingDiscards.toString)
-      roundNumLabel.setText(s"Round ${roundState.gameState.blindProgression.roundNum}")
+      roundNumLabel.setText(
+        s"Round ${roundState.gameState.blindProgression.roundNum}"
+      )
+      anteNumLabel.setText(
+        s"Ante ${roundState.gameState.blindProgression.anteNum}"
+      )
 
       lastKnownRoundState = Some(roundState)
       playButton.setDisable(roundState.remainingPlays <= 0)
@@ -158,10 +176,11 @@ class FxController extends Initializable, Bindable[RoundAction]:
 
       // Rebuild the card slots from the current hand, mirroring jokerSlotsBox
       handSlotsBox.getChildren.clear()
-      handSlots = roundState.hand.toList.zipWithIndex.map { case (card, index) =>
-        val btn = renderCardButton(card, index)
-        handSlotsBox.getChildren.add(btn)
-        (btn, card)
+      handSlots = roundState.hand.toList.zipWithIndex.map {
+        case (card, index) =>
+          val btn = renderCardButton(card, index)
+          handSlotsBox.getChildren.add(btn)
+          (btn, card)
       }
 
       // Jokers overlap
