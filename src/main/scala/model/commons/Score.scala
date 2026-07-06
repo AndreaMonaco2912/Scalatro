@@ -16,6 +16,7 @@ object Chips:
 
   extension (c: Chips)
     def +(other: Chips): Chips = Chips(c + other)
+    def *(other: Chips): Chips = Chips(c * other)
     def asDouble: Double = c
 
   val zero: Chips = Chips(0.0)
@@ -95,6 +96,8 @@ object HandScore:
     def +(chips: Chips): HandScore = HandScore(hs.chips + chips, hs.mult)
     @targetName("addMult")
     def +(mult: Mult): HandScore = HandScore(hs.chips, hs.mult + mult)
+    def *(chips: Chips): HandScore = HandScore(hs.chips * chips, hs.mult)
+    @targetName("multiplicativeMult")
     def *(mult: Mult): HandScore = HandScore(hs.chips, hs.mult * mult)
     def *(level: Level): HandScore = HandScore(
       Chips(hs.chips.asDouble * level),
@@ -111,8 +114,11 @@ object HandScoreModification:
     override def apply(value: HandScore): HandScore = value + chips
   case class FlatMult(mult: Mult) extends HandScoreModification:
     override def apply(value: HandScore): HandScore = value + mult
+  case class MultiplicativeChips(chips: Chips) extends HandScoreModification:
+    override def apply(value: HandScore): HandScore = value * chips
   case class MultiplicativeMult(mult: Mult) extends HandScoreModification:
     override def apply(value: HandScore): HandScore = value * mult
+  
 
 trait ScoreModification extends Modification:
   type T = Score

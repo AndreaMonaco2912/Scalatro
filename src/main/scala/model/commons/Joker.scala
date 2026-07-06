@@ -170,7 +170,7 @@ enum JokerType(val name: String, val description: String) extends Joker:
       extends JokerType("Juggler", "+1 play and discard each round")
       with HandInformationModifier(
         Seq(
-          RoundStateModification.IncreaseHandsRemaining(1),
-          RoundStateModification.IncreaseDiscardsRemaining(1)
+          RoundStateModification.IncreaseRemainingPlays(1),
+          RoundStateModification.IncreaseRemainingDiscards(1)
         )
       )

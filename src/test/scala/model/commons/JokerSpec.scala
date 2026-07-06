@@ -137,4 +137,4 @@ class JokerSpec extends AnyFlatSpec, Matchers:
     val remainingPlays = round.remainingPlays
     val joker = JokerType.Juggler
     val modifications = joker.onRoundStart(round)
-    joker.onRoundStart(round) shouldBe Seq(RoundStateModification.IncreaseHandsRemaining(1), RoundStateModification.IncreaseDiscardsRemaining(1))
+    joker.onRoundStart(round) shouldBe Seq(RoundStateModification.IncreaseRemainingPlays(1), RoundStateModification.IncreaseRemainingDiscards(1))
