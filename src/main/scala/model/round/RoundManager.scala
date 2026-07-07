@@ -1,7 +1,7 @@
 package scalatro
 package model.round
 
-import model.commons.ScoreConfig
+import model.commons.{Modification, ScoreConfig}
 import app.Msg.RoundAction
 import app.Msg.RoundAction.*
 import model.round.RoundState
@@ -30,21 +30,25 @@ object RoundManager:
     *   the round manager
     */
   def apply(
-             render: RoundState => IO[Unit],
-             getAction: IO[RoundAction]
+      render: RoundState => IO[Unit],
+      getAction: IO[RoundAction]
   ): RoundManager = RoundManagerImpl(render, getAction)
 
   private class RoundManagerImpl(
-                                  render: RoundState => IO[Unit],
-                                  getAction: IO[RoundAction]
+      render: RoundState => IO[Unit],
+      getAction: IO[RoundAction]
   ) extends RoundManager:
     override def startRound(initialRoundState: RoundState): IO[RoundState] =
       given ScoreConfig = initialRoundState.gameState.scoreConfig
-      def processAction(roundState: RoundState, action: RoundAction): IO[RoundState] =
+      def processAction(
+          roundState: RoundState,
+          action: RoundAction
+      ): IO[RoundState] =
         action match
-          case PlayCards(cards)    => IO(playCards(cards).runS(roundState).value)
-          case DiscardCards(cards) => IO(discardCards(cards).runS(roundState).value)
-          case OrderHand(orderer)  =>
+          case PlayCards(cards) => IO(playCards(cards).runS(roundState).value)
+          case DiscardCards(cards) =>
+            IO(discardCards(cards).runS(roundState).value)
+          case OrderHand(orderer) =>
             IO(orderCards(using orderer).runS(roundState).value)
 
       def roundLoop(initialRoundState: RoundState): IO[RoundState] =
@@ -58,4 +62,28 @@ object RoundManager:
             result <- roundLoop(newRound)
           yield result
 
-      render(initialRoundState) >> roundLoop(initialRoundState)
+      def invokeOnRoundStartModifications(roundState: RoundState): RoundState =
+        val jokerModifications: Seq[Modification] =
+          roundState.gameState.jokers.foldLeft(Seq.empty)((acc, joker) =>
+            acc ++ joker.onRoundStart(roundState)
+          )
+        val jokerRoundModifications: Seq[RoundStateModification] =
+          Modification.collect[RoundStateModification](jokerModifications)
+        val roundStateAfterJokerModifications =
+          jokerRoundModifications.foldLeft(roundState)((acc, mod) => mod(acc))
+        val bossModifications: Seq[Modification] =
+          roundState.gameState.blindProgression.blind
+            .onRoundStart(roundStateAfterJokerModifications)
+        val bossRoundModifications: Seq[RoundStateModification] =
+          Modification.collect[RoundStateModification](bossModifications)
+        val roundStateAfterBossModifications = bossRoundModifications.foldLeft(
+          roundStateAfterJokerModifications
+        )((acc, mod) => mod(acc))
+        roundStateAfterBossModifications
+
+      val roundStateAfterModifications = invokeOnRoundStartModifications(
+        initialRoundState
+      )
+      render(roundStateAfterModifications) >> roundLoop(
+        roundStateAfterModifications
+      )
