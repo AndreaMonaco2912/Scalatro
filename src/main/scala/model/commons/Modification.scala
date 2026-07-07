@@ -17,6 +17,15 @@ object Modification:
   ): Seq[Modification[A]] =
     if condition then modifications else Seq.empty
 
+  def run[A, S, I](initial: A, sources: Seq[S], input: I)(
+      pf: PartialFunction[S, I => Seq[Modification[A]]]
+  ): A =
+    sources.collect(pf).flatMap(effect => effect(input)).applyAll(initial)
+
+  extension [A](mods: Seq[Modification[A]])
+    def applyAll(initial: A): A =
+      mods.foldLeft(initial)((acc, mod) => mod.apply(acc))
+
 trait OnRoundStartEffect:
   def onRoundStart(round: RoundState): Seq[RoundStateModification]
 

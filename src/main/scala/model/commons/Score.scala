@@ -180,28 +180,23 @@ object Score:
     val levels = scoreConfig.levels
     val handType: HandType = HandType.detect(cards)
     val initialScore: HandScore = getHandTypeBaseScore(handType, levels)
-    val initialModifications: Seq[HandScoreModification] = Seq.empty
     val scoringCards = HandType.getScoringCards(cards)
-    val onHandPlayed = jokers.collect { case j: OnHandPlayedEffect => j }.foldLeft(initialModifications) {
-      (acc, joker) =>
-        acc ++ joker.onHandPlayed(scoringCards)
-    }
-    val onCardScored = scoringCards.foldLeft(onHandPlayed) { (acc, card) =>
-      val afterCardSelf = acc ++ card.onScored
-      jokers
-        .collect { case j: OnCardScoredEffect => j }
-        .foldLeft(afterCardSelf) { (acc2, joker) =>
-          acc2 ++ joker.onCardScored(card)
-        }
-    }
-    val scoreModifications = jokers
-      .collect { case j: AfterHandPlayedEffect => j }
-      .foldLeft(onCardScored) { (acc, joker) =>
-        acc ++ joker.afterHandPlayed(scoringCards)
+    val afterOnHandPlayed: HandScore =
+      Modification.run(initialScore, jokers, scoringCards) {
+        case j: OnHandPlayedEffect => j.onHandPlayed
       }
-    scoreModifications.foldLeft(initialScore)((acc, modification) =>
-      modification(acc)
-    )
+    val afterAfterCardsScored: HandScore =
+      scoringCards.foldLeft(afterOnHandPlayed)((acc, card) =>
+        Modification.run(card.onScored.applyAll(acc), jokers, card) {
+          case j: OnCardScoredEffect =>
+            j.onCardScored
+        }
+      )
+    val afterAfterHandPlayed: HandScore =
+      Modification.run(afterAfterCardsScored, jokers, scoringCards) {
+        case j: AfterHandPlayedEffect => j.afterHandPlayed
+      }
+    afterAfterHandPlayed
 
   /** A method that calculates the score given by a hand
     * @param cards
