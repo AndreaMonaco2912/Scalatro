@@ -69,7 +69,10 @@ private[seed] object SimulationActions:
             remainingConstraints.partition(_.round == currentRound)
           currentRoundOk = checkRound(currentRoundConstraints, simRound)
           result <-
-            if !currentRoundOk then State.pure(Right(false))
+            if !currentRoundOk then
+              State.pure[GameState, Either[Seq[SeedConstraint], Boolean]](
+                Right(false)
+              )
             else
               for
                 _ <- pickFromPacks(currentRoundConstraints)

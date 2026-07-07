@@ -40,10 +40,9 @@ object SeedFinder:
 @main
 def findSeedMain(): Unit =
   val constraints = Seq(
-    InitialHandWith(Seq(Card(Ace, Hearts), Card(Ace, Diamonds)), 1),
-    JokerPackContains(JokerType.CleverJoker, 1),
-    InitialHandWith(Seq(Card(Ace, Spades), Card(Ace, Clubs)), 2),
-    JokerPackContains(JokerType.CraftyJoker, 2)
+    InitialHandWithCards(Seq(Card(Ace, Hearts), Card(Ace, Diamonds)), 1),
+    InitialHandWithHandType(HandType.FullHouse, 1),
+    JokerPackContains(JokerType.CleverJoker, 1)
   )
   val seed = SeedFinder.findSeed(constraints)
   println(s"Found seed: $seed")
