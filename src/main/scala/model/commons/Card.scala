@@ -24,13 +24,13 @@ enum Rank(val value: Int):
 trait Card extends Weighable:
   def rank: Rank
   def suit: Suit
-  def onScored: Seq[Modification]
+  def onScored: Seq[HandScoreModification]
 
 object Card:
   def apply(rank: Rank, suit: Suit): Card = CardImpl(rank, suit)
 
   private case class CardImpl(rank: Rank, suit: Suit) extends Card:
-    override def onScored: Seq[Modification] =
+    override def onScored: Seq[HandScoreModification] =
       Seq(HandScoreModification.FlatChips(this.baseChips))
 
     private def baseChips: Chips.Chips = this.rank match

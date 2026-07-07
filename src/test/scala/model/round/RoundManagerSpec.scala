@@ -14,7 +14,7 @@ import cats.syntax.all.*
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import model.game.BlindType.SmallBlind
+import model.game.SmallBlind
 
 /** A test spec for [[RoundManager]] */
 class RoundManagerSpec extends AnyFlatSpec with Matchers with MockFactory:

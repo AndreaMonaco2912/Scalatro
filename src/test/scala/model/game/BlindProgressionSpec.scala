@@ -6,7 +6,7 @@ import org.scalatest.matchers.should.Matchers
 import model.commons.Score
 import model.commons.Score.Score
 
-import model.game.BlindType.{BigBlind, SmallBlind, TheNeedle}
+import model.game.*
 
 class BlindProgressionSpec extends AnyFlatSpec, Matchers:
 

@@ -62,28 +62,4 @@ object RoundManager:
             result <- roundLoop(newRound)
           yield result
 
-      def invokeOnRoundStartModifications(roundState: RoundState): RoundState =
-        val jokerModifications: Seq[Modification] =
-          roundState.gameState.jokers.foldLeft(Seq.empty)((acc, joker) =>
-            acc ++ joker.onRoundStart(roundState)
-          )
-        val jokerRoundModifications: Seq[RoundStateModification] =
-          Modification.collect[RoundStateModification](jokerModifications)
-        val roundStateAfterJokerModifications =
-          jokerRoundModifications.foldLeft(roundState)((acc, mod) => mod(acc))
-        val bossModifications: Seq[Modification] =
-          roundState.gameState.blindProgression.blind
-            .onRoundStart(roundStateAfterJokerModifications)
-        val bossRoundModifications: Seq[RoundStateModification] =
-          Modification.collect[RoundStateModification](bossModifications)
-        val roundStateAfterBossModifications = bossRoundModifications.foldLeft(
-          roundStateAfterJokerModifications
-        )((acc, mod) => mod(acc))
-        roundStateAfterBossModifications
-
-      val roundStateAfterModifications = invokeOnRoundStartModifications(
-        initialRoundState
-      )
-      render(roundStateAfterModifications) >> roundLoop(
-        roundStateAfterModifications
-      )
+      render(initialRoundState) >> roundLoop(initialRoundState)

@@ -7,8 +7,10 @@ import model.commons.{
   HandScoreModification,
   Modification,
   Mult,
-  Score,
-  ScoreModification
+  OnCardScoredEffect,
+  OnHandPlayedEffect,
+  OnRoundStartEffect,
+  Score
 }
 import model.commons.Score.Score
 import model.rng.Weighable
@@ -25,7 +27,7 @@ case class BlindProgression(anteNum: Int, targetScore: Score, blind: Blind):
   def next: BlindProgression =
     val nextBlind = blind match
       case SmallBlind => BigBlind
-      case BigBlind   => TheWall
+      case BigBlind   => TheFlint
       case _          => SmallBlind
 
     val nextAnte = if isBoss then anteNum + 1 else anteNum
@@ -69,50 +71,26 @@ trait Blind extends Weighable:
     */
   def description: String
 
-  /** The effect applied at the start of a round
-    * @param round
-    *   the round
-    * @return
-    *   the modifications
-    */
-  def onRoundStart(round: RoundState): Seq[Modification] = Seq.empty
+case class BlindType(name: String, description: String) extends Blind
 
-  /** The effect applied when a card played is scored
-    * @return
-    *   the modifications
-    */
-  def onCardScored(card: Card): Seq[Modification] = Seq.empty
-
-  /** The effect applied when a hand is played
-    * @return
-    *   the modifications
-    */
-  def onHandPlayed(cards: Seq[Card]): Seq[Modification] = Seq.empty
-
-enum BlindType(val name: String, val description: String) extends Blind:
-  case SmallBlind extends BlindType("Small Blind", "No special effect")
-  case BigBlind extends BlindType("Big Blind", "No special effect")
-  case TheNeedle extends BlindType("The Needle", "Play only 1 hand")
-  case TheWall extends BlindType("The Wall", "Extra large blind")
-  case TheFlint
-      extends BlindType(
-        "The Flint",
-        "Base Chips and Mult for played poker hands are halved for the entire round"
-      )
-  case TheWater extends BlindType("The Water", "Start with 0 discards")
-  override def onRoundStart(round: RoundState): Seq[Modification] = this match
-    case TheNeedle => Seq(RoundStateModification.SetRemainingPlays(1))
-    case TheWall   =>
-      Seq(
-        ScoreModification.MultiplicativeIncrease(4)
-      ) // TODO controllare con mattia
-    case TheWater => Seq(RoundStateModification.SetRemainingDiscards(0))
-    case _        => Seq.empty
-
-  override def onHandPlayed(cards: Seq[Card]): Seq[Modification] = this match
-    case TheFlint =>
-      Seq(
-        HandScoreModification.MultiplicativeChips(Chips(0.5)),
-        HandScoreModification.MultiplicativeMult(Mult(0.5))
-      )
-    case _ => Seq.empty
+object SmallBlind extends BlindType("Small Blind", "No special effect")
+object BigBlind extends BlindType("Big Blind", "No special effect")
+object TheNeedle
+    extends BlindType("The Needle", "Play only 1 hand")
+    with OnRoundStartEffect:
+  override def onRoundStart(round: RoundState): Seq[RoundStateModification] =
+    Seq(RoundStateModification.SetRemainingPlays(1))
+//object TheWall
+//    extends BlindType("The Wall", "Extra large blind")
+//    with OnRoundStartEffect:
+//  override def onRoundStart(round: RoundState): Seq[RoundStateModification] = ??? // mettere metodo
+object TheFlint extends BlindType("Pippo", "Ciao"), OnHandPlayedEffect:
+  override def onHandPlayed(cards: Seq[Card]): Seq[HandScoreModification] = Seq(
+    HandScoreModification.MultiplicativeChips(Chips(0.5)),
+    HandScoreModification.MultiplicativeMult(Mult(0.5))
+  )
+object TheWater
+    extends BlindType("The Water", "Start with 0 discards"),
+      OnRoundStartEffect:
+  override def onRoundStart(round: RoundState): Seq[RoundStateModification] =
+    Seq(RoundStateModification.SetRemainingDiscards(0))

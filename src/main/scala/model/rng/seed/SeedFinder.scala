@@ -18,7 +18,7 @@ case class SelectionPolicies(
 )
 
 object SelectionPolicies:
-  def default: SelectionPolicies =
+  val default: SelectionPolicies =
     SelectionPolicies(
       cardPolicy = new UniformSelection[Card],
       planetPolicy = new UniformSelection[Planet],

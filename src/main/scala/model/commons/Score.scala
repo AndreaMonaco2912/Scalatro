@@ -106,8 +106,7 @@ object HandScore:
 
   val zero: HandScore = HandScore(Chips.zero, Mult.zero)
 
-trait HandScoreModification extends Modification:
-  type T = HandScore
+type HandScoreModification = Modification[HandScore]
 
 object HandScoreModification:
   case class FlatChips(chips: Chips) extends HandScoreModification:
@@ -118,17 +117,6 @@ object HandScoreModification:
     override def apply(value: HandScore): HandScore = value * chips
   case class MultiplicativeMult(mult: Mult) extends HandScoreModification:
     override def apply(value: HandScore): HandScore = value * mult
-  
-
-trait ScoreModification extends Modification:
-  type T = Score
-
-object ScoreModification:
-  case class MultiplicativeIncrease(factor: Double) extends ScoreModification:
-    override def apply(value: Score): Score = value * factor
-  case class MultiplicativeDecrease(factor: Double) extends ScoreModification:
-    require(factor != 0.0, "Can't divide score by zero")
-    override def apply(value: Score): Score = value / factor
 
 /** The configuration needed to calculate the score
   * @param jokers
@@ -192,22 +180,25 @@ object Score:
     val levels = scoreConfig.levels
     val handType: HandType = HandType.detect(cards)
     val initialScore: HandScore = getHandTypeBaseScore(handType, levels)
-    val initialModifications: Seq[Modification] = Seq.empty
+    val initialModifications: Seq[HandScoreModification] = Seq.empty
     val scoringCards = HandType.getScoringCards(cards)
-    val onHandPlayed = jokers.foldLeft(initialModifications) { (acc, joker) =>
-      acc ++ joker.onHandPlayed(scoringCards)
+    val onHandPlayed = jokers.collect { case j: OnHandPlayedEffect => j }.foldLeft(initialModifications) {
+      (acc, joker) =>
+        acc ++ joker.onHandPlayed(scoringCards)
     }
     val onCardScored = scoringCards.foldLeft(onHandPlayed) { (acc, card) =>
       val afterCardSelf = acc ++ card.onScored
-      jokers.foldLeft(afterCardSelf) { (acc2, joker) =>
-        acc2 ++ joker.onCardScored(card)
+      jokers
+        .collect { case j: OnCardScoredEffect => j }
+        .foldLeft(afterCardSelf) { (acc2, joker) =>
+          acc2 ++ joker.onCardScored(card)
+        }
+    }
+    val scoreModifications = jokers
+      .collect { case j: AfterHandPlayedEffect => j }
+      .foldLeft(onCardScored) { (acc, joker) =>
+        acc ++ joker.afterHandPlayed(scoringCards)
       }
-    }
-    val allModifications = jokers.foldLeft(onCardScored) { (acc, joker) =>
-      acc ++ joker.afterHandPlayed(scoringCards)
-    }
-    val scoreModifications: Seq[HandScoreModification] =
-      allModifications.collect { case s: HandScoreModification => s }
     scoreModifications.foldLeft(initialScore)((acc, modification) =>
       modification(acc)
     )

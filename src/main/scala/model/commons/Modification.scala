@@ -1,22 +1,30 @@
 package scalatro
 package model.commons
 
-import scala.reflect.ClassTag
+import model.round.{RoundState, RoundStateModification}
 
-trait Modification:
-  type T
+trait Modification[T]:
   def apply(value: T): T
 
 object Modification:
   def when[A](condition: Boolean)(
-      modification: Modification
-  ): Seq[Modification] =
+      modification: Modification[A]
+  ): Seq[Modification[A]] =
     when(condition)(Seq(modification))
 
   def when[A](condition: Boolean)(
-      modifications: Seq[Modification]
-  ): Seq[Modification] =
+      modifications: Seq[Modification[A]]
+  ): Seq[Modification[A]] =
     if condition then modifications else Seq.empty
-  
-  def collect[M <: Modification](modifications: Seq[Modification])(using ClassTag[M]): Seq[M] =
-    modifications.collect { case m: M => m }
+
+trait OnRoundStartEffect:
+  def onRoundStart(round: RoundState): Seq[RoundStateModification]
+
+trait OnCardScoredEffect:
+  def onCardScored(card: Card): Seq[HandScoreModification]
+
+trait AfterHandPlayedEffect:
+  def afterHandPlayed(cards: Seq[Card]): Seq[HandScoreModification]
+
+trait OnHandPlayedEffect:
+  def onHandPlayed(cards: Seq[Card]): Seq[HandScoreModification]
