@@ -1,14 +1,7 @@
 package scalatro
 package model.game
 
-import model.commons.{
-  Card,
-  Chips,
-  HandScoreModification,
-  Modification,
-  Mult,
-  Score
-}
+import model.commons.{Card, Chips, HandScoreModification, Modification, Mult, Score, ScoreModification}
 import model.commons.Score.Score
 import model.rng.Weighable
 import model.round.{RoundState, RoundStateModification}
@@ -25,9 +18,9 @@ case class BlindProgression(anteNum: Int, targetScore: Score, blind: Blind):
     val nextBlind = blind match
       case SmallBlind => BigBlind
       case BigBlind   => TheNeedle
-      case TheNeedle  => SmallBlind
+      case _  => SmallBlind
 
-    val nextAnte = if blind == TheNeedle then anteNum + 1 else anteNum
+    val nextAnte = if isBoss then anteNum + 1 else anteNum
     BlindProgression(
       nextAnte,
       BlindProgression.scoreFor(nextAnte, nextBlind),
@@ -92,6 +85,7 @@ enum BlindType(val name: String, val description: String) extends Blind:
   case SmallBlind extends BlindType("Small Blind", "No special effect")
   case BigBlind extends BlindType("Big Blind", "No special effect")
   case TheNeedle extends BlindType("The Needle", "Play only 1 hand")
+  case TheWall extends BlindType("The Wall", "Extra large blind")
   case TheFlint
       extends BlindType(
         "The Flint",
@@ -100,6 +94,7 @@ enum BlindType(val name: String, val description: String) extends Blind:
 
   override def onRoundStart(round: RoundState): Seq[Modification] = this match
     case TheNeedle => Seq(RoundStateModification.setRemainingPlays(1))
+    case TheWall => Seq(ScoreModification.MultiplicativeIncrease(4)) //TODO controllare con mattia
     case _         => Seq.empty
 
   override def onHandPlayed(cards: Seq[Card]): Seq[Modification] = this match
