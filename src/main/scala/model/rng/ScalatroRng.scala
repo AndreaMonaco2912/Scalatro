@@ -9,8 +9,7 @@ import scala.util.Random
 trait ScalatroRng:
   def draw[T <: Weighable: SelectionPolicy](pool: Pool[T], amount: Int): Seq[T]
   def shuffle[T <: Weighable](elems: Seq[T]): Seq[T] =
-    given UniformSelection[T]
-    draw(Pool(elems), elems.size)
+    draw(Pool(elems), elems.size)(using UniformSelection[T]())
 
 object ScalatroRng:
   def apply(seed: Seed): ScalatroRng = ScalatroRngImpl(seed)
@@ -24,37 +23,37 @@ object ScalatroRng:
         pool: Pool[T],
         amount: Int
     ): Seq[T] =
-      if amount <= 0 || pool.size == 0 then Seq.empty
-      else
-        // Already checked that amount < pool.size
-        @SuppressWarnings(Array("org.wartremover.warts.IterableOps"))
-        val rng = randomMap(pool.values.head)
-        WeightedSampling.selectWithoutReplacement(
-          pool.values,
-          amount,
-          policy.weight,
-          rng
-        )
+      pool.values match
+        case IndexedSeq()     => Seq.empty
+        case _ if amount <= 0 => Seq.empty
+        case values           =>
+          val rng = randomMap(values(0))
+          WeightedSampling.selectWithoutReplacement(
+            values,
+            amount,
+            policy.weight,
+            rng
+          )
 
-  private type RandomMap = Map[Class[?], Random]
+  private type RandomMap = Map[String, Random]
   private object RandomMap:
     def apply(seed: Seed): RandomMap =
       val random = Random(seed.value)
       Map(
-        classOf[Card] -> Random(random.nextLong()),
-        classOf[Planet] -> Random(random.nextLong()),
-        classOf[Joker] -> Random(random.nextLong())
+        "Card" -> Random(random.nextLong()),
+        "Planet" -> Random(random.nextLong()),
+        "Joker" -> Random(random.nextLong())
       )
 
     extension (randomMap: RandomMap)
       def apply(value: AnyRef): Random = value match
-        case _: Card   => randomMap(classOf[Card])
-        case _: Planet => randomMap(classOf[Planet])
-        case _: Joker  => randomMap(classOf[Joker])
+        case _: Card   => randomMap("Card")
+        case _: Planet => randomMap("Planet")
+        case _: Joker  => randomMap("Joker")
         case _         =>
           throw new IllegalArgumentException(s"No random generator for $value")
 
-  private object WeightedSampling:
+  private[rng] object WeightedSampling:
     /** Implementation of Efraimidis–Spirakis A-Res [reservoir
       * sampling](https://en.wikipedia.org/wiki/Reservoir_sampling) algorithm
       */

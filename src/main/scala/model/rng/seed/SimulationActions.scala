@@ -19,12 +19,11 @@ private[seed] object SimulationActions:
       simRound: SimRound
   ): Boolean = constraints.forall(_.isSatisfiedBy(simRound))
 
-  def shuffleDeckAndDraw(using rng: ScalatroRng): SimStep[Hand] = {
+  def shuffleDeckAndDraw(using rng: ScalatroRng): SimStep[Hand] =
     State(s =>
       val shuffled = s.shuffleDeck
       (shuffled, shuffled.deck.draw(s.handInformation.handSize)._1)
     )
-  }
 
   def generateShop(using
       rng: ScalatroRng
@@ -41,15 +40,11 @@ private[seed] object SimulationActions:
       planets = constraints.collect { case PlanetPackContains(p, _) => p }
     )
 
-  /*def updatePools(constraints: Seq[SeedConstraint]): SimStep[Unit] =
+  def pickFromPacks(constraints: Seq[SeedConstraint]): SimStep[Unit] =
     State.modify { s =>
-      val wanted = wantedPackItems(constraints)
-      s.copy(
-        cardPool = s.cardPool - Pool(wanted.cards),
-        jokerPool = s.jokerPool - Pool(wanted.jokers),
-        planetPool = s.planetPool - Pool(wanted.planets)
-      )
-    }*/
+      val WantedPackItems(cards, jokers, planets) = wantedPackItems(constraints)
+      cards.pickedBy(jokers.pickedBy(planets.pickedBy(s)))
+    }
 
   def simulateRound(using ScalatroRng): SimStep[SimRound] =
     for
@@ -67,17 +62,20 @@ private[seed] object SimulationActions:
       if remainingConstraints.isEmpty then State.pure(Right(true))
       else
         for
-          currentRound <- State.inspect[GameState, Int](
-            _.blindProgression.roundNum
-          )
+          currentRound <-
+            State.inspect[GameState, Int](_.blindProgression.roundNum)
           simRound <- simulateRound
           (currentRoundConstraints, laterConstraints) =
             remainingConstraints.partition(_.round == currentRound)
           currentRoundOk = checkRound(currentRoundConstraints, simRound)
-          _ <- advanceBlind
-        yield
-          if !currentRoundOk then Right(false)
-          else Left(laterConstraints)
+          result <-
+            if !currentRoundOk then State.pure(Right(false))
+            else
+              for
+                _ <- pickFromPacks(currentRoundConstraints)
+                _ <- advanceBlind
+              yield Left(laterConstraints)
+        yield result
     }
 
   def satisfiesConstraints(
