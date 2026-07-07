@@ -34,12 +34,12 @@ object SelectionPolicy:
         case `suit` => super.weight(card) * bonus
         case _      => super.weight(card)
 
-  trait BoostCard(card: Card, bonus: Weight = defaultBoostWeight)
+  trait BoostCard(boostedCard: Card, bonus: Weight = defaultBoostWeight)
       extends SelectionPolicy[Card]:
     abstract override def weight(card: Card): Weight =
       card match
-        case `card` => super.weight(card) * bonus
-        case _      => super.weight(card)
+        case `boostedCard` => super.weight(card) * bonus
+        case _             => super.weight(card)
 
   trait BoostFaces(bonus: Weight = defaultBoostWeight)
       extends SelectionPolicy[Card]:
@@ -54,13 +54,6 @@ object SelectionPolicy:
       joker match
         case `jokerType` => super.weight(joker) * bonus
         case _           => super.weight(joker)
-
-  trait BoostJokerBehaviour[B <: Joker](bonus: Weight = defaultBoostWeight)
-      extends SelectionPolicy[Joker]:
-    abstract override def weight(joker: Joker): Weight =
-      joker match
-        case j: B => super.weight(joker) * defaultBoostWeight
-        case _    => super.weight(joker)
 
   trait BoostPlanetHandType(
       handType: HandType,
