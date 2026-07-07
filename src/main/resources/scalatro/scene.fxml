@@ -20,30 +20,57 @@
                 <Insets bottom="30" left="15" right="15" top="30"/>
             </padding>
 
+            <!-- Blind portrait -->
+            <StackPane style=" -fx-background-radius: 12; -fx-padding: 6;">
+                <ImageView fx:id="blindImageView" fitHeight="90.0" fitWidth="90.0" preserveRatio="true"/>
+            </StackPane>
+
             <!-- Current blind name -->
             <Label fx:id="blindNameLabel" textFill="#f5c842">
                 <font>
-                    <Font name="System Bold" size="15.0"/>
+                    <Font name="System Bold" size="16.0"/>
                 </font>
             </Label>
-            
-            <Label fx:id="blindDescLabel" textFill="#f5c842">
+
+            <Label fx:id="blindDescLabel" alignment="CENTER" maxWidth="200.0" textAlignment="CENTER"
+                   textFill="#cfcfcf" wrapText="true">
                 <font>
-                    <Font name="System Bold" size="15.0"/>
+                    <Font name="System Italic" size="12.0"/>
                 </font>
             </Label>
+
             <!-- Current round and ante number -->
-            <HBox spacing="25.0">
-                <Label fx:id="roundNumLabel" textFill="#f5c842">
-                    <font>
-                        <Font name="System Bold" size="15.0"/>
-                    </font>
-                </Label>
-                <Label fx:id="anteNumLabel" textFill="#f5c842" alignment="BASELINE_RIGHT">
-                    <font>
-                        <Font name="System Bold" size="15.0"/>
-                    </font>
-                </Label>
+            <HBox alignment="CENTER" spacing="10.0">
+                <VBox alignment="CENTER" spacing="2.0" styleClass="mini-stat-box">
+                    <padding>
+                        <Insets bottom="8" left="14" right="14" top="8"/>
+                    </padding>
+                    <Label text="Ante" textFill="#aaaaaa">
+                        <font>
+                            <Font size="11.0"/>
+                        </font>
+                    </Label>
+                    <Label fx:id="anteNumLabel" textFill="WHITE">
+                        <font>
+                            <Font name="System Bold" size="18.0"/>
+                        </font>
+                    </Label>
+                </VBox>
+                <VBox alignment="CENTER" spacing="2.0" styleClass="mini-stat-box">
+                    <padding>
+                        <Insets bottom="8" left="14" right="14" top="8"/>
+                    </padding>
+                    <Label text="Round" textFill="#aaaaaa">
+                        <font>
+                            <Font size="11.0"/>
+                        </font>
+                    </Label>
+                    <Label fx:id="roundNumLabel" textFill="WHITE">
+                        <font>
+                            <Font name="System Bold" size="18.0"/>
+                        </font>
+                    </Label>
+                </VBox>
             </HBox>
 
             <!-- Score to beat -->
@@ -174,7 +201,6 @@
                 <StackPane minHeight="150.0">
                     <HBox fx:id="playAreaBox" alignment="CENTER" spacing="8.0">
                     </HBox>
-                    <Pane fx:id="popupPane" mouseTransparent="true"/>
                 </StackPane>
             </VBox>
             <VBox alignment="BOTTOM_CENTER" spacing="18.0">

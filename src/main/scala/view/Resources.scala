@@ -22,3 +22,4 @@ object Resources:
   def planet(name: String): String = s"$base/planets/$name.png"
   def pack(name: String): String = s"$base/packs/$name.png"
   def deckBack: String = s"$base/decks/Red_Deck.png"
+  def blind(name: String): String = s"$base/blinds/$name.png"

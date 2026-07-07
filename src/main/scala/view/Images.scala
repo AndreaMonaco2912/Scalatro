@@ -4,6 +4,7 @@ package view
 import model.commons.{Card, Joker, Planet, Rank}
 
 import javafx.scene.image.{Image, ImageView}
+import model.game.Blind
 
 object Images:
 
@@ -34,6 +35,8 @@ object Images:
     load(Resources.pack(s"${category}_${size}_$version"))
 
   def deckBack: Image = load(Resources.deckBack)
+
+  def blind(blind: Blind): Image = load(Resources.blind(blind.name.replace(" ", "_")))
 
 object ImageViews:
   def apply(

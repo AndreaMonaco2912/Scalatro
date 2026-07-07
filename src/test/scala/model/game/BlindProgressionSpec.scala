@@ -22,9 +22,9 @@ class BlindProgressionSpec extends AnyFlatSpec, Matchers:
     result.blind shouldBe BigBlind
     result.anteNum shouldBe start.anteNum
 
-  it should "move from BigBlind to TheNeedle within the same ante" in:
+  it should "move from BigBlind to a Boss within the same ante" in:
     val result = start.next.next
-    result.blind shouldBe TheNeedle
+    result.isBoss shouldBe true
     result.anteNum shouldBe start.anteNum
 
   it should "fail when the achieved score is below the target" in:

@@ -1,7 +1,15 @@
 package scalatro
 package model.game
 
-import model.commons.{Card, Chips, HandScoreModification, Modification, Mult, Score, ScoreModification}
+import model.commons.{
+  Card,
+  Chips,
+  HandScoreModification,
+  Modification,
+  Mult,
+  Score,
+  ScoreModification
+}
 import model.commons.Score.Score
 import model.rng.Weighable
 import model.round.{RoundState, RoundStateModification}
@@ -17,8 +25,8 @@ case class BlindProgression(anteNum: Int, targetScore: Score, blind: Blind):
   def next: BlindProgression =
     val nextBlind = blind match
       case SmallBlind => BigBlind
-      case BigBlind   => TheNeedle
-      case _  => SmallBlind
+      case BigBlind   => TheWall
+      case _          => SmallBlind
 
     val nextAnte = if isBoss then anteNum + 1 else anteNum
     BlindProgression(
@@ -42,13 +50,13 @@ object BlindProgression:
     val small = initialScore * Math.pow(3, anteNum - 1)
     blind match
       case SmallBlind => small
-      case TheNeedle  => small * 2
       case BigBlind   => (small + small * 2) / 2
+      case _          => small * 2
 
   private def blindPosition(blind: Blind): Int = blind match
     case SmallBlind => 0
     case BigBlind   => 1
-    case TheNeedle  => 2
+    case _          => 2
 
 trait Blind extends Weighable:
   /** @return
@@ -91,11 +99,15 @@ enum BlindType(val name: String, val description: String) extends Blind:
         "The Flint",
         "Base Chips and Mult for played poker hands are halved for the entire round"
       )
-
+  case TheWater extends BlindType("The Water", "Start with 0 discards")
   override def onRoundStart(round: RoundState): Seq[Modification] = this match
     case TheNeedle => Seq(RoundStateModification.setRemainingPlays(1))
-    case TheWall => Seq(ScoreModification.MultiplicativeIncrease(4)) //TODO controllare con mattia
-    case _         => Seq.empty
+    case TheWall   =>
+      Seq(
+        ScoreModification.MultiplicativeIncrease(4)
+      ) // TODO controllare con mattia
+    case TheWater => Seq(RoundStateModification.setRemainingDiscards(0))
+    case _        => Seq.empty
 
   override def onHandPlayed(cards: Seq[Card]): Seq[Modification] = this match
     case TheFlint =>

@@ -32,6 +32,7 @@ class FxController extends Initializable, Bindable[RoundAction]:
   @FXML private var handSlotsBox: HBox = uninitialized
 
   // Info labels
+  @FXML private var blindImageView: ImageView = uninitialized
   @FXML private var blindNameLabel: Label = uninitialized
   @FXML private var blindDescLabel: Label = uninitialized
   @FXML private var roundNumLabel: Label = uninitialized
@@ -141,13 +142,22 @@ class FxController extends Initializable, Bindable[RoundAction]:
       blindNameLabel.setText(
         roundState.gameState.blindProgression.blind.name
       )
-
       if roundState.gameState.blindProgression.isBoss then
-        blindDescLabel.setText(roundState.gameState.blindProgression.blind.description)
-        blindDescLabel.setVisible(true)
-      else
-        blindDescLabel.setVisible(false)
+        blindDescLabel.setText(
+          roundState.gameState.blindProgression.blind.description
+        )
+      blindDescLabel.setVisible(roundState.gameState.blindProgression.isBoss)
+      blindDescLabel.setManaged(roundState.gameState.blindProgression.isBoss)
 
+      blindImageView.setImage(
+        Images.blind(roundState.gameState.blindProgression.blind)
+      )
+      roundNumLabel.setText(
+        roundState.gameState.blindProgression.roundNum.toString
+      )
+      anteNumLabel.setText(
+        roundState.gameState.blindProgression.anteNum.toString
+      )
       goalLabel.setText(
         roundState.gameState.blindProgression.targetScore.asDouble.customToString
       )
@@ -155,13 +165,6 @@ class FxController extends Initializable, Bindable[RoundAction]:
       deckLabel.setText(s"${roundState.deck.size} left")
       handsRemainingLabel.setText(roundState.remainingPlays.toString)
       discardsRemainingLabel.setText(roundState.remainingDiscards.toString)
-      roundNumLabel.setText(
-        s"Round ${roundState.gameState.blindProgression.roundNum}"
-      )
-      anteNumLabel.setText(
-        s"Ante ${roundState.gameState.blindProgression.anteNum}"
-      )
-
       lastKnownRoundState = Some(roundState)
       playButton.setDisable(roundState.remainingPlays <= 0)
       discardButton.setDisable(roundState.remainingDiscards <= 0)
