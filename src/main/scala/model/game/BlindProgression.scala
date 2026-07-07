@@ -101,12 +101,12 @@ enum BlindType(val name: String, val description: String) extends Blind:
       )
   case TheWater extends BlindType("The Water", "Start with 0 discards")
   override def onRoundStart(round: RoundState): Seq[Modification] = this match
-    case TheNeedle => Seq(RoundStateModification.setRemainingPlays(1))
+    case TheNeedle => Seq(RoundStateModification.SetRemainingPlays(1))
     case TheWall   =>
       Seq(
         ScoreModification.MultiplicativeIncrease(4)
       ) // TODO controllare con mattia
-    case TheWater => Seq(RoundStateModification.setRemainingDiscards(0))
+    case TheWater => Seq(RoundStateModification.SetRemainingDiscards(0))
     case _        => Seq.empty
 
   override def onHandPlayed(cards: Seq[Card]): Seq[Modification] = this match

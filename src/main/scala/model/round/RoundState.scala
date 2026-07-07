@@ -148,9 +148,9 @@ object RoundStateModification:
   case class DecreaseRemainingDiscards(n: Int) extends RoundStateModification:
     override def apply(value: RoundState): RoundState =
       value.modify(remainingDiscards = value.remainingDiscards - n)
-  case class setRemainingPlays(n: Int) extends RoundStateModification:
+  case class SetRemainingPlays(n: Int) extends RoundStateModification:
     override def apply(value: RoundState): RoundState =
       value.modify(remainingPlays = n)
-  case class setRemainingDiscards(n: Int) extends RoundStateModification:
+  case class SetRemainingDiscards(n: Int) extends RoundStateModification:
     override def apply(value: RoundState): RoundState =
       value.modify(remainingDiscards = n)
