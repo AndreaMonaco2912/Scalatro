@@ -1,7 +1,7 @@
 package scalatro
 package model.round
 
-import model.commons.{Modification, ScoreConfig}
+import model.commons.{Modification, OnRoundStartEffect, ScoreConfig}
 import app.Msg.RoundAction
 import app.Msg.RoundAction.*
 import model.round.RoundState
@@ -62,4 +62,13 @@ object RoundManager:
             result <- roundLoop(newRound)
           yield result
 
-      render(initialRoundState) >> roundLoop(initialRoundState)
+      def runOnRoundStartEffects(roundState: RoundState): RoundState =
+        val onRoundStartEffectSources = Seq(
+          initialRoundState.gameState.blindProgression.blind
+        ) ++ initialRoundState.gameState.jokers
+        Modification.run(roundState, onRoundStartEffectSources, roundState) {
+          case s: OnRoundStartEffect => s.onRoundStart
+        }
+
+      val roundStateAfterEffects = runOnRoundStartEffects(initialRoundState)
+      render(roundStateAfterEffects) >> roundLoop(roundStateAfterEffects)
