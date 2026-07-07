@@ -138,10 +138,6 @@ enum JokerType(val name: String, val description: String) extends Joker:
           HandScoreModification.FlatMult(Mult(4))
         )
       )
-      with SuitScored(
-        Suit.Spades,
-        HandScoreModification.FlatChips(Chips(20))
-      )
   case Juggler
       extends JokerType("Juggler", "+1 play and discard each round")
       with HandInformationModifier(
