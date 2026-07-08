@@ -1,21 +1,23 @@
 package scalatro
 package model.round
 
+import model.commons.Rank.Ace
 import model.commons.Score.Score
+import model.commons.Suit.Spades
 import model.commons.{Card, Deck, Score}
 import model.game.{GameState, HandInformation}
+import model.rng.ScalatroRng
 
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import model.rng.ScalatroRng
 
 /** A test spec for [[RoundState]] */
 class RoundStateSpec extends AnyFlatSpec with Matchers with MockFactory:
 
   private def initialRound: RoundState = RoundState(
     score = Score.zero,
-    hand = Seq(),
+    hand = Seq(Card(Ace, Spades)),
     deck = Deck(),
     gameState = GameState.initial
   )
@@ -106,5 +108,10 @@ class RoundStateSpec extends AnyFlatSpec with Matchers with MockFactory:
 
     round.isFinished shouldBe true
 
-  it should "not be finished when the blind is not beaten and plays remain" in:
+  it should "be finished when there are no remaining cards in hand" in:
+    val round = initialRound.modify(hand = Seq())
+
+    round.isFinished shouldBe true
+
+  it should "not be finished when the blind otherwise" in:
     initialRound.isFinished shouldBe false
