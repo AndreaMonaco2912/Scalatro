@@ -19,8 +19,8 @@ object Deck:
     def shuffle(using rng: ScalatroRng): Deck = rng.shuffle(d)
     def sort: Deck = CardOrderer.sortBySuit.order(d)
     def draw(n: Int): (Seq[Card], Deck) =
-      require(n >= 0 && n <= d.size, s"cannot draw $n from a deck of ${d.size}")
-      d.splitAt(n)
+      require(n >= 0, s"cannot draw a negative amount of cards")
+      d.splitAt(Math.min(n,d.size))
     def size: Int = d.size
     def add(card: Card): Deck = d :+ card
     def foreach[A](function: Card => A): Unit = d.foreach(function)

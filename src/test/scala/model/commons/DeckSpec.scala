@@ -38,8 +38,8 @@ class DeckSpec extends AnyFlatSpec, Matchers:
     rest.size shouldBe pokerDeckFullSize - drawSize
     (hand ++ rest.cards) should contain theSameElementsAs Deck().cards
 
-  it should "reject drawing more than the deck holds" in:
-    an[IllegalArgumentException] should be thrownBy Deck().draw(53)
+  it should "not draw more cards than available" in:
+    Deck().draw(53) shouldBe Deck().draw(52)
 
   it should "reject a negative count" in:
     an[IllegalArgumentException] should be thrownBy Deck().draw(-1)
