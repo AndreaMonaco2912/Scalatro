@@ -137,7 +137,12 @@ case class ScoreConfig(
 
 object ScoreConfig:
   def default: ScoreConfig =
-    ScoreConfig(Seq.empty, HandTypeLevels.initial, BasicHandScoreCalculator, SmallBlind)
+    ScoreConfig(
+      Seq.empty,
+      HandTypeLevels.initial,
+      BasicHandScoreCalculator,
+      SmallBlind
+    )
 
 object Score:
   opaque type Score = Double
@@ -190,7 +195,7 @@ object Score:
         case b: OnHandPlayedEffect => b.onHandPlayed
       }
     val afterOnHandPlayed: HandScore =
-      Modification.run(initialScore, jokers, scoringCards) {
+      Modification.run(afterOnHandPlayedBlind, jokers, scoringCards) {
         case j: OnHandPlayedEffect => j.onHandPlayed
       }
     val afterAfterCardsScored: HandScore =
