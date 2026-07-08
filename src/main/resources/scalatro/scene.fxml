@@ -2,7 +2,8 @@
 
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.*?>
@@ -252,6 +253,13 @@
 
                                 <Button fx:id="discardButton" alignment="CENTER" prefWidth="200.0"
                                         styleClass="discard-button" text="Discard">
+                                    <font>
+                                        <Font name="System Bold" size="15.0"/>
+                                    </font>
+                                </Button>
+
+                                <Button fx:id="hintButton" alignment="CENTER" prefWidth="120.0"
+                                        styleClass="sort-button" text="Hint">
                                     <font>
                                         <Font name="System Bold" size="15.0"/>
                                     </font>

@@ -1,14 +1,11 @@
 package scalatro
 package view.fxController
 
+import app.Msg.RoundAction
 import model.commons.*
 import model.round.RoundState
-import app.Msg.RoundAction
 import view.{ImageViews, Images}
 
-import cats.effect.IO
-import cats.effect.std.Queue
-import cats.effect.unsafe.implicits.global
 import javafx.animation.*
 import javafx.application.Platform
 import javafx.fxml.{FXML, Initializable}
@@ -18,7 +15,6 @@ import javafx.scene.image.{Image, ImageView}
 import javafx.scene.input.{ClipboardContent, TransferMode}
 import javafx.scene.layout.HBox
 import javafx.util.Duration
-import scalafx.scene.control.{Label as SfxLabel, TextField as SfxTextField}
 
 import java.net.URL
 import java.util.ResourceBundle
@@ -52,6 +48,7 @@ class FxController extends Initializable, Bindable[RoundAction]:
   @FXML private var discardButton: Button = uninitialized
   @FXML private var sortRankButton: Button = uninitialized
   @FXML private var sortSuitButton: Button = uninitialized
+  @FXML private var hintButton: Button = uninitialized
 
   // Play area
   @FXML private var playAreaBox: HBox = uninitialized
@@ -87,6 +84,7 @@ class FxController extends Initializable, Bindable[RoundAction]:
   override def initialize(url: URL, rb: ResourceBundle): Unit =
     playButton.setOnAction(_ => onPlay())
     discardButton.setOnAction(_ => onDiscard())
+    hintButton.setOnAction(_ => onHint())
 
     sortRankButton.setOnAction(_ =>
       val ord = CardOrderer.sortByRank
@@ -280,6 +278,11 @@ class FxController extends Initializable, Bindable[RoundAction]:
 
   private def onOrder(cardOrderer: CardOrderer): Unit =
     offer(RoundAction.OrderHand(cardOrderer))
+
+  private def onHint(): Unit =
+    lastKnownRoundState match
+      case Some(round) if round.hand.nonEmpty => HintPopup.show(round)
+      case _                                  => ()
 
   protected def imageNode(image: Image): ImageView =
     ImageViews(image, 85, 125, Some("pack-card"))
