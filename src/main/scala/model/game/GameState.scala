@@ -51,7 +51,7 @@ object GameState:
     GameState(
       initialHand,
       Deck(),
-      BlindProgression.first,
+      BlindProgression.first.next.next,
       Seq.empty,
       HandTypeLevels.initial,
       SelectionPolicies.default

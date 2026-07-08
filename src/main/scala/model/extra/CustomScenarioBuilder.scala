@@ -5,12 +5,14 @@ import model.commons.*
 import model.extra.GameStateBuilder
 import model.round.RoundState
 
+import model.game.{Blind, BlindProgression}
+
 /** The entry point for the [[CustomScenario]] DSL.
   *
   * Example:
   * {{{
   * val customScenario = Cards(A of S, K of H) withJokers Seq(myJoker)
- *     onLevels(HC lv 3, TP lv 2, SF lv 5)
+  *     onLevels(HC lv 3, TP lv 2, SF lv 5)
   * }}}
   */
 object Cards:
@@ -62,12 +64,13 @@ object HandLevelBuilder:
 
   extension (handType: HandType)
     /** Associates a [[HandType]] with a [[Level]].
-     *
-     * @param level the level to assign
-     * @return a pair of ([[HandType]], [[Level]])
-     */
+      *
+      * @param level
+      *   the level to assign
+      * @return
+      *   a pair of ([[HandType]], [[Level]])
+      */
     infix def lv(level: Level): (HandType, Level) = handType -> Level(level)
-
 
 /** An immutable builder for quickly setting up a [[RoundState]] context.
   *
@@ -81,6 +84,7 @@ object HandLevelBuilder:
 case class CustomScenario(
     cards: Seq[Card],
     jokers: Seq[Joker] = Seq.empty,
+    blindProgression: BlindProgression = BlindProgression.first,
     levels: HandTypeLevels = HandTypeLevels.initial
 ):
 
@@ -95,14 +99,25 @@ case class CustomScenario(
     this.copy(jokers = newJokers)
 
   /** Sets the hand levels for the current context.
-    *  
-    * @param entries the hand type / level pairs
+    *
+    * @param entries
+    *   the hand type / level pairs
     * @return
     *   a new [[CustomScenario]] containing the specified levels
     */
   infix def onLevels(entries: (HandType, Level)*): CustomScenario =
     this.copy(levels = levels ++ entries.toMap)
-  
+
+  /** Set blind to the current context.
+    *
+    * @param blind
+    *   the blind in which the scenario will be created
+    * @return
+    *   a new [[CustomScenario]] containing the specified jokers
+    */
+  infix def inBlind(blind: Blind): CustomScenario =
+    this.copy(blindProgression = BlindProgression.first.copy(blind=blind))
+
   /** Terminal method that compiles the fluent chain into a full [[RoundState]]
     * object.
     *
@@ -114,11 +129,12 @@ case class CustomScenario(
       import GameStateBuilder.DSL.*
       Jokers := this.jokers
       Levels := this.levels
+      BlindInGame := this.blindProgression
     }
 
     RoundBuilder.configure {
       import RoundBuilder.DSL.*
       HandInRound := this.cards
-      DeckInRound := Deck(Deck().cards diff this.cards) 
+      DeckInRound := Deck(Deck().cards diff this.cards)
       GameStateInRound := customState
     }

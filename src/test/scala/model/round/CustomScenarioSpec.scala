@@ -9,10 +9,11 @@ import model.extra.HandLevelBuilder.*
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
+import model.game.{BlindProgression, SmallBlind}
 
 class CustomScenarioSpec extends AnyFlatSpec with Matchers:
 
-  "The CustomScenario DSL" should "build a complete Round with jokers and levels" in:
+  "The CustomScenario DSL" should "build a complete round with jokers and levels" in:
     val scenario = Cards(A of S, K of H, Q of C, J of D, 10 of S) withJokers (
       CrazyJoker,
       DeviousJoker
@@ -37,5 +38,12 @@ class CustomScenarioSpec extends AnyFlatSpec with Matchers:
   it should "have a coherent deck with the given hand" in:
     val hand = Cards(A of S, K of H, Q of C, J of D, 10 of S)
     val currentRound = hand.buildRound
-    
+
     currentRound.deck shouldBe (Deck().cards diff hand.cards)
+
+  it should "build a round with custom blind" in:
+    val scenario = Cards(A of S, K of H) inBlind SmallBlind
+    val currentRound = scenario.buildRound
+
+    currentRound.gameState.blindProgression shouldBe BlindProgression.first
+      .copy(blind = SmallBlind)
