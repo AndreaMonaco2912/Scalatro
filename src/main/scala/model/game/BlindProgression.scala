@@ -87,7 +87,7 @@ object TheNeedle
 object TheFlint
     extends BlindType(
       "The Flint",
-      "Chips and Mult are halved before playing a hand"
+      "Base Chips and Mult for played poker hands are halved for the entire round"
     )
     with OnHandPlayedEffect:
   override def onHandPlayed(cards: Seq[Card]): Seq[HandScoreModification] = Seq(
