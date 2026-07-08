@@ -84,7 +84,12 @@ object TheNeedle
 //    extends BlindType("The Wall", "Extra large blind")
 //    with OnRoundStartEffect:
 //  override def onRoundStart(round: RoundState): Seq[RoundStateModification] = ??? // mettere metodo
-object TheFlint extends BlindType("Pippo", "Ciao"), OnHandPlayedEffect:
+object TheFlint
+    extends BlindType(
+      "The Flint",
+      "Chips and Mult are halved before playing a hand"
+    )
+    with OnHandPlayedEffect:
   override def onHandPlayed(cards: Seq[Card]): Seq[HandScoreModification] = Seq(
     HandScoreModification.MultiplicativeChips(Chips(0.5)),
     HandScoreModification.MultiplicativeMult(Mult(0.5))
