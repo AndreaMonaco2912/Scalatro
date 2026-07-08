@@ -130,7 +130,7 @@ object RoundState:
       )
 
     override def isFinished: Boolean =
-      gameState.blindProgression.isBeaten(score) || remainingPlays == 0
+      gameState.blindProgression.isBeaten(score) || remainingPlays == 0 || hand.isEmpty
 
 type RoundStateModification = Modification[RoundState]
 
