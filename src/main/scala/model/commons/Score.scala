@@ -5,6 +5,8 @@ import model.commons.Chips.Chips
 import model.commons.Mult.Mult
 import model.commons.Score.Score
 
+import model.game.{Blind, SmallBlind}
+
 import scala.annotation.targetName
 
 object Chips:
@@ -129,12 +131,13 @@ object HandScoreModification:
 case class ScoreConfig(
     jokers: Seq[Joker],
     levels: HandTypeLevels,
-    calculator: HandScoreCalculator
+    calculator: HandScoreCalculator,
+    blind: Blind
 )
 
 object ScoreConfig:
   def default: ScoreConfig =
-    ScoreConfig(Seq.empty, HandTypeLevels.initial, BasicHandScoreCalculator)
+    ScoreConfig(Seq.empty, HandTypeLevels.initial, BasicHandScoreCalculator, SmallBlind)
 
 object Score:
   opaque type Score = Double
@@ -178,9 +181,14 @@ object Score:
   ): HandScore =
     val jokers = scoreConfig.jokers
     val levels = scoreConfig.levels
+    val blind = scoreConfig.blind
     val handType: HandType = HandType.detect(cards)
     val initialScore: HandScore = getHandTypeBaseScore(handType, levels)
     val scoringCards = HandType.getScoringCards(cards)
+    val afterOnHandPlayedBlind: HandScore =
+      Modification.run(initialScore, Seq(blind), scoringCards) {
+        case b: OnHandPlayedEffect => b.onHandPlayed
+      }
     val afterOnHandPlayed: HandScore =
       Modification.run(initialScore, jokers, scoringCards) {
         case j: OnHandPlayedEffect => j.onHandPlayed

@@ -20,7 +20,7 @@ case class GameState(
     this.copy(blindProgression = blindProgression.next)
 
   def scoreConfig: ScoreConfig =
-    ScoreConfig(jokers, levels, BasicHandScoreCalculator)
+    ScoreConfig(jokers, levels, BasicHandScoreCalculator, blindProgression.blind)
 
   def shopInformation: ShopInformation =
     ShopInformation(deck, levels, jokers)
