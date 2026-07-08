@@ -2,7 +2,7 @@ package scalatro
 package model.commons
 
 import model.commons.HandScore
-import model.game.GameState
+import model.game.{GameState, SmallBlind}
 import model.round.{RoundState, RoundStateModification}
 import model.extra.CardBuilder.*
 
@@ -17,12 +17,14 @@ class JokerSpec extends AnyFlatSpec, Matchers:
     val scoreConfigWithJoker: ScoreConfig = ScoreConfig(
       Seq(joker),
       HandTypeLevels.initial,
-      HandScoreCalculator.default
+      HandScoreCalculator.default,
+      SmallBlind
     )
     val scoreConfigWithoutJoker: ScoreConfig = ScoreConfig(
       Seq.empty,
       HandTypeLevels.initial,
-      HandScoreCalculator.default
+      HandScoreCalculator.default,
+      SmallBlind
     )
     val scoreWithJoker =
       Score.calculateHandScore(cards)(using scoreConfigWithJoker)
