@@ -51,7 +51,7 @@ object GameState:
     GameState(
       initialHand,
       Deck(),
-      BlindProgression.first.copy(blind = TheWindow),
+      BlindProgression.first,
       Seq.empty,
       HandTypeLevels.initial,
       SelectionPolicies.default
