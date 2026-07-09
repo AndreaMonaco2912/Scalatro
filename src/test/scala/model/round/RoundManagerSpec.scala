@@ -30,7 +30,7 @@ class RoundManagerSpec extends AnyFlatSpec with Matchers with MockFactory:
   private val initialHand = Seq(c1, c2, c3, c4)
   private val initialDeck = Deck(Seq(c5, c6, c7))
 
-  private val anteNum = 1
+  private val roundNum = 1
   private val initialGameState = GameState.initial
 
   private given ScoreConfig = ScoreConfig.default
@@ -58,7 +58,7 @@ class RoundManagerSpec extends AnyFlatSpec with Matchers with MockFactory:
       initialHand,
       initialDeck,
       initialGameState.copy(blindProgression =
-        BlindProgression(anteNum, targetScore, SmallBlind)
+        BlindProgression(roundNum, SmallBlind, Option(targetScore))
       )
     )
 

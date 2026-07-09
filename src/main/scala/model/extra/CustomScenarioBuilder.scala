@@ -85,8 +85,11 @@ case class CustomScenario(
     cards: Seq[Card],
     jokers: Seq[Joker] = Seq.empty,
     blindProgression: BlindProgression = BlindProgression.first,
+    customTargetScore: Option[Score] = Option.empty,
     levels: HandTypeLevels = HandTypeLevels.initial
 ):
+  private def targetScore: Score =
+    customTargetScore.getOrElse(blindProgression.targetScore)
 
   /** Adds jokers to the current context.
     *
@@ -126,9 +129,7 @@ case class CustomScenario(
     *   a new [[CustomScenario]] containing the specified jokers
     */
   infix def withTarget(targetScore: Score): CustomScenario =
-    this.copy(blindProgression =
-      blindProgression.copy(targetScore = targetScore)
-    )
+    this.copy(customTargetScore = Some(targetScore))
 
   /** Terminal method that compiles the fluent chain into a full [[RoundState]]
     * object.
@@ -137,11 +138,14 @@ case class CustomScenario(
     *   the fully constructed, immutable [[RoundState]]
     */
   def buildRound: RoundState =
+    val effectiveBlindProgression =
+      customTargetScore.fold(blindProgression)(blindProgression.withTargetScore)
+
     val customState = GameStateBuilder.configure {
       import GameStateBuilder.DSL.*
       Jokers := this.jokers
       Levels := this.levels
-      BlindInGame := this.blindProgression
+      BlindInGame := effectiveBlindProgression
     }
 
     RoundBuilder.configure {
