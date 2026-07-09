@@ -50,9 +50,8 @@ lazy val root = (project in file("."))
     assembly / packageOptions += Package.ManifestAttributes(
       "Enable-Native-Access" -> "ALL-UNNAMED"
     ),
-    assembly / mainClass := Some(
-      "scalatro.ScalatroMain"
-    ),
+    Compile / mainClass := Some("scalatro.Main"),
+    assembly / mainClass := Some("scalatro.Main"),
     assembly / assemblyJarName := "scalatro.jar",
     assembly / assemblyMergeStrategy := {
       case PathList("META-INF", "MANIFEST.MF") => MergeStrategy.discard

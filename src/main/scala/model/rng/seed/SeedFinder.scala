@@ -3,7 +3,7 @@ package model.rng.seed
 
 import model.commons.*
 import model.commons.Rank.Ace
-import model.commons.Suit.{Clubs, Diamonds, Hearts, Spades}
+import model.commons.Suit.{Diamonds, Hearts}
 import model.rng.SelectionPolicy.UniformSelection
 import model.rng.Types.Seed
 import model.rng.seed.SimulationActions.satisfiesConstraints
@@ -36,13 +36,3 @@ object SeedFinder:
       .take(maxAttempts)
       .find(seed => satisfiesConstraints(constraints)(using ScalatroRng(seed)))
       .getOrElse(Seed(0L))
-
-@main
-def findSeedMain(): Unit =
-  val constraints = Seq(
-    InitialHandWithCards(Seq(Card(Ace, Hearts), Card(Ace, Diamonds)), 1),
-    InitialHandWithHandType(HandType.FullHouse, 1),
-    JokerPackContains(JokerType.CleverJoker, 1)
-  )
-  val seed = SeedFinder.findSeed(constraints)
-  println(s"Found seed: $seed")
