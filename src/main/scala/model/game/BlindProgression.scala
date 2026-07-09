@@ -11,12 +11,12 @@ import model.commons.{
   OnCardScoredEffect,
   OnHandPlayedEffect,
   OnRoundStartEffect,
-  Score
+  Score,
+  Suit
 }
 import model.commons.Score.Score
 import model.rng.Weighable
 import model.round.{RoundState, RoundStateModification}
-
 import model.commons.Rank.{Jack, King, Queen}
 import model.commons.Suit.{Clubs, Diamonds, Hearts, Spades}
 
@@ -52,10 +52,10 @@ object BlindProgression:
     BlindProgression(initialAnte, initialScore, SmallBlind)
 
   private def scoreFor(anteNum: Int, blind: Blind): Score =
-    val small = initialScore * Math.pow(3, anteNum - 1)
+    val small = initialScore * scala.math.pow(3, anteNum - 1)
     blind match
       case SmallBlind => small
-      case BigBlind   => (small + small * 2) / 2
+      case BigBlind   => small * 1.5
       case _          => small * 2
 
   private def blindPosition(blind: Blind): Int = blind match
@@ -76,6 +76,9 @@ trait Blind extends Weighable:
 
 case class BlindType(name: String, description: String) extends Blind
 
+trait SuitDebuff(suit: Suit) extends CardDebuffEffect:
+  override def debuffs(card: Card): Boolean = card.suit == suit
+
 object SmallBlind extends BlindType("Small Blind", "No special effect")
 object BigBlind extends BlindType("Big Blind", "No special effect")
 object TheNeedle
@@ -83,10 +86,6 @@ object TheNeedle
     with OnRoundStartEffect:
   override def onRoundStart(round: RoundState): Seq[RoundStateModification] =
     Seq(RoundStateModification.SetRemainingPlays(1))
-//object TheWall
-//    extends BlindType("The Wall", "Extra large blind")
-//    with OnRoundStartEffect:
-//  override def onRoundStart(round: RoundState): Seq[RoundStateModification] = ??? // mettere metodo
 object TheFlint
     extends BlindType(
       "The Flint",
@@ -104,36 +103,18 @@ object TheWater
     Seq(RoundStateModification.SetRemainingDiscards(0))
 
 object TheHead
-    extends BlindType("The Head", "All Heart cards are debuffed"),
-      CardDebuffEffect:
-  override def debuffs(card: Card): Boolean = card.suit match
-    case Hearts => true
-    case _      => false
-
+    extends BlindType("The Head", "All Heart cards are debuffed")
+    with SuitDebuff(Hearts)
 object TheClub
-    extends BlindType("The Club", "All Club cards are debuffed"),
-      CardDebuffEffect:
-  override def debuffs(card: Card): Boolean = card.suit match
-    case Clubs => true
-    case _     => false
-
+    extends BlindType("The Club", "All Club cards are debuffed")
+    with SuitDebuff(Clubs)
 object TheGoad
-    extends BlindType("The Goad", "All Spade cards are debuffed"),
-      CardDebuffEffect:
-  override def debuffs(card: Card): Boolean = card.suit match
-    case Spades => true
-    case _      => false
-
+    extends BlindType("The Goad", "All Spade cards are debuffed")
+    with SuitDebuff(Spades)
 object TheWindow
-    extends BlindType("The Window", "All Diamond cards are debuffed"),
-      CardDebuffEffect:
-  override def debuffs(card: Card): Boolean = card.suit match
-    case Diamonds => true
-    case _        => false
-
+    extends BlindType("The Window", "All Diamond cards are debuffed")
+    with SuitDebuff(Diamonds)
 object ThePlant
     extends BlindType("The Plant", "All face cards are debuffed"),
       CardDebuffEffect:
-  override def debuffs(card: Card): Boolean = card.rank match
-    case Jack | Queen | King => true
-    case _                   => false
+  override def debuffs(card: Card): Boolean = Set(Jack, Queen, King)(card.rank)
