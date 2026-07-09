@@ -8,12 +8,11 @@ import model.commons.{Card, Deck, Score}
 import model.game.{GameState, HandInformation}
 import model.rng.ScalatroRng
 
-import org.scalamock.scalatest.MockFactory
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
 /** A test spec for [[RoundState]] */
-class RoundStateSpec extends AnyFlatSpec with Matchers with MockFactory:
+class RoundStateSpec extends AnyFlatSpec, Matchers:
 
   private def initialRound: RoundState = RoundState(
     score = Score.zero,
@@ -21,6 +20,8 @@ class RoundStateSpec extends AnyFlatSpec with Matchers with MockFactory:
     deck = Deck(),
     gameState = GameState.initial
   )
+
+  private val testHand = Seq(Card(Ace, Spades))
 
   "Modifying the score" should "return a new Round with the updated score" in:
     val newScore = Score(20)
@@ -34,11 +35,9 @@ class RoundStateSpec extends AnyFlatSpec with Matchers with MockFactory:
     updatedRound.gameState shouldBe initialRound.gameState
 
   "Modifying the hand" should "return a new Round with the updated hand" in:
-    val newHand =
-      Seq(mock[Card]) // mocking the card since its value is not important
-    val updatedRound = initialRound.modify(hand = newHand)
+    val updatedRound = initialRound.modify(hand = testHand)
 
-    updatedRound.hand shouldBe newHand
+    updatedRound.hand shouldBe testHand
     updatedRound.score shouldBe initialRound.score
     updatedRound.deck shouldBe initialRound.deck
     updatedRound.remainingPlays shouldBe initialRound.remainingPlays
@@ -84,7 +83,7 @@ class RoundStateSpec extends AnyFlatSpec with Matchers with MockFactory:
       handInformation =
         HandInformation(handSize = 5, handNum = 7, discardNum = 2)
     )
-    val round = RoundState(Score.zero, Seq(), Deck(), gameState)
+    val round = RoundState(Score.zero, testHand, Deck(), gameState)
 
     round.remainingPlays shouldBe gameState.handInformation.handNum
 
@@ -93,7 +92,7 @@ class RoundStateSpec extends AnyFlatSpec with Matchers with MockFactory:
       handInformation =
         HandInformation(handSize = 5, handNum = 7, discardNum = 2)
     )
-    val round = RoundState(Score.zero, Seq(), Deck(), gameState)
+    val round = RoundState(Score.zero, testHand, Deck(), gameState)
 
     round.remainingDiscards shouldBe gameState.handInformation.discardNum
 
@@ -105,6 +104,10 @@ class RoundStateSpec extends AnyFlatSpec with Matchers with MockFactory:
     val round = initialRound.modify(score = beatingScore)
 
     round.isFinished shouldBe true
+
+  "bestPlay" should "return an empty sequence when the hand is empty" in:
+    val round = initialRound.modify(hand = Seq())
+    round.bestPlay shouldBe Seq()
 
   it should "be finished when there are no remaining plays" in:
     val round = initialRound.modify(remainingPlays = 0)

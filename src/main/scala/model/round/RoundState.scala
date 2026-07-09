@@ -117,8 +117,9 @@ object RoundState:
       remainingDiscards: Int,
       gameState: GameState
   ) extends RoundState:
-    override val bestPlay: Seq[Card] =
-      Hint.best(hand)(using gameState.scoreConfig)
+    override val bestPlay: Seq[Card] = hand match
+      case Seq() => Seq()
+      case _     => Hint.best(hand)(using gameState.scoreConfig)
 
     override def modify(
         score: Score,
