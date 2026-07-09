@@ -97,6 +97,9 @@ class RoundStateSpec extends AnyFlatSpec with Matchers with MockFactory:
 
     round.remainingDiscards shouldBe gameState.handInformation.discardNum
 
+  "A Round" should "always know which the best play from the current hand" in:
+    initialRound.bestPlay should not be empty
+
   "A Round" should "be finished when the blind is beaten" in:
     val beatingScore = GameState.initial.blindProgression.targetScore
     val round = initialRound.modify(score = beatingScore)
