@@ -9,10 +9,7 @@ import javafx.scene.layout.StackPane
 import scalafx.application.JFXApp3
 import scalafx.application.JFXApp3.PrimaryStage
 
-@main
-def main(): Unit = MainApp.main(Array())
-
-object MainApp extends JFXApp3:
+object ScalatroMain extends JFXApp3:
   override def start(): Unit =
     this.stage = PrimaryStage()
     val cssUrl = getClass.getResource(Resources.stylesheet)
