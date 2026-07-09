@@ -3,12 +3,40 @@ package model.game
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import model.commons.Score
-import model.commons.Score.Score
-
+import model.commons.{Score, ScoreConfig}
+import model.commons.Score.{Score, calculateScore}
 import model.game.*
+import model.extra.{Cards, CustomScenario}
+import model.extra.CardBuilder.*
+
+import cats.effect.IO
+import cats.effect.std.Queue
+import cats.effect.unsafe.implicits.global
+import cats.syntax.all.*
+import app.Msg.RoundAction
+import app.Msg.RoundAction.{DiscardCards, PlayCards}
+import model.round.{RoundManager, RoundState}
 
 class BlindProgressionSpec extends AnyFlatSpec, Matchers:
+
+  private given defaultScoreConfig: ScoreConfig = ScoreConfig.default
+  
+  private def runSequence(
+      initialRoundState: RoundState,
+      actions: Seq[RoundAction],
+      render: RoundState => IO[Unit] = _ => IO.unit
+  ): RoundState =
+    val testProgram = for
+      queue <- Queue.unbounded[IO, RoundAction]
+      _ <- actions.traverse_(action => queue.offer(action))
+      manager = RoundManager(render, queue.take)
+      finalRound <- manager.startRound(initialRoundState)
+      queueFinalSize <- queue.size
+    yield
+      queueFinalSize shouldBe 0 // all actions must have been consumed
+      finalRound
+
+    testProgram.unsafeRunSync()
 
   val start: BlindProgression = BlindProgression.first
 
@@ -57,3 +85,44 @@ class BlindProgressionSpec extends AnyFlatSpec, Matchers:
     BlindProgression.first.isBeaten(
       BlindProgression.initialScore - Score(1)
     ) shouldBe false
+
+// Tests for every boss blind
+
+  "The Needle" should "permit to play only one hand" in:
+    val theNeedleScenario: CustomScenario = Cards(A of S) inBlind TheNeedle
+    val currentRound = theNeedleScenario.buildRound
+    val finalRound = runSequence(currentRound, Seq(PlayCards(Seq(A of S))))
+
+    finalRound.remainingPlays shouldBe 0
+    finalRound.isFinished shouldBe true
+
+  "The Flint" should "half Base Chips and Mult for played poker hands" in:
+    val theFlintScenario: CustomScenario =
+      Cards(A of S, A of C) inBlind TheFlint
+    val currentRound = theFlintScenario.buildRound
+
+    given theFlintScoreConfig: ScoreConfig =
+      ScoreConfig.default.copy(blind = TheFlint)
+
+    val actualScore: Score = calculateScore(currentRound.hand)
+    /*
+     * Played cards: 2 Aces --> Pair
+     * Base chips for Pair: 10
+     * Base mult for Pair: 2
+     * So, after The Flint effect,
+     * Actual base chips: 5
+     * Actual base mult: 1
+     * So the final score is: (5 + 11 + 11) * 1
+     * */
+    actualScore shouldBe Score(27)
+
+  "The Water" should "set the available discards to 0" in:
+    val theWaterScenario: CustomScenario =
+      Cards(A of S, A of C) inBlind TheWater withTarget Score.calculateScore(
+        Seq(A of S)
+      )
+    val currentRound = theWaterScenario.buildRound
+
+    val finalRound = runSequence(currentRound, Seq(PlayCards(Seq(A of S))))
+
+    finalRound.remainingDiscards shouldBe 0

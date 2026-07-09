@@ -4,7 +4,7 @@ package model.extra
 import model.commons.*
 import model.extra.GameStateBuilder
 import model.round.RoundState
-
+import model.commons.Score.Score
 import model.game.{Blind, BlindProgression}
 
 /** The entry point for the [[CustomScenario]] DSL.
@@ -116,7 +116,19 @@ case class CustomScenario(
     *   a new [[CustomScenario]] containing the specified jokers
     */
   infix def inBlind(blind: Blind): CustomScenario =
-    this.copy(blindProgression = BlindProgression.first.copy(blind=blind))
+    this.copy(blindProgression = blindProgression.copy(blind = blind))
+
+  /** Set blind target score to the current context.
+    *
+    * @param targetScore
+    *   the target score to beat in the scenario
+    * @return
+    *   a new [[CustomScenario]] containing the specified jokers
+    */
+  infix def withTarget(targetScore: Score): CustomScenario =
+    this.copy(blindProgression =
+      blindProgression.copy(targetScore = targetScore)
+    )
 
   /** Terminal method that compiles the fluent chain into a full [[RoundState]]
     * object.
