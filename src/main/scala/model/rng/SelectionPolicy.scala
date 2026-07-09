@@ -66,24 +66,22 @@ object SelectionPolicy:
 
 object PresetPolicies:
   import SelectionPolicy.*
-  def boostAces: SelectionPolicy[Card] =
+  val boostAces: SelectionPolicy[Card] =
     new UniformSelection[Card] with BoostRank(Ace):
       override def description: String = "Boosts Aces"
-  def boostHearts: SelectionPolicy[Card] =
+  val boostFaces: SelectionPolicy[Card] =
+    new UniformSelection[Card] with BoostFaces():
+      override def description: String = "Boosts face cards"
+  val boostHearts: SelectionPolicy[Card] =
     new UniformSelection[Card] with BoostSuit(Hearts):
       override def description: String = "Boosts Hearts"
-  def noFaces: SelectionPolicy[Card] =
-    new UniformSelection[Card] with BoostFaces(Weight(0.0)):
-      override def description: String = "Disables face cards"
-  def crazyCards: SelectionPolicy[Card] =
+  val crazyPolicy: SelectionPolicy[Card] =
     new UniformSelection[Card]
-      with BoostRank(Ace)
-      with BoostSuit(Hearts, Weight(0.5))
-      with BoostCard(Card(Ten, Spades), Weight(0.0)):
+      with BoostRank(Ace, Weight(100.0))
+      with BoostFaces(Weight(0.0)):
       override def description: String =
-        "Boosts Aces, nerfs Hearts, disables Ten of Spades"
-
-  def pairBiasedPlanets: SelectionPolicy[Planet] =
+        "Greatly increase priority of Aces, while nerfing face cards"
+  val pairBiasedPlanets: SelectionPolicy[Planet] =
     new UniformSelection[Planet]
       with BoostPlanetHandType(HandType.Pair, Weight(100.0)):
       override def description: String = "Boosts planets with Pair hand type"
