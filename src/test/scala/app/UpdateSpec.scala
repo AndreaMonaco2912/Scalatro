@@ -6,25 +6,30 @@ import model.extra.CardBuilder.*
 import model.extra.GameStateBuilder.DSL.*
 import model.extra.RoundBuilder.DSL.*
 import model.extra.{GameStateBuilder, RoundBuilder}
-import model.game.GameState
+import model.game.{BossBlind, GameState}
 import model.round.RoundState
 import model.shop.Shop
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
+import model.rng.{ScalatroRng, SelectionPolicy}
+import model.rng.SelectionPolicy.UniformSelection
 
 object UpdateDSL:
   extension (model: Model)
-    infix def on(msg: Msg): (Model, Cmd) = Update.update(model, msg)
+    infix def on(msg: Msg)(using ScalatroRng): (Model, Cmd) = Update.update(model, msg)
 
-    infix def !(msg: Msg): Model = model on msg match
+    infix def !(msg: Msg)(using ScalatroRng): Model = model on msg match
       case (m, _) => m
 
-    infix def ?(msg: Msg): Cmd = model on msg match
+    infix def ?(msg: Msg)(using ScalatroRng): Cmd = model on msg match
       case (_, c) => c
 
 class UpdateSpec extends AnyFlatSpec with Matchers:
   export UpdateDSL.*
+
+  given SelectionPolicy[BossBlind] = UniformSelection[BossBlind]
+  given ScalatroRng = ScalatroRng.default
 
   private val gs: GameState = GameStateBuilder.configure {
     Jokers := Seq(JokerType.CleverJoker)

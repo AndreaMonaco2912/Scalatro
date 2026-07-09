@@ -16,11 +16,16 @@ import cats.syntax.all.*
 import app.Msg.RoundAction
 import app.Msg.RoundAction.{DiscardCards, PlayCards}
 import model.round.{RoundManager, RoundState}
+import model.rng.{ScalatroRng, SelectionPolicy}
+
+import model.rng.SelectionPolicy.UniformSelection
 
 class BlindProgressionSpec extends AnyFlatSpec, Matchers:
 
   private given defaultScoreConfig: ScoreConfig = ScoreConfig.default
-
+  given SelectionPolicy[BossBlind] = UniformSelection[BossBlind]
+  given ScalatroRng = ScalatroRng.default
+  
   private def runSequence(
       initialRoundState: RoundState,
       actions: Seq[RoundAction],

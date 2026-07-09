@@ -16,7 +16,7 @@ case class GameState(
   def shuffleDeck(using ScalatroRng): GameState =
     this.copy(deck = deck.sort.shuffle)
 
-  def advanceBlind: GameState =
+  def advanceBlind(using ScalatroRng): GameState =
     this.copy(blindProgression = blindProgression.next)
 
   def scoreConfig: ScoreConfig =

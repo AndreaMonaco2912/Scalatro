@@ -53,7 +53,9 @@ private[seed] object SimulationActions:
       simRound = SimRound(hand, shop.cardPack, shop.jokerPack, shop.planetPack)
     yield simRound
 
-  def advanceBlind: SimStep[Unit] = State.modify(_.advanceBlind)
+  def advanceBlind(using
+      rng: ScalatroRng
+  ): SimStep[Unit] = State.modify(_.advanceBlind)
 
   def checkAllRounds(
       constraints: Seq[SeedConstraint]

@@ -4,12 +4,14 @@ package app
 import model.game.GameState
 import model.commons.{Deck, HandTypeLevels}
 
+import model.rng.ScalatroRng
+
 object Update:
 
   val init: (Model, Cmd) =
     (Model.Playing, Cmd.Deal(GameState.initial))
 
-  def update(model: Model, msg: Msg): (Model, Cmd) =
+  def update(model: Model, msg: Msg)(using ScalatroRng): (Model, Cmd) =
     msg match
       case effect: Msg.InternalEffect => fromEffect(effect)
       case action                     => fromAction(model, action)
@@ -23,7 +25,7 @@ object Update:
       case Msg.InternalEffect.ShopReady(gs, shop) =>
         (Model.InShop(gs, shop), Cmd.NoOp)
 
-  private def fromAction(model: Model, msg: Msg): (Model, Cmd) =
+  private def fromAction(model: Model, msg: Msg)(using ScalatroRng): (Model, Cmd) =
     (model, msg) match
       case (Model.RoundWon(round), Msg.RoundEndAction.NextRound) =>
         (model, Cmd.BuildShop(round.gameState))
@@ -57,7 +59,7 @@ object Update:
   private def inShop(
       model: Model.InShop,
       action: Msg.ShopAction
-  ): (Model, Cmd) =
+  )(using ScalatroRng): (Model, Cmd) =
     val gs = model.gameState
     action match
       case Msg.ShopAction.OpenCardPack =>

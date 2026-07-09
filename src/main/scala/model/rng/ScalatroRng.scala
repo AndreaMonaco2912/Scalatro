@@ -4,6 +4,8 @@ package model.rng
 import model.commons.{Card, Joker, Planet}
 import model.rng.SelectionPolicy.UniformSelection
 
+import model.game.BossBlind
+
 import scala.util.Random
 
 trait ScalatroRng:
@@ -42,7 +44,8 @@ object ScalatroRng:
       Map(
         "Card" -> Random(random.nextLong()),
         "Planet" -> Random(random.nextLong()),
-        "Joker" -> Random(random.nextLong())
+        "Joker" -> Random(random.nextLong()),
+        "BossBlind" -> Random(random.nextLong())
       )
 
     extension (randomMap: RandomMap)
@@ -50,6 +53,7 @@ object ScalatroRng:
         case _: Card   => randomMap("Card")
         case _: Planet => randomMap("Planet")
         case _: Joker  => randomMap("Joker")
+        case _: BossBlind => randomMap("BossBlind")
         case _         =>
           throw new IllegalArgumentException(s"No random generator for $value")
 

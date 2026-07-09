@@ -13,17 +13,34 @@ import model.commons.{
   Score,
   Suit
 }
+import model.rng.SelectionPolicy.UniformSelection
 import model.commons.Score.Score
-import model.rng.Weighable
+import model.rng.{ScalatroRng, SelectionPolicy, Weighable}
 import model.round.{RoundState, RoundStateModification}
 import model.commons.Rank.{Jack, King, Queen}
 import model.commons.Suit.{Clubs, Diamonds, Hearts, Spades}
+import model.rng.Types.Pool
 
 case class BlindProgression(
     roundNum: Int,
     blind: Blind,
     targetScoreFromOutside: Option[Score] = Option.empty
 ):
+  given SelectionPolicy[BossBlind] = UniformSelection[BossBlind]
+
+  private val bossBlindPool: Pool[BossBlind] = Pool(
+    Seq(
+      TheNeedle,
+      TheFlint,
+      TheWater,
+      TheHead,
+      TheClub,
+      TheGoad,
+      TheWindow,
+      ThePlant
+    )
+  )
+  private val defaultBoss: BossBlind = TheGoad
 
   def anteNum: Int = (roundNum - 1) / 3 + 1
 
@@ -39,10 +56,10 @@ case class BlindProgression(
     case _: BossBlind   => true
     case _: NormalBlind => false
 
-  def next: BlindProgression =
+  def next(using rng: ScalatroRng): BlindProgression =
     val nextBlind: Blind = blind match
-      case SmallBlind   => BigBlind
-      case BigBlind     => TheNeedle
+      case SmallBlind => BigBlind
+      case BigBlind => rng.draw(bossBlindPool, 1).headOption.getOrElse(defaultBoss)
       case _: BossBlind => SmallBlind
 
     BlindProgression(roundNum + 1, nextBlind)
@@ -60,7 +77,7 @@ object BlindProgression:
       case BigBlind     => small * 1.5
       case _: BossBlind => small * 2
 
-sealed trait Blind extends Weighable:
+sealed trait Blind:
   /** @return
     *   The name of the blind
     */
@@ -72,7 +89,7 @@ sealed trait Blind extends Weighable:
   def description: String
 
 sealed trait NormalBlind extends Blind
-sealed trait BossBlind extends Blind
+sealed trait BossBlind extends Blind, Weighable
 
 trait SuitDebuff(suit: Suit) extends CardDebuffEffect:
   override def debuffs(card: Card): Boolean = card.suit == suit
