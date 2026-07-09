@@ -6,11 +6,10 @@ import model.commons.{
   CardDebuffEffect,
   Chips,
   HandScoreModification,
-  Modification,
   Mult,
-  OnCardScoredEffect,
   OnHandPlayedEffect,
   OnRoundStartEffect,
+  Rank,
   Score,
   Suit
 }
@@ -79,6 +78,9 @@ case class BlindType(name: String, description: String) extends Blind
 trait SuitDebuff(suit: Suit) extends CardDebuffEffect:
   override def debuffs(card: Card): Boolean = card.suit == suit
 
+trait RankDebuff(rank: Rank*) extends CardDebuffEffect:
+  override def debuffs(card: Card): Boolean = rank.contains(card.rank)
+
 object SmallBlind extends BlindType("Small Blind", "No special effect")
 object BigBlind extends BlindType("Big Blind", "No special effect")
 object TheNeedle
@@ -115,6 +117,5 @@ object TheWindow
     extends BlindType("The Window", "All Diamond cards are debuffed")
     with SuitDebuff(Diamonds)
 object ThePlant
-    extends BlindType("The Plant", "All face cards are debuffed"),
-      CardDebuffEffect:
-  override def debuffs(card: Card): Boolean = Set(Jack, Queen, King)(card.rank)
+    extends BlindType("The Plant", "All face cards are debuffed")
+    with RankDebuff(Jack, Queen, King)
