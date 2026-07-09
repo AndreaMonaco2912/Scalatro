@@ -210,15 +210,15 @@ class FxController extends Initializable, Bindable[RoundAction]:
       iv.setFitWidth(75)
       iv.setFitHeight(110)
       iv.setPreserveRatio(true)
-  
+
       val debuffed = roundState.exists(isCardDebuffed(card, _))
       if debuffed then
         iv.setOpacity(0.5)
         iv.getStyleClass.add("debuffed-card")
-  
+
       playAreaBox.getChildren.add(iv)
       (card, iv)
-  }
+    }
   private def removeCardsFromPlayArea(): Unit =
     playAreaBox.getChildren.clear()
 
@@ -292,8 +292,8 @@ class FxController extends Initializable, Bindable[RoundAction]:
 
   private def onHint(): Unit =
     lastKnownRoundState match
-      case Some(round) if round.hand.nonEmpty => HintPopup.show(round)
-      case _                                  => ()
+      case Some(round) => HintPopup.show(round.bestPlay)
+      case _           => ()
 
   protected def imageNode(image: Image): ImageView =
     ImageViews(image, 85, 125, Some("pack-card"))
@@ -310,9 +310,9 @@ class FxController extends Initializable, Bindable[RoundAction]:
     val blind = roundState.gameState.blindProgression.blind
     Seq(blind).exists {
       case d: CardDebuffEffect => d.debuffs(card)
-      case _ => false
+      case _                   => false
     }
-  
+
   private def renderCardButton(
       card: Card,
       index: Int,

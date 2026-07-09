@@ -3,8 +3,9 @@ package model.round
 
 import model.commons.Score.Score
 import model.commons.{Card, Deck, Modification, Score}
+import model.extra.Hint
 import model.game.GameState
-//TODO valutare se mettere maxSize = 5 e minSize = 1
+
 /** The game's hand: the collection of cards the player can choose from */
 type Hand = Seq[Card]
 
@@ -27,6 +28,9 @@ trait RoundState:
 
   /** The game state of this round */
   def gameState: GameState
+
+  /** The best play possible amongst the card of the Hand */
+  def bestPlay: Seq[Card]
 
   /** Modify some parameters of this [[RoundState]], returning a new instance
     * with the updated values
@@ -113,6 +117,9 @@ object RoundState:
       remainingDiscards: Int,
       gameState: GameState
   ) extends RoundState:
+    override val bestPlay: Seq[Card] =
+      Hint.best(hand)(using gameState.scoreConfig)
+
     override def modify(
         score: Score,
         hand: Hand,
@@ -130,7 +137,9 @@ object RoundState:
       )
 
     override def isFinished: Boolean =
-      gameState.blindProgression.isBeaten(score) || remainingPlays == 0 || hand.isEmpty
+      gameState.blindProgression.isBeaten(score)
+        || remainingPlays == 0
+        || hand.isEmpty
 
 type RoundStateModification = Modification[RoundState]
 

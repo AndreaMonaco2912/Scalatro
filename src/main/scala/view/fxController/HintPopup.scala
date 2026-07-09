@@ -22,14 +22,11 @@ object HintPopup:
   /** Shows the popup synchronously (must be called on or will hop to the JavaFX
     * Application Thread).
     *
-    * @param round
-    *   the round whose hand is used to compute the best play
+    * @param cards
+    *   the cards in the best play
     */
-  def show(round: RoundState): Unit =
+  def show(cards: Seq[Card]): Unit =
     Platform.runLater { () =>
-      val cards =
-        given ScoreConfig = round.gameState.scoreConfig
-        Hint.best(round.hand)
       buildAndShow(cards)
     }
 
