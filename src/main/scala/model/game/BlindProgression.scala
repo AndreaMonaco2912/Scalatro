@@ -3,6 +3,7 @@ package model.game
 
 import model.commons.{
   Card,
+  CardDebuffEffect,
   Chips,
   HandScoreModification,
   Modification,
@@ -15,7 +16,9 @@ import model.commons.{
 import model.commons.Score.Score
 import model.rng.Weighable
 import model.round.{RoundState, RoundStateModification}
-import model.game.BlindType.*
+
+import model.commons.Rank.{Jack, King, Queen}
+import model.commons.Suit.{Clubs, Diamonds, Hearts, Spades}
 
 case class BlindProgression(anteNum: Int, targetScore: Score, blind: Blind):
 
@@ -99,3 +102,38 @@ object TheWater
       OnRoundStartEffect:
   override def onRoundStart(round: RoundState): Seq[RoundStateModification] =
     Seq(RoundStateModification.SetRemainingDiscards(0))
+
+object TheHead
+    extends BlindType("The Head", "All Heart cards are debuffed"),
+      CardDebuffEffect:
+  override def debuffs(card: Card): Boolean = card.suit match
+    case Hearts => true
+    case _      => false
+
+object TheClub
+    extends BlindType("The Club", "All Club cards are debuffed"),
+      CardDebuffEffect:
+  override def debuffs(card: Card): Boolean = card.suit match
+    case Clubs => true
+    case _     => false
+
+object TheGoad
+    extends BlindType("The Goad", "All Spade cards are debuffed"),
+      CardDebuffEffect:
+  override def debuffs(card: Card): Boolean = card.suit match
+    case Spades => true
+    case _      => false
+
+object TheWindow
+    extends BlindType("The Window", "All Diamond cards are debuffed"),
+      CardDebuffEffect:
+  override def debuffs(card: Card): Boolean = card.suit match
+    case Diamonds => true
+    case _        => false
+
+object ThePlant
+    extends BlindType("The Plant", "All face cards are debuffed"),
+      CardDebuffEffect:
+  override def debuffs(card: Card): Boolean = card.rank match
+    case Jack | Queen | King => true
+    case _                   => false

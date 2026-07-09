@@ -200,10 +200,15 @@ object Score:
       }
     val afterAfterCardsScored: HandScore =
       scoringCards.foldLeft(afterOnHandPlayed)((acc, card) =>
-        Modification.run(card.onScored.applyAll(acc), jokers, card) {
-          case j: OnCardScoredEffect =>
-            j.onCardScored
+        val isDebuffed = Seq(blind).exists {
+          case d: CardDebuffEffect => d.debuffs(card)
+          case _                   => false
         }
+        if isDebuffed then acc
+        else
+          Modification.run(card.onScored.applyAll(acc), jokers, card) {
+            case j: OnCardScoredEffect => j.onCardScored
+          }
       )
     val afterAfterHandPlayed: HandScore =
       Modification.run(afterAfterCardsScored, jokers, scoringCards) {

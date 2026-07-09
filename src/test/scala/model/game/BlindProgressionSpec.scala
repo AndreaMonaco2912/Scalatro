@@ -20,7 +20,7 @@ import model.round.{RoundManager, RoundState}
 class BlindProgressionSpec extends AnyFlatSpec, Matchers:
 
   private given defaultScoreConfig: ScoreConfig = ScoreConfig.default
-  
+
   private def runSequence(
       initialRoundState: RoundState,
       actions: Seq[RoundAction],
@@ -122,7 +122,43 @@ class BlindProgressionSpec extends AnyFlatSpec, Matchers:
         Seq(A of S)
       )
     val currentRound = theWaterScenario.buildRound
-
     val finalRound = runSequence(currentRound, Seq(PlayCards(Seq(A of S))))
 
     finalRound.remainingDiscards shouldBe 0
+
+  "The Head" should "debuff all Heart cards" in:
+    given ScoreConfig = ScoreConfig.default.copy(blind = TheHead)
+
+    val scoreWithDebuffedHeart = calculateScore(Seq(A of H))
+    // Scores only High card base chips and mult (5 * 1)
+    scoreWithDebuffedHeart shouldBe Score(5)
+
+  "The Club" should "debuff all Club cards" in:
+    given ScoreConfig = ScoreConfig.default.copy(blind = TheClub)
+
+    val scoreWithDebuffedHeart = calculateScore(Seq(A of C))
+    // Scores only High card base chips and mult (5 * 1)
+    scoreWithDebuffedHeart shouldBe Score(5)
+
+  "The Goad" should "debuff all Spade cards" in:
+    given ScoreConfig = ScoreConfig.default.copy(blind = TheGoad)
+
+    val scoreWithDebuffedHeart = calculateScore(Seq(A of S))
+    // Scores only High card base chips and mult (5 * 1)
+    scoreWithDebuffedHeart shouldBe Score(5)
+
+  "The Window" should "debuff all Diamond cards" in :
+
+    given ScoreConfig = ScoreConfig.default.copy(blind = TheWindow)
+
+    val scoreWithDebuffedHeart = calculateScore(Seq(A of D))
+    // Scores only High card base chips and mult (5 * 1)
+    scoreWithDebuffedHeart shouldBe Score(5)
+
+  "The Plant" should "debuff all face cards (Jacks, Queens and Kings are face cards)" in :
+
+    given ScoreConfig = ScoreConfig.default.copy(blind = ThePlant)
+
+    val scoreWithDebuffedHeart = calculateScore(Seq(J of S, Q of S, K of S))
+    // Scores only High card base chips and mult (5 * 1)
+    scoreWithDebuffedHeart shouldBe Score(5)
