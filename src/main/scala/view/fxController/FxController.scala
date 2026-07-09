@@ -56,7 +56,7 @@ class FxController extends Initializable, Bindable[RoundAction]:
   private var handSlots: List[(ToggleButton, Card)] = List()
 
   private var lastKnownRoundState: Option[RoundState] = None
-  private var cardOrderer: Option[CardOrderer] = None
+  private var cardOrderer: Option[Orderer[Card]] = None
 
   private def playAvailable: Boolean = lastKnownRoundState match
     case Some(round) => round.remainingPlays > 0
@@ -87,12 +87,12 @@ class FxController extends Initializable, Bindable[RoundAction]:
     hintButton.setOnAction(_ => onHint())
 
     sortRankButton.setOnAction(_ =>
-      val ord = CardOrderer.sortByRank
+      val ord = Orderer.sortByRank
       cardOrderer = Some(ord)
       onOrder(ord)
     )
     sortSuitButton.setOnAction(_ =>
-      val ord = CardOrderer.sortBySuit
+      val ord = Orderer.sortBySuit
       cardOrderer = Some(ord)
       onOrder(ord)
     )
@@ -287,7 +287,7 @@ class FxController extends Initializable, Bindable[RoundAction]:
     offer(RoundAction.DiscardCards(selectedCards))
     cardOrderer.foreach(onOrder)
 
-  private def onOrder(cardOrderer: CardOrderer): Unit =
+  private def onOrder(cardOrderer: Orderer[Card]): Unit =
     offer(RoundAction.OrderHand(cardOrderer))
 
   private def onHint(): Unit =
@@ -359,7 +359,7 @@ class FxController extends Initializable, Bindable[RoundAction]:
         val draggedIdx = db.getString.toInt
         val targetIdx = index
         cardOrderer = None
-        onOrder(CardOrderer.moveCard(draggedIdx, targetIdx))
+        onOrder(Orderer.moveElement(draggedIdx, targetIdx))
         true
       else false
 

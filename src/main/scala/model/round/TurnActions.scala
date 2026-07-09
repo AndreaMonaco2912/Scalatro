@@ -2,14 +2,14 @@ package scalatro
 package model.round
 
 import model.commons.Score.{Score, calculateScore}
-import model.commons.{Card, CardOrderer, ScoreConfig}
+import model.commons.{Card, Orderer, ScoreConfig}
 
 import cats.data.State
 
 /** A collection of methods for [[RoundState]] state changes */
 object TurnActions:
   /** A convenience type alias to represent a [[State]] of [[RoundState]]
-   *
+    *
     * @tparam A
     *   the type of the value returned after the state change
     */
@@ -26,7 +26,7 @@ object TurnActions:
     * @param scoreConfig
     *   the configuration needed to compute the score of the hand
     * @return
-    * a [[State]] that applies the changes to the current [[RoundState]]
+    *   a [[State]] that applies the changes to the current [[RoundState]]
     */
   def playCards(
       cards: Seq[Card]
@@ -48,7 +48,7 @@ object TurnActions:
     * @param cards
     *   the cards to discard
     * @return
-    * a [[State]] that applies the changes to the current [[RoundState]]
+    *   a [[State]] that applies the changes to the current [[RoundState]]
     */
   def discardCards(cards: Seq[Card]): TurnState[Unit] =
     for
@@ -64,9 +64,9 @@ object TurnActions:
     * @param ord
     *   the card orderer
     * @return
-    * a [[State]] that applies the changes to the current [[RoundState]]
+    *   a [[State]] that applies the changes to the current [[RoundState]]
     */
-  def orderCards(using ord: CardOrderer): TurnState[Unit] =
+  def orderCards(using ord: Orderer[Card]): TurnState[Unit] =
     State.modify(state => state.modify(hand = ord.order(state.hand)))
 
   private def removeCards(cards: Seq[Card]): TurnState[Unit] =

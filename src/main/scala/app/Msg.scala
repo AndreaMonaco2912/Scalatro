@@ -1,7 +1,7 @@
 package scalatro
 package app
 
-import model.commons.{Card, CardOrderer, Joker, Planet}
+import model.commons.{Card, Joker, Orderer, Planet}
 import model.game.GameState
 import model.round.RoundState
 import model.shop.Shop
@@ -29,11 +29,12 @@ object Msg:
       */
     case DiscardCards(cards: Seq[Card])
 
-    /** The action of ordering cards according to a specific [[CardOrderer]]
+    /** The action of ordering cards according to a specific [[Orderer]]
+      *
       * @param orderer
       *   the card orderer
       */
-    case OrderHand(orderer: CardOrderer)
+    case OrderHand(orderer: Orderer[Card])
 
   enum RoundEndAction extends Msg:
     case NextRound

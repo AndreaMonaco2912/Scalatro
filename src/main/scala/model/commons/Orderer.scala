@@ -7,20 +7,19 @@ import alice.tuprolog.{SolveInfo, Term}
 
 import scala.language.implicitConversions
 
-/** A trait that defines a strategy for ordering a sequence of cards. */
-trait CardOrderer:
-  /** Orders the cards according to a rule defined by the implementing
-    * CardOrderer.
+/** A trait that defines a strategy for ordering elements. */
+trait Orderer[T]:
+  /** Orders the elements according to a rule defined by the implementation.
     *
-    * @param cards
-    *   the sequence of cards to be ordered
+    * @param elements
+    *   the elements to be ordered
     * @return
-    *   the new sequence of cards
+    *   the reordered elements
     */
-  def order(cards: Seq[Card]): Seq[Card]
+  def order(elements: Seq[T]): Seq[T]
 
-/** A collection of predefined [[CardOrderer]]s or templates to create them */
-object CardOrderer:
+/** A collection of predefined [[Orderer]]s or templates to create them */
+object Orderer:
   /** An [[scala.math.Ordering]] for [[Rank]] in decreasing order by their
     * numeric value
     */
@@ -31,24 +30,24 @@ object CardOrderer:
     */
   given suitOrdering: Ordering[Suit] = _.ordinal compare _.ordinal
 
-  /** Maintains the original card order
+  /** Maintains the original order
     * @return
-    *   the card orderer
+    *   the orderer
     */
-  val identity: CardOrderer = cards => cards
+  def identity[T]: Orderer[T] = elems => elems
 
   /** Sorts cards by increasing [[Rank]], then sorts each rank group by [[Suit]]
     * @return
-    *   the card orderer
+    *   the orderer
     */
-  val sortByRank: CardOrderer = _.sortBy(c => (c.rank, c.suit))
+  val sortByRank: Orderer[Card] = _.sortBy(c => (c.rank, c.suit))
 
   /** Sorts cards by [[Suit]] according to the suit ordering, then sorts each
     * suit group by rank.
     * @return
-    *   the card orderer
+    *   the orderer
     */
-  val sortBySuit: CardOrderer = _.sortBy(c => (c.suit, c.rank))
+  val sortBySuit: Orderer[Card] = _.sortBy(c => (c.suit, c.rank))
 
   /** swap(+List, +I, +J, -NewList)
     *
@@ -56,7 +55,7 @@ object CardOrderer:
     *
     * setElem(+List, +Index, +Elem, -NewList)
     */
-  private val swapCardsTheory: String = """
+  private val swapElemsTheory: String = """
       swap(List, I, J, O) :- getElem(List, I, Ei), getElem(List, J, Ej), setElem(List, I, Ej, Tmp), setElem(Tmp, J, Ei, O).
  
       getElem([H|_], 0, H) :- !.
@@ -66,26 +65,26 @@ object CardOrderer:
       setElem([H|T], I, E, [H|O]) :- I1 is I-1, setElem(T, I1, E, O).
     """
 
-  private val swapCardsEngine: Term => LazyList[SolveInfo] =
-    mkPrologEngine(swapCardsTheory)
+  private val swapElemsEngine: Term => LazyList[SolveInfo] =
+    mkPrologEngine(swapElemsTheory)
 
-  /** Swaps two cards at the given positions.
+  /** Swaps two elements at the given positions.
     *
     * Both indexes must be within the sequence bounds.
     *
     * @param i
-    *   the index of the first card to swap
+    *   the index of the first element to swap
     * @param j
-    *   the index of the second card to swap
+    *   the index of the second element to swap
     * @return
-    *   the card orderer
+    *   the orderer
     */
-  def swapCards(i: Int, j: Int): CardOrderer = cards =>
-    require(i >= 0 && i < cards.size, s"i must be in [0, ${cards.size})")
-    require(j >= 0 && j < cards.size, s"j must be in [0, ${cards.size})")
+  def swapElements[T](i: Int, j: Int): Orderer[T] = elems =>
+    require(i >= 0 && i < elems.size, s"i must be in [0, ${elems.size})")
+    require(j >= 0 && j < elems.size, s"j must be in [0, ${elems.size})")
     reorderByIndices(
-      cards,
-      swapCardsEngine,
+      elems,
+      swapElemsEngine,
       indicesStr => s"swap($indicesStr, $i, $j, O)"
     )
 
@@ -93,9 +92,9 @@ object CardOrderer:
     *
     * remove(+List, +Index, -Elem, -Rest)
     *
-    * insert(+List, +Card, +Index, -NewList)
+    * insert(+List, +Elem, +Index, -NewList)
     */
-  private val moveCardTheory: String = """
+  private val moveElemTheory: String = """
       move(List, From, To, O) :- remove(List, From, Elem, Rest), insert(Rest, Elem, To, O).
 
       remove([H|T], 0, H, T) :- !.
@@ -105,39 +104,39 @@ object CardOrderer:
       insert([H|T], Elem, To, [H|O]) :- To2 is To-1, insert(T, Elem, To2, O).
     """
 
-  private val moveCardEngine: Term => LazyList[SolveInfo] =
-    mkPrologEngine(moveCardTheory)
+  private val moveElemEngine: Term => LazyList[SolveInfo] =
+    mkPrologEngine(moveElemTheory)
 
-  /** Moves a card from one position to another, shifting other cards to fill
-    * the gap.
+  /** Moves an element from one position to another, shifting other elements to
+    * fill the gap.
     *
     * Both indexes must be within the sequence bounds.
     *
     * @param from
-    *   the initial index of the card
+    *   the initial index of the element
     * @param to
-    *   the target index of the card
+    *   the target index of the element
     * @return
-    *   the card orderer
+    *   the orderer
     */
-  def moveCard(from: Int, to: Int): CardOrderer = cards =>
+  def moveElement[T](from: Int, to: Int): Orderer[T] = elems =>
     require(
-      from >= 0 && from < cards.size,
-      s"from must be in [0, ${cards.size})"
+      from >= 0 && from < elems.size,
+      s"from must be in [0, ${elems.size})"
     )
-    require(to >= 0 && to < cards.size, s"to must be in [0, ${cards.size})")
+    require(to >= 0 && to < elems.size, s"to must be in [0, ${elems.size})")
     reorderByIndices(
-      cards,
-      moveCardEngine,
+      elems,
+      moveElemEngine,
       indicesStr => s"move($indicesStr, $from, $to, O)"
     )
 
-  private def reorderByIndices(
-      cards: Seq[Card],
+  private def reorderByIndices[T](
+      elements: Seq[T],
       engine: Term => LazyList[SolveInfo],
       goal: String => String
-  ): Seq[Card] =
-    val indices: Seq[Int] = cards.indices
+  ): Seq[T] =
+    val indices: Seq[Int] = elements.indices
     val indicesTerm: Term = indices
     val goalTerm: Term = goal(indicesTerm.toString)
     val resultTerm: Term = solveOneAndGetTerm(engine, goalTerm, "O")
@@ -149,4 +148,4 @@ object CardOrderer:
       .map(_.trim.toInt)
       .toSeq
 
-    newOrder.map(cards)
+    newOrder.map(elements)

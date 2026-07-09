@@ -42,8 +42,8 @@ class TurnActionsSpec extends AnyFlatSpec with Matchers with MockFactory:
       .repeated(usages)
     ScoreConfig.default.copy(calculator = scoreCalculator)
 
-  /** Creates a mocked [[CardOrderer]] with a simulated behavior (it reverses
-    * the order)
+  /** Creates a mocked [[Orderer]] with a simulated behavior (it reverses the
+    * order)
     *
     * The orderer must order the cards exactly `usages` time and expects
     * `expectedHand` to be ordered
@@ -54,8 +54,11 @@ class TurnActionsSpec extends AnyFlatSpec with Matchers with MockFactory:
     * @return
     *   the card orderer
     */
-  private def nUsagesCardOrderer(expectedHand: Hand, usages: Int): CardOrderer =
-    val cardOrderer = mock[CardOrderer]
+  private def nUsagesCardOrderer(
+      expectedHand: Hand,
+      usages: Int
+  ): Orderer[Card] =
+    val cardOrderer = mock[Orderer[Card]]
     cardOrderer.order
       .expects(expectedHand)
       .returning(expectedHand.reverse)
@@ -97,6 +100,6 @@ class TurnActionsSpec extends AnyFlatSpec with Matchers with MockFactory:
       + Score.calculateScore(cardsToPlay)
 
   "orderCards" should "order the cards in hand using a the provided CardOrderer" in:
-    given cardOrderer: CardOrderer = nUsagesCardOrderer(initialHand, 2)
+    given cardOrderer: Orderer[Card] = nUsagesCardOrderer(initialHand, 2)
     val result = orderCards.runS(initialRoundState).value
     result.hand shouldBe cardOrderer.order(initialHand)

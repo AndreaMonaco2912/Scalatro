@@ -17,7 +17,7 @@ object Deck:
 
   extension (d: Deck)
     def shuffle(using rng: ScalatroRng): Deck = rng.shuffle(d)
-    def sort: Deck = CardOrderer.sortBySuit.order(d)
+    def sort: Deck = Orderer.sortBySuit.order(d)
     def draw(n: Int): (Seq[Card], Deck) =
       require(n >= 0, s"cannot draw a negative amount of cards")
       d.splitAt(Math.min(n,d.size))
