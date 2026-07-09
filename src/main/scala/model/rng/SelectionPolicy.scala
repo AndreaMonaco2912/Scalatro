@@ -75,10 +75,10 @@ object PresetPolicies:
   val boostHearts: SelectionPolicy[Card] =
     new UniformSelection[Card] with BoostSuit(Hearts):
       override def description: String = "Boosts Hearts"
-  val crazyPolicy: SelectionPolicy[Card] =
+  val scholarPolicy: SelectionPolicy[Card] =
     new UniformSelection[Card]
-      with BoostRank(Ace, Weight(100.0))
-      with BoostFaces(Weight(0.0)):
+      with BoostRank(Ace, Weight(2.0))
+      with BoostFaces(Weight(0.5)):
       override def description: String =
         "Greatly increase priority of Aces, while nerfing face cards"
   val pairBiasedPlanets: SelectionPolicy[Planet] =
