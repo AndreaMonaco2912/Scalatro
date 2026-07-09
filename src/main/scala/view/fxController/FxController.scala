@@ -179,7 +179,8 @@ class FxController extends Initializable, Bindable[RoundAction]:
       handSlotsBox.getChildren.clear()
       handSlots = roundState.hand.toList.zipWithIndex.map {
         case (card, index) =>
-          val btn = renderCardButton(card, index)
+          val debuffed = isCardDebuffed(card, roundState)
+          val btn = renderCardButton(card, index, debuffed)
           handSlotsBox.getChildren.add(btn)
           (btn, card)
       }
@@ -202,24 +203,32 @@ class FxController extends Initializable, Bindable[RoundAction]:
     }
 
   private def moveCardsToPlayArea(cards: Seq[Card]): Seq[(Card, ImageView)] =
+    val roundState = lastKnownRoundState
     cards.map { card =>
       val iv = new ImageView()
       setCardImage(iv, card)
       iv.setFitWidth(75)
       iv.setFitHeight(110)
       iv.setPreserveRatio(true)
+  
+      val debuffed = roundState.exists(isCardDebuffed(card, _))
+      if debuffed then
+        iv.setOpacity(0.5)
+        iv.getStyleClass.add("debuffed-card")
+  
       playAreaBox.getChildren.add(iv)
       (card, iv)
-    }
+  }
   private def removeCardsFromPlayArea(): Unit =
     playAreaBox.getChildren.clear()
 
   private def getAnimation(
       card: Card,
       cardImage: ImageView,
-      scoringCards: Seq[Card]
+      scoringCards: Seq[Card],
+      isDebuffed: Boolean
   ): Animation =
-    if scoringCards.contains(card) then
+    if scoringCards.contains(card) && !isDebuffed then
       val SCALE_ANIMATION_DURATION = 125
       val scale = new ScaleTransition(
         Duration.millis(SCALE_ANIMATION_DURATION),
@@ -260,10 +269,12 @@ class FxController extends Initializable, Bindable[RoundAction]:
         sequence.play()
 
   private def onPlay(): Unit =
+    val roundState = lastKnownRoundState
     val animations = for
       scoringCards = HandType.getScoringCards(selectedCards)
       (card, cardImage) <- moveCardsToPlayArea(selectedCards)
-    yield getAnimation(card, cardImage, scoringCards)
+      isDebuffed = roundState.exists(isCardDebuffed(card, _))
+    yield getAnimation(card, cardImage, scoringCards, isDebuffed)
     playSequentially(
       animations,
       () =>
@@ -295,11 +306,31 @@ class FxController extends Initializable, Bindable[RoundAction]:
   private def setCardImage(imageView: ImageView, card: Card): Unit =
     imageView.setImage(Images.card(card))
 
-  private def renderCardButton(card: Card, index: Int): ToggleButton =
+  private def isCardDebuffed(card: Card, roundState: RoundState): Boolean =
+    val blind = roundState.gameState.blindProgression.blind
+    Seq(blind).exists {
+      case d: CardDebuffEffect => d.debuffs(card)
+      case _ => false
+    }
+  
+  private def renderCardButton(
+      card: Card,
+      index: Int,
+      isDebuffed: Boolean
+  ): ToggleButton =
     val iv = imageNode(Images.card(card))
+    if isDebuffed then
+      iv.setOpacity(0.5)
+      iv.getStyleClass.add("debuffed-card")
 
     val btn = new ToggleButton()
     btn.getStyleClass.add("card-button")
+    if isDebuffed then
+      btn.getStyleClass.add("debuffed-card")
+      Tooltip.install(
+        btn,
+        new Tooltip("Debuffed: this card scores no chips or mult")
+      )
     btn.setGraphic(iv)
     btn.setOnAction(_ =>
       setHandType(selectedCards match

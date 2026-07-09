@@ -212,3 +212,7 @@
     -fx-translate-y: 1;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 3, 0, 0, 1);
 }
+
+.debuffed-card {
+    -fx-effect: dropshadow(gaussian, red, 4, 0, 0, 0);
+}
