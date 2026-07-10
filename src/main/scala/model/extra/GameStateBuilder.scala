@@ -3,7 +3,7 @@ package model.extra
 
 import model.commons.{Deck, HandTypeLevels, Joker}
 import model.game.{BlindProgression, GameState, HandInformation}
-import model.rng.seed.SelectionPolicies
+import model.rng.SelectionPolicies
 
 /** A DSL for building a [[GameState]] with a readable syntax. * Example:
   * {{{
@@ -80,8 +80,12 @@ object GameStateBuilder:
         b.deck = deck
 
     object BlindInGame:
-      /** @param blindProgression the target [[BlindProgression]] for the round */
-      infix def :=(blindProgression: BlindProgression)(using b: GameStateBuilder): Unit =
+      /** @param blindProgression
+        *   the target [[BlindProgression]] for the round
+        */
+      infix def :=(blindProgression: BlindProgression)(using
+          b: GameStateBuilder
+      ): Unit =
         b.blindProgression = blindProgression
 
     object Jokers:

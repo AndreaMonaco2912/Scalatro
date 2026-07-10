@@ -5,7 +5,7 @@ import model.commons.*
 import model.game.ShopInformation
 import model.rng.ScalatroRng
 import model.rng.SelectionPolicy.UniformSelection
-import model.rng.seed.SelectionPolicies
+import model.rng.SelectionPolicies
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers

@@ -3,7 +3,7 @@ package model.game
 
 import model.commons.*
 import model.rng.ScalatroRng
-import model.rng.seed.SelectionPolicies
+import model.rng.SelectionPolicies
 
 case class GameState(
     handInformation: HandInformation,

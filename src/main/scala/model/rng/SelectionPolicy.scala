@@ -4,6 +4,7 @@ package model.rng
 import model.commons.*
 import model.commons.Rank.*
 import model.commons.Suit.*
+import model.rng.SelectionPolicy.UniformSelection
 
 trait Weighable
 
@@ -63,6 +64,20 @@ object SelectionPolicy:
       planet.handType match
         case `handType` => super.weight(planet) * bonus
         case _          => super.weight(planet)
+
+case class SelectionPolicies(
+    cardPolicy: SelectionPolicy[Card],
+    planetPolicy: SelectionPolicy[Planet],
+    jokerPolicy: SelectionPolicy[Joker]
+)
+
+object SelectionPolicies:
+  val default: SelectionPolicies =
+    SelectionPolicies(
+      cardPolicy = new UniformSelection[Card],
+      planetPolicy = new UniformSelection[Planet],
+      jokerPolicy = new UniformSelection[Joker]
+    )
 
 object PresetPolicies:
   import SelectionPolicy.*

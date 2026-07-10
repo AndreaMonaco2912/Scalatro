@@ -3,7 +3,7 @@ package model.shop
 
 import model.commons.*
 import model.game.ShopInformation
-import model.rng.seed.SelectionPolicies
+import model.rng.SelectionPolicies
 import model.rng.{ScalatroRng, SelectionPolicy}
 
 case class Shop(

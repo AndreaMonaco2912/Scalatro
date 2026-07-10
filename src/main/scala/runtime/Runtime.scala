@@ -4,9 +4,8 @@ package runtime
 import app.Msg.RoundAction
 import app.{Cmd, Model, Msg, Update}
 import model.game.GameState
-import model.rng.ScalatroRng
+import model.rng.{ScalatroRng, SelectionPolicies}
 import model.rng.Types.Seed
-import model.rng.seed.SelectionPolicies
 import model.round.{RoundManager, RoundState}
 import model.shop.Shop
 import view.{FxView, GameViews}

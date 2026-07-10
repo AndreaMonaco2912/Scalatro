@@ -3,8 +3,8 @@ package model.rng.seed
 
 import model.commons.*
 import model.game.GameState
-import model.rng.ScalatroRng
 import model.rng.seed.SimulationTypes.*
+import model.rng.{ScalatroRng, SelectionPolicies}
 import model.round.Hand
 import model.shop.Shop
 
