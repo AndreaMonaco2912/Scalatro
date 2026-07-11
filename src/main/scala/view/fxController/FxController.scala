@@ -3,6 +3,7 @@ package view.fxController
 
 import app.Msg.RoundAction
 import model.commons.*
+import model.game.Debuffer
 import model.round.RoundState
 import view.{ImageViews, Images}
 
@@ -309,7 +310,7 @@ class FxController extends Initializable, Bindable[RoundAction]:
   private def isCardDebuffed(card: Card, roundState: RoundState): Boolean =
     val blind = roundState.gameState.blindProgression.blind
     Seq(blind).exists {
-      case d: CardDebuffEffect => d.debuffs(card)
+      case d: Debuffer => d.debuffs(card)
       case _                   => false
     }
 
