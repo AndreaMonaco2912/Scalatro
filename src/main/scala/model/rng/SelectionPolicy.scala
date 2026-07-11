@@ -6,20 +6,41 @@ import model.commons.Rank.*
 import model.commons.Suit.*
 import model.rng.SelectionPolicy.UniformSelection
 
+/** A trait for types that can be weighed during random selection */
 trait Weighable
 
+/** A policy for assigning a weight to elements */
 trait SelectionPolicy[T <: Weighable]:
+  /** The weight of the element
+    * @param elem
+    *   the element to weigh
+    * @return
+    *   the weight
+    */
   def weight(elem: T): Weight
+
+  /** A description of the policy
+    * @return
+    *   the description
+    */
   def description: String = "A selection policy"
 
 object SelectionPolicy:
-  val defaultBoostWeight: Weight = Weight(2.0)
+  private val defaultBoostWeight: Weight = Weight(2.0)
 
-  /** Base case with standard weight */
+  /** A selection policy which assigns a uniform weight to every item
+    * @tparam T
+    *   the type of the item
+    */
   class UniformSelection[T <: Weighable] extends SelectionPolicy[T]:
     def weight(elem: T): Weight = Weight(1.0)
 
-  /** Boosts one rank, e.g., a "hot" rank or the ace. */
+  /** Boost a single rank
+    * @param rank
+    *   the rank to boost
+    * @param bonus
+    *   the bonus weight to apply to the rank
+    */
   trait BoostRank(rank: Rank, bonus: Weight = defaultBoostWeight)
       extends SelectionPolicy[Card]:
     abstract override def weight(card: Card): Weight =
@@ -27,7 +48,12 @@ object SelectionPolicy:
         case `rank` => super.weight(card) * bonus
         case _      => super.weight(card)
 
-  /** Boosts one suit, e.g., to bias toward a flush. */
+  /** Boost a single suit
+    * @param suit
+    *   the suit to boost
+    * @param bonus
+    *   the bonus weight to apply to the suit
+    */
   trait BoostSuit(suit: Suit, bonus: Weight = defaultBoostWeight)
       extends SelectionPolicy[Card]:
     abstract override def weight(card: Card): Weight =
@@ -35,6 +61,12 @@ object SelectionPolicy:
         case `suit` => super.weight(card) * bonus
         case _      => super.weight(card)
 
+  /** Boost a specific card
+    * @param boostedCard
+    *   the card to boost
+    * @param bonus
+    *   the bonus weight to apply to the card
+    */
   trait BoostCard(boostedCard: Card, bonus: Weight = defaultBoostWeight)
       extends SelectionPolicy[Card]:
     abstract override def weight(card: Card): Weight =
@@ -42,6 +74,10 @@ object SelectionPolicy:
         case `boostedCard` => super.weight(card) * bonus
         case _             => super.weight(card)
 
+  /** Boost cards with faces
+    * @param bonus
+    *   the bonus weight to apply to cards with faces
+    */
   trait BoostFaces(bonus: Weight = defaultBoostWeight)
       extends SelectionPolicy[Card]:
     abstract override def weight(card: Card): Weight =
@@ -49,6 +85,12 @@ object SelectionPolicy:
         case Rank.King | Rank.Queen | Rank.Jack => super.weight(card) * bonus
         case _                                  => super.weight(card)
 
+  /** Boost a specific joker
+    * @param jokerType
+    *   the joker to boost
+    * @param bonus
+    *   the bonus weight to apply to the joker
+    */
   trait BoostJoker(jokerType: JokerType, bonus: Weight = defaultBoostWeight)
       extends SelectionPolicy[Joker]:
     abstract override def weight(joker: Joker): Weight =
@@ -56,6 +98,12 @@ object SelectionPolicy:
         case `jokerType` => super.weight(joker) * bonus
         case _           => super.weight(joker)
 
+  /** Boost a specific planet hand type
+    * @param handType
+    *   the handType associated to the planet to boost
+    * @param bonus
+    *   the bonus weight to apply to the planet
+    */
   trait BoostPlanetHandType(
       handType: HandType,
       bonus: Weight = defaultBoostWeight
@@ -65,6 +113,14 @@ object SelectionPolicy:
         case `handType` => super.weight(planet) * bonus
         case _          => super.weight(planet)
 
+/** A class grouping selection policies for cards, planets and jokers
+  * @param cardPolicy
+  *   the policy for cards
+  * @param planetPolicy
+  *   the policy for planets
+  * @param jokerPolicy
+  *   the policy for jokers
+  */
 case class SelectionPolicies(
     cardPolicy: SelectionPolicy[Card],
     planetPolicy: SelectionPolicy[Planet],
@@ -72,6 +128,7 @@ case class SelectionPolicies(
 )
 
 object SelectionPolicies:
+  /** Uniform selection policies for cards, planets and jokers */
   val default: SelectionPolicies =
     SelectionPolicies(
       cardPolicy = new UniformSelection[Card],

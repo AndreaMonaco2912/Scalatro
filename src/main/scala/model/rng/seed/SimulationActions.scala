@@ -11,28 +11,50 @@ import model.shop.Shop
 import cats.Monad
 import cats.data.State
 
+/** A collection of actions to run during the seed search simulation */
 private[seed] object SimulationActions:
-  type SimStep[A] = State[GameState, A]
+  private type SimStep[A] = State[GameState, A]
 
+  /** Checks whether the given round satisfies the given constraints
+    * @param constraints
+    *   the constraints to check
+    * @param simRound
+    *   the round to check
+    * @return
+    *   `true` if all constraints are satisfied, `false` otherwise
+    */
   def checkRound(
       constraints: Seq[SeedConstraint],
       simRound: SimRound
   ): Boolean = constraints.forall(_.isSatisfiedBy(simRound))
 
-  def shuffleDeckAndDraw(using rng: ScalatroRng): SimStep[Hand] =
+  /** Shuffles the deck and draws a hand
+    * @return
+    *   a [[State]] transition that shuffles the [[GameState]]'s deck and yields
+    *   the drawn [[Hand]]
+    */
+  def shuffleDeckAndDraw(using ScalatroRng): SimStep[Hand] =
     State(s =>
       val shuffled = s.shuffleDeck
       (shuffled, shuffled.deck.draw(s.handInformation.handSize)._1)
     )
 
-  def generateShop(using
-      rng: ScalatroRng
-  ): SimStep[Shop] =
+  /** Generates a shop
+    * @return
+    *   a [[State]] transition that generates a shop
+    */
+  def generateShop(using ScalatroRng): SimStep[Shop] =
     State.inspect { s =>
       given SelectionPolicies = s.selectionPolicies
-      Shop.default(s.shopInformation)(using rng)
+      Shop.default(s.shopInformation)
     }
 
+  /** Generates a [[WantedPackItems]] from the given constraints
+    * @param constraints
+    *   the constraints to use
+    * @return
+    *   the wanted pack
+    */
   def wantedPackItems(constraints: Seq[SeedConstraint]): WantedPackItems =
     WantedPackItems(
       cards = constraints.collect { case CardPackContains(c, _) => c },
@@ -40,12 +62,22 @@ private[seed] object SimulationActions:
       planets = constraints.collect { case PlanetPackContains(p, _) => p }
     )
 
+  /** Picks cards from the packs according to the given constraints
+    * @param constraints
+    *   the constraints to use
+    * @return
+    *   a [[State]] transition that applies pick policies
+    */
   def pickFromPacks(constraints: Seq[SeedConstraint]): SimStep[Unit] =
     State.modify { s =>
       val WantedPackItems(cards, jokers, planets) = wantedPackItems(constraints)
       cards.pickedBy(jokers.pickedBy(planets.pickedBy(s)))
     }
 
+  /** Simulates a round
+    * @return
+    *   a [[State]] transition that simulates and yields a round
+    */
   def simulateRound(using ScalatroRng): SimStep[SimRound] =
     for
       hand <- shuffleDeckAndDraw
@@ -53,10 +85,20 @@ private[seed] object SimulationActions:
       simRound = SimRound(hand, shop.cardPack, shop.jokerPack, shop.planetPack)
     yield simRound
 
-  def advanceBlind(using
-      rng: ScalatroRng
-  ): SimStep[Unit] = State.modify(_.advanceBlind)
+  /** Advances the blind progression
+    * @return
+    *   a [[State]] transition that advances the blind progression
+    */
+  def advanceBlind(using ScalatroRng): SimStep[Unit] =
+    State.modify(_.advanceBlind)
 
+  /** Checks all rounds against the given constraints
+    * @param constraints
+    *   the constraints to check against
+    * @return
+    *   a [[State]] transition that checks all rounds against the given
+    *   constraints and yields true if all constraints are satisfied
+    */
   def checkAllRounds(
       constraints: Seq[SeedConstraint]
   )(using ScalatroRng): SimStep[Boolean] =
@@ -83,6 +125,12 @@ private[seed] object SimulationActions:
         yield result
     }
 
+  /** Runs a game simulation to check if all contraints are satisfied
+    * @param constraints
+    *   the constraints to check against
+    * @return
+    *   `true` if all constraints are satisfied, `false` otherwise
+    */
   def satisfiesConstraints(
       constraints: Seq[SeedConstraint]
   )(using ScalatroRng): Boolean =
