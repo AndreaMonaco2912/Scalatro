@@ -272,7 +272,7 @@ class FxController extends Initializable, Bindable[RoundAction]:
   private def onPlay(): Unit =
     val roundState = lastKnownRoundState
     val animations = for
-      scoringCards = HandType.getScoringCards(selectedCards)
+      scoringCards = HandType.scoringCards(selectedCards)
       (card, cardImage) <- moveCardsToPlayArea(selectedCards)
       isDebuffed = roundState.exists(isCardDebuffed(card, _))
     yield getAnimation(card, cardImage, scoringCards, isDebuffed)

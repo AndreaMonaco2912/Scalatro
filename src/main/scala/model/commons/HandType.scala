@@ -58,7 +58,13 @@ object HandType:
       .findLast(handType => contains(cards, handType))
       .getOrElse(HighCard)
 
-  def getScoringCards(cards: Seq[Card]): Seq[Card] =
+  /** Get the cards which form the combination valid for the scoring
+    * @param cards
+    *   the playing cards
+    * @return
+    *   the scoring cards
+    */
+  def scoringCards(cards: Seq[Card]): Seq[Card] =
     val handType: HandType = detect(cards)
     val ranks = cards.groupBy(_.rank)
 
