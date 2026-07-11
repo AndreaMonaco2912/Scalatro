@@ -195,9 +195,9 @@ class FxController extends Initializable, Bindable[RoundAction]:
       else jokerSlotsBox.setSpacing(15.0)
 
       jokerSlotsBox.getChildren.clear()
-      roundState.gameState.jokers.foreach(joker =>
-        val node = renderJoker(joker)
-        jokerSlotsBox.getChildren.add(node)
+      roundState.gameState.jokers.zipWithIndex.map((joker, index) =>
+        val jokerBtn = renderJokerButton(joker, index)
+        jokerSlotsBox.getChildren.add(jokerBtn)
       )
 
       setHandType(None)
@@ -299,10 +299,14 @@ class FxController extends Initializable, Bindable[RoundAction]:
   protected def imageNode(image: Image): ImageView =
     ImageViews(image, 85, 125, Some("pack-card"))
 
-  private def renderJoker(joker: Joker): Node =
+  private def renderJokerButton(joker: Joker, index: Int): ToggleButton =
     val iv = imageNode(Images.joker(joker))
-    Tooltip.install(iv, new Tooltip(joker.description))
-    iv
+    val btn = new ToggleButton()
+    btn.getStyleClass.add("card-button")
+    Tooltip.install(btn, new Tooltip(joker.description))
+    btn.setGraphic(iv)
+//    setupCardDragAndDrop(btn, index)
+    btn
 
   private def setCardImage(imageView: ImageView, card: Card): Unit =
     imageView.setImage(Images.card(card))
@@ -311,7 +315,7 @@ class FxController extends Initializable, Bindable[RoundAction]:
     val blind = roundState.gameState.blindProgression.blind
     Seq(blind).exists {
       case d: Debuffer => d.debuffs(card)
-      case _                   => false
+      case _           => false
     }
 
   private def renderCardButton(
