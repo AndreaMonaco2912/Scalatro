@@ -4,8 +4,7 @@ package model.commons
 import model.commons.Chips.Chips
 import model.commons.Mult.Mult
 import model.commons.Score.Score
-
-import model.game.{Blind, SmallBlind}
+import model.game.{Blind, Debuffer, SmallBlind}
 
 import scala.annotation.targetName
 
@@ -190,28 +189,24 @@ object Score:
     val handType: HandType = HandType.detect(cards)
     val initialScore: HandScore = getHandTypeBaseScore(handType, levels)
     val scoringCards = HandType.getScoringCards(cards)
-    val afterOnHandPlayedBlind: HandScore =
-      Modification.run(initialScore, Seq(blind), scoringCards) {
-        case b: OnHandPlayedEffect => b.onHandPlayed
-      }
     val afterOnHandPlayed: HandScore =
-      Modification.run(afterOnHandPlayedBlind, jokers, scoringCards) {
+      Modification.run(initialScore, Seq(blind) ++ jokers, scoringCards) {
         case j: OnHandPlayedEffect => j.onHandPlayed
       }
     val afterAfterCardsScored: HandScore =
       scoringCards.foldLeft(afterOnHandPlayed)((acc, card) =>
         val isDebuffed = Seq(blind).exists {
-          case d: CardDebuffEffect => d.debuffs(card)
+          case d: Debuffer => d.debuffs(card)
           case _                   => false
         }
         if isDebuffed then acc
         else
-          Modification.run(card.onScored.applyAll(acc), jokers, card) {
+          Modification.run(card.onScored.applyAll(acc), Seq(blind) ++ jokers, card) {
             case j: OnCardScoredEffect => j.onCardScored
           }
       )
     val afterAfterHandPlayed: HandScore =
-      Modification.run(afterAfterCardsScored, jokers, scoringCards) {
+      Modification.run(afterAfterCardsScored, Seq(blind) ++ jokers, scoringCards) {
         case j: AfterHandPlayedEffect => j.afterHandPlayed
       }
     afterAfterHandPlayed

@@ -3,7 +3,6 @@ package model.game
 
 import model.commons.{
   Card,
-  CardDebuffEffect,
   Chips,
   HandScoreModification,
   Mult,
@@ -59,7 +58,8 @@ case class BlindProgression(
   def next(using rng: ScalatroRng): BlindProgression =
     val nextBlind: Blind = blind match
       case SmallBlind => BigBlind
-      case BigBlind => rng.draw(bossBlindPool, 1).headOption.getOrElse(defaultBoss)
+      case BigBlind   =>
+        rng.draw(bossBlindPool, 1).headOption.getOrElse(defaultBoss)
       case _: BossBlind => SmallBlind
 
     BlindProgression(roundNum + 1, nextBlind)
@@ -91,10 +91,13 @@ sealed trait Blind:
 sealed trait NormalBlind extends Blind
 sealed trait BossBlind extends Blind, Weighable
 
-trait SuitDebuff(suit: Suit) extends CardDebuffEffect:
+trait Debuffer:
+  def debuffs(card: Card): Boolean
+
+trait SuitDebuff(suit: Suit) extends Debuffer:
   override def debuffs(card: Card): Boolean = card.suit == suit
 
-trait RankDebuff(rank: Rank*) extends CardDebuffEffect:
+trait RankDebuff(rank: Rank*) extends Debuffer:
   override def debuffs(card: Card): Boolean = rank.contains(card.rank)
 
 object SmallBlind extends NormalBlind:

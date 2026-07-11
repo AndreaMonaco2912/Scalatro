@@ -37,6 +37,3 @@ trait AfterHandPlayedEffect:
 
 trait OnHandPlayedEffect:
   def onHandPlayed(cards: Seq[Card]): Seq[HandScoreModification]
-
-trait CardDebuffEffect:
-  def debuffs(card: Card): Boolean
