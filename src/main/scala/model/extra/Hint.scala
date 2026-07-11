@@ -32,12 +32,14 @@ object Hint:
         case (None, best)                                 => Some(best)
         case (Some((bestHand, bestScore)), (hand, score)) =>
           if score > bestScore then Some(cur)
-          else if score == bestScore && hand.sizeIs < bestHand.size then Some(cur)
+          else if score == bestScore && hand.sizeIs < bestHand.size then
+            Some(cur)
           else acc
     } match
       case Some((bestHand, _)) => bestHand
       case None => throw new IllegalArgumentException("empty hand")
 
+  @SuppressWarnings(Array("org.wartremover.warts.ToString"))
   private def getIndicesFromSolveInfo(solveInfo: SolveInfo): Seq[Int] =
     Scala2P
       .extractTerm(solveInfo, "Combo")
@@ -48,16 +50,20 @@ object Hint:
       .map(_.trim.toInt)
       .toSeq
 
-  private def rankedPlays(
-      hand: Hand
-  )(using ScoreConfig): LazyList[(Seq[Card], Score)] =
+  def allPlayableHands(hand: Hand): LazyList[Seq[Card]] =
     val indices: Term = hand.indices
     val maxLen: Int = math.min(hand.size, 5)
     val goal: Term = s"between(1, $maxLen, N), combos(N, $indices, Combo)"
-
     for
       solveInfo <- allCombinationsEngine(goal)
       comboIndices = getIndicesFromSolveInfo(solveInfo)
       combo = comboIndices.map(hand)
+    yield combo
+
+  private def rankedPlays(
+      hand: Hand
+  )(using ScoreConfig): LazyList[(Seq[Card], Score)] =
+    for
+      combo <- allPlayableHands(hand)
       score = calculateScore(combo)
     yield combo -> score
