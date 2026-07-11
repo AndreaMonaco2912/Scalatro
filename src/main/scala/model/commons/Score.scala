@@ -36,7 +36,8 @@ object Mult:
 
   val zero: Mult = Mult(0.0)
 
-/** A trait for representing the component which calculates the score of a hand
+/** A trait for representing the component which calculates the score by
+  * combining the chips and the mult.
   */
 trait HandScoreCalculator:
   import Chips.Chips, Mult.Mult
@@ -55,7 +56,7 @@ object HandScoreCalculator:
 
   def default: HandScoreCalculator = BasicHandScoreCalculator
 
-/** Hand score calculator in which the score is given by multiplying together
+/** Hand score calculator in which the score is obtained by multiplying together
   * the chips and the multiplier
   */
 object BasicHandScoreCalculator extends HandScoreCalculator:
@@ -63,8 +64,8 @@ object BasicHandScoreCalculator extends HandScoreCalculator:
     chips.asDouble * mult.asDouble
   )
 
-/** Hand score calculator in which the score is given by squaring the average of
-  * the chips and the multiplier
+/** Hand score calculator in which the score is obtained by squaring the average
+  * of the chips and the multiplier
   */
 object AvgSquaredHandScoreCalculator extends HandScoreCalculator:
 
@@ -72,11 +73,11 @@ object AvgSquaredHandScoreCalculator extends HandScoreCalculator:
     val avg = (chips.asDouble + mult.asDouble) / 2
     Score(avg * avg)
 
-/** The score given by playing a hand
+/** The score obtained by playing a hand
   * @param chips
   *   the chips
   * @param mult
-  *   the multiplier
+  *   the mult
   */
 case class HandScore(chips: Chips, mult: Mult):
   def apply(chips: Chips, mult: Mult): HandScore =
@@ -109,23 +110,46 @@ object HandScore:
 
 type HandScoreModification = Modification[HandScore]
 
+/** The modification to a hand score.
+  */
 object HandScoreModification:
+  /** A modification which increments the chips of the current score
+    * @param chips
+    *   the added chips
+    */
   case class FlatChips(chips: Chips) extends HandScoreModification:
     override def apply(value: HandScore): HandScore = value + chips
+
+  /** A modification which increments the mult of the current score
+    * @param mult
+    *   the added mult
+    */
   case class FlatMult(mult: Mult) extends HandScoreModification:
     override def apply(value: HandScore): HandScore = value + mult
+
+  /** A modification which multiplies the chips of the current score
+    * @param chips
+    *   the chip multiplier
+    */
   case class MultiplicativeChips(chips: Chips) extends HandScoreModification:
     override def apply(value: HandScore): HandScore = value * chips
+
+  /** A modification which multiplies the mult of the current score
+    * @param mult
+    *   the mult multiplier
+    */
   case class MultiplicativeMult(mult: Mult) extends HandScoreModification:
     override def apply(value: HandScore): HandScore = value * mult
 
-/** The configuration needed to calculate the score
+/** The information needed to calculate the score.
   * @param jokers
   *   the ordered sequence of jokers available
   * @param levels
-  *   the level of hand types
+  *   the level of the hand types
   * @param calculator
   *   the hand score calculator
+  * @param blind
+  *   the current blind
   */
 case class ScoreConfig(
     jokers: Seq[Joker],
@@ -180,6 +204,14 @@ object Score:
     val handTypeIncreaseScore: HandScore = Planet.getIncrease(handType)
     handType.baseScore + (handTypeIncreaseScore * (handTypeLevel - 1))
 
+  /** A method that calculates the hand score of the given playing cards.
+    * @param cards
+    *   the playing cards
+    * @param scoreConfig
+    *   the score configuration
+    * @return
+    *   the hand score
+    */
   def calculateHandScore(cards: Seq[Card])(using
       scoreConfig: ScoreConfig
   ): HandScore =
@@ -188,7 +220,7 @@ object Score:
     val blind = scoreConfig.blind
     val handType: HandType = HandType.detect(cards)
     val initialScore: HandScore = getHandTypeBaseScore(handType, levels)
-    val scoringCards = HandType.getScoringCards(cards)
+    val scoringCards = HandType.scoringCards(cards)
     val afterOnHandPlayed: HandScore =
       Modification.run(initialScore, Seq(blind) ++ jokers, scoringCards) {
         case j: OnHandPlayedEffect => j.onHandPlayed
@@ -197,21 +229,29 @@ object Score:
       scoringCards.foldLeft(afterOnHandPlayed)((acc, card) =>
         val isDebuffed = Seq(blind).exists {
           case d: Debuffer => d.debuffs(card)
-          case _                   => false
+          case _           => false
         }
         if isDebuffed then acc
         else
-          Modification.run(card.onScored.applyAll(acc), Seq(blind) ++ jokers, card) {
-            case j: OnCardScoredEffect => j.onCardScored
+          Modification.run(
+            card.onScored.applyAll(acc),
+            Seq(blind) ++ jokers,
+            card
+          ) { case j: OnCardScoredEffect =>
+            j.onCardScored
           }
       )
     val afterAfterHandPlayed: HandScore =
-      Modification.run(afterAfterCardsScored, Seq(blind) ++ jokers, scoringCards) {
-        case j: AfterHandPlayedEffect => j.afterHandPlayed
+      Modification.run(
+        afterAfterCardsScored,
+        Seq(blind) ++ jokers,
+        scoringCards
+      ) { case j: AfterHandPlayedEffect =>
+        j.afterHandPlayed
       }
     afterAfterHandPlayed
 
-  /** A method that calculates the score given by a hand
+  /** A method that calculates the score of the given playing cards.
     * @param cards
     *   the cards played
     * @param scoreConfig

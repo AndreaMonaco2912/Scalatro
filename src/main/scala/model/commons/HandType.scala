@@ -1,6 +1,13 @@
 package scalatro
 package model.commons
 
+/** An enum that represents a hand type, that is the combination formed by the
+  * playing cards.
+  * @param baseScore
+  *   the base score (at level 1)
+  * @param name
+  *   the display name
+  */
 enum HandType(val baseScore: HandScore, val name: String):
   case HighCard extends HandType(HandScore(Chips(5), Mult(1)), "High Card")
   case Pair extends HandType(HandScore(Chips(10), Mult(2)), "Pair")
@@ -23,6 +30,15 @@ enum HandType(val baseScore: HandScore, val name: String):
   override def toString: String = name
 
 object HandType:
+
+  /** Check if the combinations formed by the playing cards contain the given
+    * hand type
+    * @param cards
+    *   playing cards
+    * @param handType
+    *   hand type
+    * @return
+    */
   def contains(cards: Seq[Card], handType: HandType): Boolean =
     val isFlush = cards.sizeIs == 5 && cards.map(_.suit).distinct.sizeIs == 1
     val ranks = cards.groupBy(_.rank)
@@ -53,6 +69,12 @@ object HandType:
       case Pair          => numRanks.exists(_ >= 2)
       case HighCard      => true
 
+  /** Detect the hand type valid for the scoring of the cards provided
+    * @param cards
+    *   the playing cards
+    * @return
+    *   the hand type
+    */
   def detect(cards: Seq[Card]): HandType =
     HandType.values
       .findLast(handType => contains(cards, handType))

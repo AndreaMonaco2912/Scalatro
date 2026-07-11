@@ -53,6 +53,12 @@ sealed trait HandInformationModifier(modifications: Seq[RoundStateModification])
   override def onRoundStart(round: RoundState): Seq[RoundStateModification] =
     modifications
 
+/** An enum which represents a type of joker card.
+  * @param name
+  *   the display name of the joker
+  * @param description
+  *   the description of the joker effects
+  */
 enum JokerType(val name: String, val description: String) extends Joker:
   case CleverJoker
       extends JokerType(
