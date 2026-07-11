@@ -285,5 +285,5 @@ class HandTypeSpec extends AnyFlatSpec, Matchers:
 
   "Get scoring cards" should "preserve card order" in:
     val cards = Seq(10 of S, 8 of S, 7 of S, 6 of S, 9 of S)
-    val scoringCards = HandType.getScoringCards(cards)
+    val scoringCards = HandType.scoringCards(cards)
     scoringCards shouldBe cards
