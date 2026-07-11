@@ -15,20 +15,12 @@ ThisBuild / scalacOptions ++= Seq(
 val javafxVersion = "26.0.1"
 val javafxModules = Seq("base", "controls", "fxml", "graphics")
 
-val platform = {
-  val os = System.getProperty("os.name").toLowerCase
-  val arch = System.getProperty("os.arch")
-  if (os.startsWith("linux"))
-    if (arch == "aarch64") "linux-aarch64" else "linux"
-  else if (os.startsWith("mac"))
-    if (arch == "aarch64") "mac-aarch64" else "mac"
-  else if (os.startsWith("windows")) "win"
-  else throw new RuntimeException(s"Unknown OS: $os")
-}
+val javafxPlatforms = Seq("linux", "mac", "win")
 
-val javafxDeps = javafxModules.map { m =>
-  "org.openjfx" % s"javafx-$m" % javafxVersion classifier platform
-}
+val javafxDeps = for {
+  m <- javafxModules
+  p <- javafxPlatforms
+} yield "org.openjfx" % s"javafx-$m" % javafxVersion classifier p
 
 ThisBuild / libraryDependencies ++= Seq(
   "org.scalafx" %% "scalafx" % "26.0.0-R38",
@@ -56,54 +48,10 @@ lazy val root = (project in file("."))
     assembly / assemblyMergeStrategy := {
       case PathList("META-INF", "MANIFEST.MF") => MergeStrategy.discard
       case PathList("META-INF", _*)            => MergeStrategy.first
-      case "module-info.class"                 => MergeStrategy.discard
+      case "module-info.class"       => MergeStrategy.discard
+      case x if x.endsWith(".class") => MergeStrategy.first
+      case x if x.endsWith(".bss")   => MergeStrategy.first
+      case x if x.endsWith(".jar")   => MergeStrategy.first
       case x => MergeStrategy.defaultMergeStrategy(x)
     }
   )
-
-// See https://www.wartremover.org/doc/warts.html.
-wartremoverErrors ++= Seq(
-  Wart.AnyVal,
-  Wart.EitherProjectionPartial,
-  Wart.IterableOps,
-  Wart.LeakingSealed,
-  Wart.Null,
-  Wart.ObjectThrowable,
-  Wart.Option2Iterable,
-  Wart.OptionPartial,
-  Wart.PlatformDefault,
-  Wart.Product,
-  Wart.Return,
-  Wart.Serializable,
-  Wart.TryPartial
-)
-
-wartremoverWarnings ++= Seq(
-  Wart.ArrayEquals,
-  Wart.ArrayToString,
-  Wart.AsInstanceOf,
-  Wart.CollectHeadOption,
-  Wart.DropTakeToSlice,
-  Wart.FilterEmpty,
-  Wart.FilterHeadOption,
-  Wart.FilterSize,
-  Wart.FindExists,
-  Wart.ForeachEntry,
-  Wart.GetGetOrElse,
-  Wart.GetOrElseNull,
-  Wart.IsInstanceOf,
-  Wart.KeySet,
-  Wart.MapContains,
-  Wart.MapUnit,
-  Wart.NonUnitStatements,
-  Wart.ReverseFind,
-  Wart.ReverseIterator,
-  Wart.ReverseTakeReverse,
-  Wart.SizeIs,
-  Wart.SizeToLength,
-  Wart.SortFilter,
-  Wart.SortedMaxMin,
-  Wart.SortedMaxMinOption,
-  Wart.StringPlusAny,
-  Wart.ToString
-)
