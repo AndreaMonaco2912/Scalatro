@@ -9,6 +9,7 @@ import model.rng.SelectionPolicy.*
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
+/** A test spec for [[ScalatroRng]] */
 @SuppressWarnings(Array("org.wartremover.warts.IterableOps"))
 class ScalatroRngSpec extends AnyFlatSpec, Matchers:
   "ScalatroRng" should "use independent Random instances per weighable type regardless of call order" in:

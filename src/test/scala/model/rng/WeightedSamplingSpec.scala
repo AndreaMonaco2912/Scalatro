@@ -9,6 +9,7 @@ import org.scalatest.matchers.should.Matchers
 
 import scala.util.Random
 
+/** A test spec for [[WeightedSampling]] */
 class WeightedSamplingSpec extends AnyFlatSpec, Matchers, MockFactory:
   "selectWithoutReplacement" should "select elements according to mocked random and weights" in:
     val elems = IndexedSeq("a", "b", "c")

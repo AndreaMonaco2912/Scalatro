@@ -14,6 +14,7 @@ import model.rng.seed.SimulationTypes.SimRound
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
+/** A test spec for [[SimulationActions]] */
 class SimulationActionsSpec extends AnyFlatSpec, Matchers:
 
   private given ScalatroRng = ScalatroRng.default

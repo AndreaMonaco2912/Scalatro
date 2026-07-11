@@ -1,10 +1,10 @@
 package scalatro
 package model.round
 
-import model.commons.*
-import model.game.{BlindProgression, GameState}
 import app.Msg.RoundAction
 import app.Msg.RoundAction.{DiscardCards, PlayCards}
+import model.commons.*
+import model.game.{BlindProgression, GameState, SmallBlind}
 import model.round.{RoundManager, RoundState}
 
 import cats.effect.IO
@@ -14,10 +14,9 @@ import cats.syntax.all.*
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import model.game.SmallBlind
 
 /** A test spec for [[RoundManager]] */
-class RoundManagerSpec extends AnyFlatSpec with Matchers with MockFactory:
+class RoundManagerSpec extends AnyFlatSpec, Matchers, MockFactory:
 
   private val c1 = Card(Rank.Jack, Suit.Clubs)
   private val c2 = Card(Rank.Jack, Suit.Diamonds)

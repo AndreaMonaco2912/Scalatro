@@ -9,6 +9,7 @@ import model.rng.seed.SimulationTypes.SimRound
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
+/** A test spec for [[SeedConstraint]] */
 class SeedConstraintSpec extends AnyFlatSpec, Matchers:
 
   private val aceOfSpades = Card(Ace, Spades)

@@ -9,7 +9,7 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
 /** A test spec for [[TurnActions]] */
-class TurnActionsSpec extends AnyFlatSpec with Matchers with MockFactory:
+class TurnActionsSpec extends AnyFlatSpec, Matchers, MockFactory:
   import TurnActions.*
 
   private val c1 = Card(Rank.Ace, Suit.Clubs)

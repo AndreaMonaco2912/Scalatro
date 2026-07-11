@@ -10,6 +10,7 @@ import model.rng.seed.ScalatroSeedSearch.*
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
+/** A test spec for [[ScalatroSeedSearch]] */
 class ScalatroSeedSearchSpec extends AnyFlatSpec, Matchers:
 
   "findSeed" should "return the fallback seed when maxAttempts is zero" in:

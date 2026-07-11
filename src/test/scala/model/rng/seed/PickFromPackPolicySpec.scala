@@ -10,6 +10,7 @@ import model.rng.seed.SimulationTypes.*
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
+/** A test spec for [[PickFromPackPolicy]] */
 class PickFromPackPolicySpec extends AnyFlatSpec, Matchers:
 
   "PickFromPackPolicy for Card" should "add a picked card to the game deck" in:

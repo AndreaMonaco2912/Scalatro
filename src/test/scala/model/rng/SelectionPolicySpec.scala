@@ -9,6 +9,7 @@ import model.rng.SelectionPolicy.*
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
+/** A test spec for [[SelectionPolicy]] */
 class SelectionPolicySpec extends AnyFlatSpec, Matchers:
   "UniformSelection" should "assign weight 1.0 for any element" in:
     val policy = UniformSelection[Card]()
