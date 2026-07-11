@@ -106,32 +106,12 @@ object Types:
         */
       def size: Int = pool.size
 
-      /** Removes an item from the pool
-        * @param item
-        *   the item to remove
-        * @return
-        *   the pool without the item
-        */
-      infix def -(item: T): Pool[T] = pool.filterNot(_ == item)
-
       /** Removes items from the pool
         * @param other
         *   the items to remove
-        * @tparam U
-        *   the type of items in the other pool
         * @return
         *   the pool without the items
         */
-      infix def -[U >: T](other: Pool[U]): Pool[T] = pool.filterNot(other.toSet)
-
-      /** Adds items to the pool
-        * @param other
-        *   the items to add
-        * @tparam U
-        *   the type of items in the other pool
-        * @return
-        *   the pool with the items
-        */
-      infix def +[U >: T](other: Pool[U]): Pool[U] = pool ++ other
+      infix def -(other: Pool[T]): Pool[T] = pool.filterNot(other.toSet)
 
 export Types.*
