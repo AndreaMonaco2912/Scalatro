@@ -131,6 +131,7 @@ object Orderer:
       indicesStr => s"move($indicesStr, $from, $to, O)"
     )
 
+  @SuppressWarnings(Array("org.wartremover.warts.ToString"))
   private def reorderByIndices[T](
       elements: Seq[T],
       engine: Term => LazyList[SolveInfo],
