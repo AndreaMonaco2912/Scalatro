@@ -2,6 +2,7 @@ package scalatro
 package model.api
 
 import alice.tuprolog.*
+import scala.language.implicitConversions
 
 object Scala2P:
   def extractTerm(solveInfo: SolveInfo, i: Integer): Term =
