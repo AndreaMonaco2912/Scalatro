@@ -3,14 +3,13 @@ package view.fxController
 
 import app.Msg.RoundAction
 import model.commons.*
-import model.game.Debuffer
+import model.game.{Debuffer, isDebuffing}
 import model.round.RoundState
 import view.{ImageViews, Images}
 
 import javafx.animation.*
 import javafx.application.Platform
 import javafx.fxml.{FXML, Initializable}
-import javafx.scene.Node
 import javafx.scene.control.*
 import javafx.scene.image.{Image, ImageView}
 import javafx.scene.input.{ClipboardContent, TransferMode}
@@ -180,8 +179,11 @@ class FxController extends Initializable, Bindable[RoundAction]:
       handSlotsBox.getChildren.clear()
       handSlots = roundState.hand.toList.zipWithIndex.map {
         case (card, index) =>
-          val debuffed = isCardDebuffed(card, roundState)
-          val btn = renderCardButton(card, index, debuffed)
+          val btn = renderCardButton(
+            card,
+            index,
+            roundState.gameState.blindProgression.blind.isDebuffing(card)
+          )
           handSlotsBox.getChildren.add(btn)
           (btn, card)
       }
@@ -212,7 +214,9 @@ class FxController extends Initializable, Bindable[RoundAction]:
       iv.setFitHeight(110)
       iv.setPreserveRatio(true)
 
-      val debuffed = roundState.exists(isCardDebuffed(card, _))
+      val debuffed = roundState.exists(rs =>
+        rs.gameState.blindProgression.blind.isDebuffing(card)
+      )
       if debuffed then
         iv.setOpacity(0.5)
         iv.getStyleClass.add("debuffed-card")
@@ -274,8 +278,10 @@ class FxController extends Initializable, Bindable[RoundAction]:
     val animations = for
       scoringCards = HandType.scoringCards(selectedCards)
       (card, cardImage) <- moveCardsToPlayArea(selectedCards)
-      isDebuffed = roundState.exists(isCardDebuffed(card, _))
-    yield getAnimation(card, cardImage, scoringCards, isDebuffed)
+      debuffed = roundState.exists(rs =>
+        rs.gameState.blindProgression.blind.isDebuffing(card)
+      )
+    yield getAnimation(card, cardImage, scoringCards, debuffed)
     playSequentially(
       animations,
       () =>

@@ -88,6 +88,11 @@ sealed trait Blind:
     */
   def description: String
 
+extension (blind: Blind)
+  def isDebuffing(card: Card): Boolean = blind match
+    case d: Debuffer => d.debuffs(card)
+    case _           => false
+
 sealed trait NormalBlind extends Blind
 sealed trait BossBlind extends Blind, Weighable
 
