@@ -210,8 +210,8 @@ class FxController extends Initializable, Bindable[RoundAction]:
     cards.map { card =>
       val iv = new ImageView()
       setCardImage(iv, card)
-      iv.setFitWidth(75)
-      iv.setFitHeight(110)
+      iv.setFitWidth(110)
+      iv.setFitHeight(161)
       iv.setPreserveRatio(true)
 
       val debuffed = roundState.exists(rs =>
@@ -302,11 +302,8 @@ class FxController extends Initializable, Bindable[RoundAction]:
       case Some(round) => HintPopup.show(round.bestPlay)
       case _           => ()
 
-  protected def imageNode(image: Image): ImageView =
-    ImageViews(image, 85, 125, Some("pack-card"))
-
   private def renderJokerButton(joker: Joker, index: Int): ToggleButton =
-    val iv = imageNode(Images.joker(joker))
+    val iv = ImageViews(Images.joker(joker), 125, 183, Some("pack-card"))
     val btn = new ToggleButton()
     btn.getStyleClass.add("joker-button")
     Tooltip.install(btn, new Tooltip(joker.description))
@@ -328,7 +325,7 @@ class FxController extends Initializable, Bindable[RoundAction]:
       index: Int,
       isDebuffed: Boolean
   ): ToggleButton =
-    val iv = imageNode(Images.card(card))
+    val iv = ImageViews(Images.card(card), 100, 147, Some("pack-card"))
     if isDebuffed then
       iv.setOpacity(0.5)
       iv.getStyleClass.add("debuffed-card")

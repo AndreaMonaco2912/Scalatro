@@ -18,9 +18,9 @@
            style="-fx-font-size: 28px; -fx-font-weight: bold;"/>
 
     <HBox alignment="CENTER" spacing="30">
-        <Button fx:id="cardPackButton"/>
-        <Button fx:id="planetPackButton"/>
-        <Button fx:id="jokerPackButton"/>
+        <Button fx:id="cardPackButton" style="-fx-background-color: transparent"/>
+        <Button fx:id="planetPackButton" style="-fx-background-color: transparent"/>
+        <Button fx:id="jokerPackButton" style="-fx-background-color: transparent"/>
     </HBox>
 
     <Button fx:id="handLevelsButton"
