@@ -56,6 +56,18 @@
     -fx-border-color: transparent;
 }
 
+/* ── Joker buttons ───────────────────────────────────────────────── */
+.joker-button {
+    -fx-background-color: transparent;
+}
+
+/* * Suppress background changes on interaction.
+ */
+.joker-button:hover,
+.joker-button:armed,
+.joker-button:focused {
+    -fx-background-color: transparent;
+}
 /* ── Play Hand button ────────────────────────────────────────────── */
 .play-button {
     -fx-background-color: #1e4fc2;

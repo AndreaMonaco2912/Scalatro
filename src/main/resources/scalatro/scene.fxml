@@ -193,18 +193,18 @@
     <center>
         <StackPane>
             <VBox alignment="TOP_CENTER">
-                <VBox prefHeight="200.0" prefWidth="100.0">
+                <VBox prefHeight="200.0" prefWidth="100.0" pickOnBounds="false">
                     <HBox fx:id="jokerSlotsBox" alignment="CENTER">
                     </HBox>
                 </VBox>
             </VBox>
-            <VBox alignment="CENTER">
+            <VBox alignment="CENTER" pickOnBounds="false">
                 <StackPane minHeight="150.0">
                     <HBox fx:id="playAreaBox" alignment="CENTER" spacing="8.0">
                     </HBox>
                 </StackPane>
             </VBox>
-            <VBox alignment="BOTTOM_CENTER" spacing="18.0">
+            <VBox alignment="BOTTOM_CENTER" spacing="18.0" pickOnBounds="false">
                 <padding>
                     <Insets bottom="30" left="20" right="20" top="20"/>
                 </padding>
@@ -269,7 +269,7 @@
 
                         <!-- Deck: same row, but visually offset lower/right -->
                         <VBox alignment="CENTER" spacing="6.0" translateY="35.0">
-                            <ImageView fx:id="deckImage" fitHeight="125.0" fitWidth="85.0"
+                            <ImageView fitHeight="125.0" fitWidth="85.0"
                                        preserveRatio="true">
                                 <Image url="@decks/Red_Deck.png"/>
                             </ImageView>

@@ -302,10 +302,9 @@ class FxController extends Initializable, Bindable[RoundAction]:
   private def renderJokerButton(joker: Joker, index: Int): ToggleButton =
     val iv = imageNode(Images.joker(joker))
     val btn = new ToggleButton()
-    btn.getStyleClass.add("card-button")
+    btn.getStyleClass.add("joker-button")
     Tooltip.install(btn, new Tooltip(joker.description))
     btn.setGraphic(iv)
-//    setupCardDragAndDrop(btn, index)
     btn
 
   private def setCardImage(imageView: ImageView, card: Card): Unit =
