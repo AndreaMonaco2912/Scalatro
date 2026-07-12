@@ -12,7 +12,7 @@ object Scala2P:
     solveInfo.getTerm(s)
 
   given Conversion[String, Term] = Term.createTerm(_)
-  given Conversion[Seq[_], Term] = _.mkString("[", ",", "]")
+  given Conversion[Seq[?], Term] = _.mkString("[", ",", "]")
   given Conversion[String, Theory] = Theory.parseWithStandardOperators(_)
 
   def mkPrologEngine(theory: Theory): Term => LazyList[SolveInfo] =
