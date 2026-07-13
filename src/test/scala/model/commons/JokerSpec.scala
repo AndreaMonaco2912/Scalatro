@@ -67,6 +67,18 @@ class JokerSpec extends AnyFlatSpec, Matchers:
       case (scoreWithJoker, scoreWithoutJoker) =>
         scoreWithJoker shouldBe scoreWithoutJoker + Mult(12)
 
+  "Jolly Joker" should "increase score by +8 Mult if played hand contains a Pair" in :
+    val joker: Joker = JokerType.JollyJoker
+    val suit = Suit.Hearts
+    val c1 = Card(Rank.Two, suit)
+    val c2 = Card(Rank.Two, suit)
+    val cards = Seq(c1, c1)
+    val scores = getScores(cards, joker)
+    scores match
+      case (scoreWithJoker, scoreWithoutJoker) =>
+        scoreWithJoker shouldBe scoreWithoutJoker + Mult(8)
+
+
   "Devious Joker" should "increase score by +100 Chips if played hand contains a Straight" in:
     val joker: Joker = JokerType.DeviousJoker
     val c1 = Card(Rank.Two, Suit.Clubs)
@@ -100,6 +112,17 @@ class JokerSpec extends AnyFlatSpec, Matchers:
     val c2 = Card(Rank.Four, suit)
     val c3 = Card(Rank.Six, suit)
     val cards = Seq(c1, c1, c2, c2, c3)
+    val scores = getScores(cards, joker)
+    scores match
+      case (scoreWithJoker, scoreWithoutJoker) =>
+        scoreWithJoker shouldBe scoreWithoutJoker * Mult(2)
+
+  "The Duo" should "increase score by X2 Mult if played hand contains a Pair" in :
+    val joker: Joker = JokerType.TheDuo
+    val suit = Suit.Hearts
+    val c1 = Card(Rank.Two, suit)
+    val c2 = Card(Rank.Two, suit)
+    val cards = Seq(c1, c1)
     val scores = getScores(cards, joker)
     scores match
       case (scoreWithJoker, scoreWithoutJoker) =>

@@ -87,6 +87,9 @@ enum JokerType(val name: String, val description: String) extends Joker:
         HandType.Straight,
         HandScoreModification.FlatMult(Mult(12))
       )
+  case JollyJoker
+      extends JokerType("Jolly Joker", "+8 Mult if played hand contains a Pair")
+      with HandTypeContained(HandType.Pair, HandScoreModification.FlatMult(Mult(8)))
   case DeviousJoker
       extends JokerType(
         "Devious Joker",
@@ -110,6 +113,12 @@ enum JokerType(val name: String, val description: String) extends Joker:
       with HandTypeContained(
         HandType.Straight,
         HandScoreModification.MultiplicativeMult(Mult(3))
+      )
+  case TheDuo
+      extends JokerType("The Duo", "X2 Mult if played hand contains a Pair")
+      with HandTypeContained(
+        HandType.Pair,
+        HandScoreModification.MultiplicativeMult(Mult(2))
       )
   case Arrowhead
       extends JokerType(
