@@ -114,9 +114,11 @@ In questa sezione viene presentata la specifica dei requisiti.
   - _Clever Joker_. Effetto "Al termine di mano giocata": +80 Chips se la mano giocata contiene un Two Pair;
   - _Crafty Joker_. Effetto "Al termine di mano giocata": +80 Chips se la mano giocata contiene un Flush;
   - _Crazy Joker_. Effetto "Al termine di mano giocata": +12 Mult se la mano giocata contiene una Straight;
+  - _Jolly Joker_. Effetto "Al termine di mano giocata": +8 Mult se la mano giocata contiene una Pair;
   - _Devious Joker_. Effetto "Al termine di mano giocata": +100 Chips se la mano giocata contiene una Straight;
   - _The Tribe_. Effetto "Al termine di mano giocata": X2 Mult se la mano giocata contiene un Flush;
   - _The Order_. Effetto "Al termine di mano giocata": X3 Mult se la mano giocata contiene una Straight;
+  - _The Duo_. Effetto "Al termine di mano giocata": X2 Mult se la mano giocata contiene una Pair;
   - _Arrowhead_. Effetto "A carta a segno": +50 Chips se la carta è di Picche;
   - _Onyx Gate_. Effetto "A carta a segno": +7 Mult se la carta è di Fiori;
   - _Fibonacci_. Effetto "A carta a segno": +8 Mult se la carta è Asso, Due, Tre, Cinque, Otto;
