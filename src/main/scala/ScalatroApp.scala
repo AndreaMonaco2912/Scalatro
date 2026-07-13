@@ -1,6 +1,6 @@
 package scalatro
 
-import ScalatroMain.stage
+import ScalatroApp.stage
 import model.rng.Types.Seed
 import runtime.Runtime
 import view.{GameViews, Resources}
@@ -11,7 +11,7 @@ import javafx.scene.layout.StackPane
 import scalafx.application.JFXApp3
 import scalafx.application.JFXApp3.PrimaryStage
 
-object ScalatroMain extends JFXApp3:
+object ScalatroApp extends JFXApp3:
 
   private def parseSeed: Seed =
     parameters.raw.toList match
