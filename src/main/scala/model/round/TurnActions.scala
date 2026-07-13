@@ -2,7 +2,7 @@ package scalatro
 package model.round
 
 import model.commons.Score.{Score, calculateScore}
-import model.commons.{Card, Orderer, ScoreConfig}
+import model.commons.{Card, Joker, Orderer, ScoreConfig}
 
 import cats.data.State
 
@@ -68,6 +68,19 @@ object TurnActions:
     */
   def orderCards(using ord: Orderer[Card]): TurnState[Unit] =
     State.modify(state => state.modify(hand = ord.order(state.hand)))
+
+  /** Updates the [[RoundState]] after ordering the jokers in the hand.
+    * @param ord
+    *   the joker ordererr
+    * @return
+    *   a [[State]] that applies the changes to the current [[RoundState]]
+    */
+  def orderJokers(using ord: Orderer[Joker]): TurnState[Unit] =
+    State.modify(state =>
+      val jokers = state.gameState.jokers
+      val orderedJokers = ord.order(jokers)
+      state.modify(gameState = state.gameState.copy(jokers = orderedJokers))
+    )
 
   private def removeCards(cards: Seq[Card]): TurnState[Unit] =
     State.modify(state =>

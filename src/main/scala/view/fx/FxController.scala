@@ -89,12 +89,12 @@ class FxController extends Initializable, Bindable[RoundAction]:
     sortRankButton.setOnAction(_ =>
       val ord = Orderer.sortByRank
       cardOrderer = Some(ord)
-      onOrder(ord)
+      onCardOrder(ord)
     )
     sortSuitButton.setOnAction(_ =>
       val ord = Orderer.sortBySuit
       cardOrderer = Some(ord)
-      onOrder(ord)
+      onCardOrder(ord)
     )
 
   private def selectedCards: Seq[Card] =
@@ -287,15 +287,18 @@ class FxController extends Initializable, Bindable[RoundAction]:
       () =>
         removeCardsFromPlayArea()
         offer(RoundAction.PlayCards(selectedCards))
-        cardOrderer.foreach(onOrder)
+        cardOrderer.foreach(onCardOrder)
     )
 
   private def onDiscard(): Unit =
     offer(RoundAction.DiscardCards(selectedCards))
-    cardOrderer.foreach(onOrder)
+    cardOrderer.foreach(onCardOrder)
 
-  private def onOrder(cardOrderer: Orderer[Card]): Unit =
+  private def onCardOrder(cardOrderer: Orderer[Card]): Unit =
     offer(RoundAction.OrderHand(cardOrderer))
+
+  private def onJokerOrder(jokerOrderer: Orderer[Joker]): Unit =
+    offer(RoundAction.OrderJoker(jokerOrderer))
 
   private def onHint(): Unit =
     lastKnownRoundState match
@@ -308,6 +311,7 @@ class FxController extends Initializable, Bindable[RoundAction]:
     btn.getStyleClass.add("joker-button")
     Tooltip.install(btn, new Tooltip(joker.description))
     btn.setGraphic(iv)
+    setupJokerDragAndDrop(btn, index)
     btn
 
   private def setCardImage(imageView: ImageView, card: Card): Unit =
@@ -365,8 +369,33 @@ class FxController extends Initializable, Bindable[RoundAction]:
       val success = if db.hasString then
         val draggedIdx = db.getString.toInt
         val targetIdx = index
-        cardOrderer = None
-        onOrder(Orderer.moveElement(draggedIdx, targetIdx))
+        onCardOrder(Orderer.moveElement(draggedIdx, targetIdx))
+        true
+      else false
+
+      event.setDropCompleted(success)
+      event.consume()
+    }
+
+  private def setupJokerDragAndDrop(btn: ToggleButton, index: Int): Unit =
+    btn.setOnDragDetected { event =>
+      val db = btn.startDragAndDrop(TransferMode.MOVE)
+      val content = new ClipboardContent()
+      content.putString(index.toString)
+      db.setContent(content)
+      event.consume()
+    }
+    btn.setOnDragOver { event =>
+      if event.getGestureSource != btn && event.getDragboard.hasString then
+        event.acceptTransferModes(TransferMode.MOVE)
+      event.consume()
+    }
+    btn.setOnDragDropped { event =>
+      val db = event.getDragboard
+      val success = if db.hasString then
+        val draggedIdx = db.getString.toInt
+        val targetIdx = index
+        onJokerOrder(Orderer.moveElement(draggedIdx, targetIdx))
         true
       else false
 

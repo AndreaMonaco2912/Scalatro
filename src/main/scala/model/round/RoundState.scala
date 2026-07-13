@@ -53,7 +53,8 @@ trait RoundState:
       hand: Hand = hand,
       deck: Deck = deck,
       remainingPlays: Int = remainingPlays,
-      remainingDiscards: Int = remainingDiscards
+      remainingDiscards: Int = remainingDiscards,
+      gameState: GameState = gameState
   ): RoundState
 
   /** Checks if the round is considered finished
@@ -126,7 +127,8 @@ object RoundState:
         hand: Hand,
         deck: Deck,
         remainingPlays: Int,
-        remainingDiscards: Int
+        remainingDiscards: Int,
+        gameState: GameState
     ): RoundState =
       RoundStateImpl(
         score,

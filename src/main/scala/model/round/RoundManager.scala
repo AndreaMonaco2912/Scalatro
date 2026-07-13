@@ -50,6 +50,8 @@ object RoundManager:
             IO(discardCards(cards).runS(roundState).value)
           case OrderHand(orderer) =>
             IO(orderCards(using orderer).runS(roundState).value)
+          case OrderJoker(orderer) =>
+            IO(orderJokers(using orderer).runS(roundState).value)
 
       def roundLoop(initialRoundState: RoundState): IO[RoundState] =
         if initialRoundState.isFinished

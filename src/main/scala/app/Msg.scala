@@ -36,6 +36,13 @@ object Msg:
       */
     case OrderHand(orderer: Orderer[Card])
 
+    /** The action of ordering jokers according to a specific [[Orderer]]
+      *
+      * @param orderer
+      *   the joker orderer
+      */
+    case OrderJoker(orderer: Orderer[Joker])
+
   enum RoundEndAction extends Msg:
     case NextRound
     case Restart
