@@ -2,26 +2,6 @@
 
 In questa sezione viene presentata la specifica dei requisiti.
 
-<!-- Business Requirements (why?):
-▶ answering to: why is this SW strategic?
-▶ high-level: project goals, customers’ hopes, developers’ goals. . .
-▶ should necessarily clarify: how do we judge if the project is successful?
-2. Functional Requirements (what functionalities in the system run?)
-▶ what are the functions/features the system provides?
-2.1 User Requirements: how the project’s result is used by end users
-how users specifically interact with the SW?
-which I/O constraints exist?
-2.2 System Requirements: how the system internally works/operates
-what are its rules of behaviour, norms, constraints?
-3. Non-functional Requirements (what qualities of the system run?)
-▶ what are the general properties and quality attributes of the solution?
-▶ (performance, scalability, reliability, friendliness, . . . )
-4. Implementation Requirements (what constraints on “production”?)
-▶ they anticipate details of architecture/design/implementation/process
-▶ what are constraints for the implementor? (and why)
-▶ (technologies, training, material, internal quality)
-▶ do not anticipate design decisions -->
-
 ## Requisiti di business
 
 - **[1.1]** Presentazione di un buon progetto per sostenere l'esame di Paradigmi di Programmazione e Sviluppo.
@@ -30,8 +10,6 @@ what are its rules of behaviour, norms, constraints?
 ## Requisiti funzionali
 
 ### Requisiti funzionali utente
-
-// TODO: mettere il tooltip degli effetti dei joker
 
 - **[2.1.1]** L'utente deve poter utilizzare una GUI per interagire con il gioco.
 - **[2.1.2]** L'utente deve poter vedere le carte da gioco in mano.
@@ -170,4 +148,4 @@ what are its rules of behaviour, norms, constraints?
 - **[4.4]** Utilizzare Prolog
 - **[4.5]** Utilizzare JDK 25+
 
-[Indice](../index.md) | [Indietro](../2-development-process/index.md)
+[Indice](../index.md) | [Indietro](../2-development-process/index.md) | [Avanti](../4-architectural-design/index.md)
