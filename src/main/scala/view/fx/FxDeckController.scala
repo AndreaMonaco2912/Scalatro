@@ -1,5 +1,5 @@
 package scalatro
-package view.fxController
+package view.fx
 
 import app.Msg.ManagementAction
 import model.commons.Deck

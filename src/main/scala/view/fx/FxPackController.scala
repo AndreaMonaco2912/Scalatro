@@ -1,5 +1,5 @@
 package scalatro
-package view.fxController
+package view.fx
 
 import app.Msg.PackSelection
 import model.commons.*

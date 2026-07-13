@@ -7,13 +7,13 @@
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="scalatro.view.fxController.FxCardPackController"
+      fx:controller="scalatro.view.fx.FxJokerPackController"
       fx:id="deckHost"
       alignment="CENTER"
       spacing="40"
-      style="-fx-background-color: #5a3a22;">
+      style="-fx-background-color: #3a1a4a;">
 
-    <Label text="Card Pack"
+    <Label text="Joker Pack"
            textFill="WHITE"
            style="-fx-font-size: 28px; -fx-font-weight: bold;" />
 
@@ -22,5 +22,4 @@
     <Button fx:id="skipButton"
             text="Skip"
             styleClass="pack-continue-button" />
-
 </VBox>

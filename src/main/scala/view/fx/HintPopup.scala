@@ -1,5 +1,5 @@
 package scalatro
-package view.fxController
+package view.fx
 
 import model.commons.{Card, HandType, ScoreConfig}
 import model.extra.Hint
@@ -66,7 +66,7 @@ object HintPopup:
 
     val dialogScene = Scene(root, 540, 360)
     dialogScene.getStylesheets.add(
-      getClass.getResource("/scalatro/styles.css").toExternalForm
+      getClass.getResource("/scalatro/view/fx/styles.css").toExternalForm
     )
     stage.setScene(dialogScene)
     stage.showAndWait()

@@ -1,7 +1,7 @@
 package scalatro
 package view
 
-import view.fxController.*
+import view.fx.*
 
 import cats.effect.IO
 import javafx.application.Platform

@@ -2,7 +2,7 @@ package scalatro
 package view
 
 import app.{Model, Msg, OpenPack}
-import view.fxController.{Dispatcher, FxController}
+import view.fx.{Dispatcher, FxController}
 
 import cats.effect.IO
 

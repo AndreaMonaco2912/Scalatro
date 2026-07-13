@@ -6,7 +6,7 @@
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="scalatro.view.fxController.FxRoundLostController"
+      fx:controller="scalatro.view.fx.FxRoundLostController"
       fx:id="deckHost"
       alignment="CENTER"
       spacing="40"

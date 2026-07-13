@@ -1,5 +1,5 @@
 package scalatro
-package view.fxController
+package view.fx
 
 import cats.effect.IO
 import cats.effect.std.Queue

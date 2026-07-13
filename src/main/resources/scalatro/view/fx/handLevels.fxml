@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="scalatro.view.fxController.FxHandLevelsController"
+      fx:controller="scalatro.view.fx.FxHandLevelsController"
       alignment="CENTER" spacing="24" style="-fx-background-color: #1a2a4a;">
 
     <Label text="Hand Levels" textFill="WHITE"

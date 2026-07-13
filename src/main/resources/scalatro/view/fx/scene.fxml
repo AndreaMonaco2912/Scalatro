@@ -9,7 +9,7 @@
 <?import javafx.scene.text.*?>
 <BorderPane prefHeight="680.0" prefWidth="1100.0" style="-fx-background-color: #1a6b3a;" stylesheets="@styles.css"
             xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="scalatro.view.fxController.FxController">
+            fx:controller="scalatro.view.fx.FxController">
 
     <!-- ============================================================ -->
     <!-- LEFT COLUMN: Blind info / Goal score / Round score / Chips×Mult -->
@@ -271,7 +271,7 @@
                         <VBox alignment="CENTER" spacing="6.0" translateY="35.0">
                             <ImageView fitHeight="125.0" fitWidth="85.0"
                                        preserveRatio="true">
-                                <Image url="@decks/Red_Deck.png"/>
+                                <Image url="@../decks/Red_Deck.png"/>
                             </ImageView>
                             <Label fx:id="deckLabel" text="Deck" textFill="WHITE">
                                 <font>

@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="scalatro.view.fxController.FxDeckController"
+      fx:controller="scalatro.view.fx.FxDeckController"
       alignment="CENTER" spacing="24" style="-fx-background-color: #1a4a30;">
 
     <Label text="Deck" textFill="WHITE"

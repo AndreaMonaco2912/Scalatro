@@ -7,13 +7,13 @@
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="scalatro.view.fxController.FxPlanetPackController"
+      fx:controller="scalatro.view.fx.FxCardPackController"
       fx:id="deckHost"
       alignment="CENTER"
       spacing="40"
-      style="-fx-background-color: #1a2a4a;">
+      style="-fx-background-color: #5a3a22;">
 
-    <Label text="Planet Pack"
+    <Label text="Card Pack"
            textFill="WHITE"
            style="-fx-font-size: 28px; -fx-font-weight: bold;" />
 
