@@ -9,10 +9,10 @@ object Main:
         ScalatroSeedSearch.main(tail.toArray)
 
       case Nil =>
-        ScalatroMain.main(Array.empty)
+        ScalatroApp.main(Array.empty)
 
       case ("-s" | "--seed") :: _ =>
-        ScalatroMain.main(args)
+        ScalatroApp.main(args)
 
       case unknown :: _ =>
         System.err.println(s"Unknown argument: $unknown")
