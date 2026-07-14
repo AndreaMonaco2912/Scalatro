@@ -53,7 +53,7 @@ object ScalatroSeedSearch:
       .find(seed => satisfiesConstraints(constraints)(using ScalatroRng(seed)))
       .getOrElse(Seed(0L))
 
-  /** Parse cummand line arguments into a sequence of [[SeedConstraint]]
+  /** Parse command line arguments into a sequence of [[SeedConstraint]]
     * @param args
     *   the command line arguments
     * @return

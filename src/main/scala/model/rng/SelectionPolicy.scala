@@ -10,7 +10,7 @@ import model.rng.SelectionPolicy.UniformSelection
 trait Weighable
 
 /** A policy for assigning a weight to elements */
-trait SelectionPolicy[T <: Weighable]:
+trait SelectionPolicy[T]:
   /** The weight of the element
     * @param elem
     *   the element to weigh
@@ -28,7 +28,7 @@ trait SelectionPolicy[T <: Weighable]:
 object SelectionPolicy:
   private val defaultBoostWeight: Weight = Weight(2.0)
 
-  /** A selection policy which assigns a uniform weight to every item
+  /** A selection policy that assigns a uniform weight to every item
     * @tparam T
     *   the type of the item
     */
