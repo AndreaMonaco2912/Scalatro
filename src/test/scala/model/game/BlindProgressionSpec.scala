@@ -62,11 +62,11 @@ class BlindProgressionSpec extends AnyFlatSpec, Matchers:
 
   it should "fail when the achieved score is below the target" in:
     BlindProgression.first.isBeaten(
-      BlindProgression.initialScore - Score(1)
+      BlindProgression.initialSmallBlindScore - Score(1)
     ) shouldBe false
 
   "targetScore" should "equal initialScore for the first small blind" in:
-    start.targetScore shouldBe BlindProgression.initialScore
+    start.targetScore shouldBe BlindProgression.initialSmallBlindScore
 
   it should "be double the small blind's score for the boss blind" in:
     val small = start.targetScore
@@ -84,11 +84,11 @@ class BlindProgressionSpec extends AnyFlatSpec, Matchers:
     nextAnteSmall.targetScore shouldBe small * 3
 
   "isBeaten" should "be true if the achieved score meets the target" in:
-    BlindProgression.first.isBeaten(BlindProgression.initialScore) shouldBe true
+    BlindProgression.first.isBeaten(BlindProgression.initialSmallBlindScore) shouldBe true
 
   it should "fail when the achieved score is below the target" in:
     BlindProgression.first.isBeaten(
-      BlindProgression.initialScore - Score(1)
+      BlindProgression.initialSmallBlindScore - Score(1)
     ) shouldBe false
 
 // Tests for every boss blind

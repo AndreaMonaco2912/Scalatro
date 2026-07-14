@@ -3,7 +3,6 @@ package view.fx
 
 import app.Msg.RoundAction
 import model.commons.*
-import model.game.{Debuffer, isDebuffing}
 import model.round.RoundState
 import view.{ImageViews, Images}
 
@@ -11,7 +10,7 @@ import javafx.animation.*
 import javafx.application.Platform
 import javafx.fxml.{FXML, Initializable}
 import javafx.scene.control.*
-import javafx.scene.image.{Image, ImageView}
+import javafx.scene.image.ImageView
 import javafx.scene.input.{ClipboardContent, TransferMode}
 import javafx.scene.layout.HBox
 import javafx.util.Duration
@@ -316,13 +315,6 @@ class FxController extends Initializable, Bindable[RoundAction]:
 
   private def setCardImage(imageView: ImageView, card: Card): Unit =
     imageView.setImage(Images.card(card))
-
-  private def isCardDebuffed(card: Card, roundState: RoundState): Boolean =
-    val blind = roundState.gameState.blindProgression.blind
-    Seq(blind).exists {
-      case d: Debuffer => d.debuffs(card)
-      case _           => false
-    }
 
   private def renderCardButton(
       card: Card,

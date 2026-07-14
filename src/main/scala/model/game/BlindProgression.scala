@@ -19,6 +19,7 @@ import model.round.{RoundState, RoundStateModification}
 import model.commons.Rank.{Jack, King, Queen}
 import model.commons.Suit.{Clubs, Diamonds, Hearts, Spades}
 import model.rng.Types.Pool
+import model.game.BlindProgression.roundsInAnte
 
 case class BlindProgression(
     roundNum: Int,
@@ -41,7 +42,7 @@ case class BlindProgression(
   )
   private val defaultBoss: BossBlind = TheGoad
 
-  def anteNum: Int = (roundNum - 1) / 3 + 1
+  def anteNum: Int = (roundNum - 1) / roundsInAnte + 1
 
   def targetScore: Score =
     targetScoreFromOutside.getOrElse(BlindProgression.scoreFor(anteNum, blind))
@@ -65,17 +66,21 @@ case class BlindProgression(
     BlindProgression(roundNum + 1, nextBlind)
 
 object BlindProgression:
-  val initialScore: Score = Score(300)
+  private val initialScore: Double = 300
+  val roundsInAnte: Int = 3
+  val initialSmallBlindScore: Score = Score(initialScore)
+  private val bigBlindScoreMultiplier = 1.5
+  private val bossBlindScoreMultiplier = 2
 
   def first: BlindProgression =
     BlindProgression(1, SmallBlind)
 
   private def scoreFor(anteNum: Int, blind: Blind): Score =
-    val small = initialScore * scala.math.pow(3, anteNum - 1)
+    val small = initialSmallBlindScore * scala.math.pow(3, anteNum - 1)
     blind match
       case SmallBlind   => small
-      case BigBlind     => small * 1.5
-      case _: BossBlind => small * 2
+      case BigBlind     => small * bigBlindScoreMultiplier
+      case _: BossBlind => small * bossBlindScoreMultiplier
 
 sealed trait Blind:
   /** @return
@@ -88,10 +93,11 @@ sealed trait Blind:
     */
   def description: String
 
-extension (blind: Blind)
-  def isDebuffing(card: Card): Boolean = blind match
-    case d: Debuffer => d.debuffs(card)
-    case _           => false
+object Blind:
+  extension (blind: Blind)
+    def isDebuffing(card: Card): Boolean = blind match
+      case d: Debuffer => d.debuffs(card)
+      case _           => false
 
 sealed trait NormalBlind extends Blind
 sealed trait BossBlind extends Blind, Weighable

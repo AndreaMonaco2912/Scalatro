@@ -4,7 +4,7 @@ package model.commons
 import model.commons.Chips.Chips
 import model.commons.Mult.Mult
 import model.commons.Score.Score
-import model.game.{Blind, Debuffer, SmallBlind, isDebuffing}
+import model.game.{Blind, Debuffer, SmallBlind}
 
 import scala.annotation.targetName
 
