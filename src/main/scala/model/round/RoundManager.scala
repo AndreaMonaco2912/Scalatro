@@ -39,19 +39,19 @@ object RoundManager:
       getAction: IO[RoundAction]
   ) extends RoundManager:
     override def startRound(initialRoundState: RoundState): IO[RoundState] =
-      given ScoreConfig = initialRoundState.gameState.scoreConfig
       def processAction(
           roundState: RoundState,
           action: RoundAction
       ): IO[RoundState] =
+        given ScoreConfig = roundState.gameState.scoreConfig
         action match
-          case PlayCards(cards) => IO(playCards(cards).runS(roundState).value)
-          case DiscardCards(cards) =>
-            IO(discardCards(cards).runS(roundState).value)
-          case OrderHand(orderer) =>
-            IO(orderCards(using orderer).runS(roundState).value)
-          case OrderJoker(orderer) =>
-            IO(orderJokers(using orderer).runS(roundState).value)
+            case PlayCards(cards) => IO(playCards(cards).runS(roundState).value)
+            case DiscardCards(cards) =>
+              IO(discardCards(cards).runS(roundState).value)
+            case OrderHand(orderer) =>
+              IO(orderCards(using orderer).runS(roundState).value)
+            case OrderJoker(orderer) =>
+              IO(orderJokers(using orderer).runS(roundState).value)
 
       def roundLoop(initialRoundState: RoundState): IO[RoundState] =
         if initialRoundState.isFinished
