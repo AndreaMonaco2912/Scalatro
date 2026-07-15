@@ -1,0 +1,40 @@
+name: Build PDF
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-pdf:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Pandoc + LaTeX
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc texlive-xetex texlive-fonts-recommended texlive-latex-extra
+
+      - name: Build ordered file list
+        id: files
+        run: |
+          FILES="docs/index.md"
+          for d in $(find docs -maxdepth 1 -type d -name '[0-9]*-*' -printf '%f\n' | sort -t- -k1,1n); do
+            FILES="$FILES docs/${d}/index.md"
+          done
+          echo "list=$FILES" >> "$GITHUB_OUTPUT"
+
+      - name: Convert to PDF
+        run: |
+          pandoc ${{ steps.files.outputs.list }} \
+            -o output.pdf \
+            --pdf-engine=xelatex \
+            --toc \
+            --resource-path=docs:docs/1-introduction:docs/2-development-process:docs/3-requirement-specification \
+            -V geometry:margin=1in
+
+      - name: Upload PDF
+        uses: actions/upload-artifact@v4
+        with:
+          name: documentation-pdf
+          path: output.pdf
