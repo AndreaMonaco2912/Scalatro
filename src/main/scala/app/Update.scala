@@ -34,7 +34,7 @@ object Update:
       case (m: Model.InShop, action: Msg.ShopAction) =>
         inShop(m, action)
       case (Model.OpeningPack(gs, _), selection: Msg.PackSelection) =>
-        (model, Cmd.Deal(applySelection(gs, selection).advanceBlind))
+        (Model.Playing, Cmd.Deal(applySelection(gs, selection).advanceBlind))
       case (Model.ShowDeck(_, prev), Msg.ManagementAction.CloseDeck) =>
         (prev, Cmd.NoOp)
       case (Model.ShowLevels(_, prev), Msg.ManagementAction.CloseLevels) =>
@@ -72,7 +72,7 @@ object Update:
       case Msg.ShopAction.OpenJokerPack =>
         (Model.OpeningPack(gs, OpenPack.Jokers(model.shop.jokerPack)), Cmd.NoOp)
       case Msg.ShopAction.SkipShop =>
-        (model, Cmd.Deal(gs.advanceBlind))
+        (Model.Playing, Cmd.Deal(gs.advanceBlind))
 
   private def deckOf(model: Model): Option[Deck] = model match
     case Model.RoundWon(round)    => Some(round.gameState.deck)

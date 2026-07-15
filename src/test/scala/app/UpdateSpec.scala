@@ -55,7 +55,7 @@ class UpdateSpec extends AnyFlatSpec with Matchers:
       .RoundLost(round)
 
   "InternalEffect.ShopReady" should "move to InShop" in:
-    Model.Playing ! Msg.InternalEffect.ShopReady(gs, shop) shouldBe Model
+    Model.RoundWon(round) ! Msg.InternalEffect.ShopReady(gs, shop) shouldBe Model
       .InShop(gs, shop)
 
   "RoundWon on NextRound" should "Build the shop" in:
