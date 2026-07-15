@@ -4359,17 +4359,19 @@ controlflow {
 <ref refid="2b93f8ef-7fa0-11f1-a377-054881a392a4"/>
 <ref refid="6201e5c6-7fa0-11f1-95d5-054881a392a4"/>
 <ref refid="786e6ff3-7fa0-11f1-a2e0-054881a392a4"/>
-<ref refid="a76b39a8-7fa0-11f1-9471-054881a392a4"/>
+<ref refid="1be01774-7fa1-11f1-b93e-054881a392a4"/>
+<ref refid="7b90d893-8078-11f1-bdcc-032ab6012b44"/>
 <ref refid="b8f5c69d-7fa0-11f1-9221-054881a392a4"/>
 <ref refid="da81f786-7fa0-11f1-b7b4-054881a392a4"/>
-<ref refid="1be01774-7fa1-11f1-b93e-054881a392a4"/>
+<ref refid="a76b39a8-7fa0-11f1-9471-054881a392a4"/>
 <ref refid="04ebe059-7fa1-11f1-b90b-054881a392a4"/>
-<ref refid="3f73deff-7fa1-11f1-a3c9-054881a392a4"/>
 <ref refid="43e7b5b8-7fa1-11f1-ad51-054881a392a4"/>
 <ref refid="542109c4-7fa1-11f1-bfbc-054881a392a4"/>
 <ref refid="5facf519-7fa1-11f1-9021-054881a392a4"/>
 <ref refid="7da150d5-7fa1-11f1-9534-054881a392a4"/>
 <ref refid="9bb81cca-7fa1-11f1-956e-054881a392a4"/>
+<ref refid="935b17cf-8078-11f1-ae49-032ab6012b44"/>
+<ref refid="9639059e-8078-11f1-8c8d-032ab6012b44"/>
 </reflist>
 </ownedPresentation>
 </UML:ActivityDiagram>
@@ -4378,14 +4380,14 @@ controlflow {
 <ref refid="2b949521-7fa0-11f1-9598-054881a392a4"/>
 </activity>
 <name>
-<val>View</val>
+<val>FxViewController</val>
 </name>
 <node>
 <reflist>
 <ref refid="62019664-7fa0-11f1-bb21-054881a392a4"/>
 <ref refid="786e3ca5-7fa0-11f1-8deb-054881a392a4"/>
-<ref refid="a76aec7b-7fa0-11f1-bc9c-054881a392a4"/>
 <ref refid="1bdfdb88-7fa1-11f1-b4d5-054881a392a4"/>
+<ref refid="a76aec7b-7fa0-11f1-bc9c-054881a392a4"/>
 </reflist>
 </node>
 <nodeContents>
@@ -4396,6 +4398,7 @@ controlflow {
 <ref refid="1bdfdb88-7fa1-11f1-b4d5-054881a392a4"/>
 <ref refid="b8f590b4-7fa0-11f1-b38c-054881a392a4"/>
 <ref refid="da81bf52-7fa0-11f1-9c73-054881a392a4"/>
+<ref refid="7b908d1d-8078-11f1-92ed-032ab6012b44"/>
 </reflist>
 </nodeContents>
 <presentation>
@@ -4406,7 +4409,7 @@ controlflow {
 </UML:ActivityPartition>
 <UML:PartitionItem id="2b93f8ef-7fa0-11f1-a377-054881a392a4">
 <matrix>
-<val>(1.0, 0.0, 0.0, 1.0, 361.44483184814453, 139.77571487426758)</val>
+<val>(1.0, 0.0, 0.0, 1.0, 360.74872700808214, 141.92421340942383)</val>
 </matrix>
 <top-left>
 <val>(-319.2904968261719, -91.01345825195312)</val>
@@ -4421,10 +4424,11 @@ controlflow {
 <reflist>
 <ref refid="6201e5c6-7fa0-11f1-95d5-054881a392a4"/>
 <ref refid="786e6ff3-7fa0-11f1-a2e0-054881a392a4"/>
-<ref refid="a76b39a8-7fa0-11f1-9471-054881a392a4"/>
 <ref refid="1be01774-7fa1-11f1-b93e-054881a392a4"/>
+<ref refid="7b90d893-8078-11f1-bdcc-032ab6012b44"/>
 <ref refid="b8f5c69d-7fa0-11f1-9221-054881a392a4"/>
 <ref refid="da81f786-7fa0-11f1-b7b4-054881a392a4"/>
+<ref refid="a76b39a8-7fa0-11f1-9471-054881a392a4"/>
 </reflist>
 </children>
 <diagram>
@@ -4481,12 +4485,14 @@ controlflow {
 </name>
 <node>
 <reflist>
+<ref refid="7b908d1d-8078-11f1-92ed-032ab6012b44"/>
 <ref refid="b8f590b4-7fa0-11f1-b38c-054881a392a4"/>
 </reflist>
 </node>
 <nodeContents>
 <reflist>
 <ref refid="b8f590b4-7fa0-11f1-b38c-054881a392a4"/>
+<ref refid="7b908d1d-8078-11f1-92ed-032ab6012b44"/>
 </reflist>
 </nodeContents>
 </UML:ActivityPartition>
@@ -4619,11 +4625,11 @@ controlflow {
 </reflist>
 </incoming>
 <name>
-<val>Get Round Action</val>
+<val>Update View</val>
 </name>
 <outgoing>
 <reflist>
-<ref refid="406d1f91-7fa1-11f1-ac35-054881a392a4"/>
+<ref refid="945cb4b9-8078-11f1-8d60-032ab6012b44"/>
 </reflist>
 </outgoing>
 <presentation>
@@ -4634,7 +4640,7 @@ controlflow {
 </UML:Action>
 <UML:ActionItem id="a76b39a8-7fa0-11f1-9471-054881a392a4">
 <matrix>
-<val>(1.0, 0.0, 0.0, 1.0, -277.13120011786066, 86.86604309082031)</val>
+<val>(1.0, 0.0, 0.0, 1.0, -287.1406213616151, 21.348648071289062)</val>
 </matrix>
 <top-left>
 <val>(0.0, 0.0)</val>
@@ -4669,7 +4675,7 @@ controlflow {
 </inPartition>
 <incoming>
 <reflist>
-<ref refid="406d1f91-7fa1-11f1-ac35-054881a392a4"/>
+<ref refid="970ec446-8078-11f1-97d3-032ab6012b44"/>
 </reflist>
 </incoming>
 <name>
@@ -4688,7 +4694,7 @@ controlflow {
 </UML:Action>
 <UML:ActionItem id="b8f5c69d-7fa0-11f1-9221-054881a392a4">
 <matrix>
-<val>(1.0, 0.0, 0.0, 1.0, -57.672850445531154, 113.64350891113281)</val>
+<val>(1.0, 0.0, 0.0, 1.0, -8.67285044553114, 181.56175994873047)</val>
 </matrix>
 <top-left>
 <val>(0.0, 0.0)</val>
@@ -4742,7 +4748,7 @@ controlflow {
 </UML:Action>
 <UML:ActionItem id="da81f786-7fa0-11f1-b7b4-054881a392a4">
 <matrix>
-<val>(1.0, 0.0, 0.0, 1.0, 143.96377282128506, 139.95030212402344)</val>
+<val>(1.0, 0.0, 0.0, 1.0, 154.07351403222253, 203.82653045654297)</val>
 </matrix>
 <top-left>
 <val>(0.0, 0.0)</val>
@@ -4775,7 +4781,7 @@ controlflow {
 </UML:Comment>
 <UML:CommentItem id="04ebe059-7fa1-11f1-b90b-054881a392a4">
 <matrix>
-<val>(1.0, 0.0, 0.0, 1.0, 124.53504180908203, 96.70956039428711)</val>
+<val>(1.0, 0.0, 0.0, 1.0, 303.7719814026134, 123.46992874145508)</val>
 </matrix>
 <top-left>
 <val>(0.0, 0.0)</val>
@@ -4850,45 +4856,6 @@ controlflow {
 <ref refid="1bdfdb88-7fa1-11f1-b4d5-054881a392a4"/>
 </subject>
 </UML:DecisionNodeItem>
-<UML:ControlFlowItem id="3f73deff-7fa1-11f1-a3c9-054881a392a4">
-<diagram>
-<ref refid="247b8dea-7fa0-11f1-856e-054881a392a4"/>
-</diagram>
-<horizontal>
-<val>False</val>
-</horizontal>
-<orthogonal>
-<val>False</val>
-</orthogonal>
-<subject>
-<ref refid="406d1f91-7fa1-11f1-ac35-054881a392a4"/>
-</subject>
-<matrix>
-<val>(1.0, 0.0, 0.0, 1.0, 185.52704620361328, 241.88238906860352)</val>
-</matrix>
-<points>
-<val>[(0.7865855266705921, 3.135040283203125), (118.24493519900011, 32.536834716796875)]</val>
-</points>
-<head-connection>
-<ref refid="a76b39a8-7fa0-11f1-9471-054881a392a4"/>
-</head-connection>
-<tail-connection>
-<ref refid="b8f5c69d-7fa0-11f1-9221-054881a392a4"/>
-</tail-connection>
-</UML:ControlFlowItem>
-<UML:ControlFlow id="406d1f91-7fa1-11f1-ac35-054881a392a4">
-<presentation>
-<reflist>
-<ref refid="3f73deff-7fa1-11f1-a3c9-054881a392a4"/>
-</reflist>
-</presentation>
-<source>
-<ref refid="a76aec7b-7fa0-11f1-bc9c-054881a392a4"/>
-</source>
-<target>
-<ref refid="b8f590b4-7fa0-11f1-b38c-054881a392a4"/>
-</target>
-</UML:ControlFlow>
 <UML:ControlFlowItem id="43e7b5b8-7fa1-11f1-ad51-054881a392a4">
 <diagram>
 <ref refid="247b8dea-7fa0-11f1-856e-054881a392a4"/>
@@ -4906,7 +4873,7 @@ controlflow {
 <val>(1.0, 0.0, 0.0, 1.0, 404.8621597290039, 271.5678367614746)</val>
 </matrix>
 <points>
-<val>[(0.9098216736094855, 4.116157531738281), (100.54644494042566, 29.158180236816406)]</val>
+<val>[(49.213716833547096, 74.18290710449219), (109.96008131130077, 95.18290710449219)]</val>
 </points>
 <head-connection>
 <ref refid="b8f5c69d-7fa0-11f1-9221-054881a392a4"/>
@@ -4945,7 +4912,7 @@ controlflow {
 <val>(1.0, 0.0, 0.0, 1.0, 514.6533584594727, 318.9834861755371)</val>
 </matrix>
 <points>
-<val>[(0.3906221865194084, 2.7425308227539062), (-190.88137705685926, 143.21478271484375)]</val>
+<val>[(9.804258557394519, 68.76725769042969), (-191.57748189692165, 145.36328125)]</val>
 </points>
 <head-connection>
 <ref refid="da81f786-7fa0-11f1-b7b4-054881a392a4"/>
@@ -4984,7 +4951,7 @@ controlflow {
 <val>(1.0, 0.0, 0.0, 1.0, 350.7970530800468, 404.43781661987305)</val>
 </matrix>
 <points>
-<val>[(-27.025071677433402, 62.06951141357422), (59.125133857346555, 133.2269287109375)]</val>
+<val>[(-27.721176517495792, 64.21800994873047), (58.429029017284165, 135.37542724609375)]</val>
 </points>
 <head-connection>
 <ref refid="1be01774-7fa1-11f1-b93e-054881a392a4"/>
@@ -5029,7 +4996,7 @@ controlflow {
 <val>(1.0, 0.0, 0.0, 1.0, 308.1845169067383, 467.9070854187012)</val>
 </matrix>
 <points>
-<val>[(-4.4125355041248895, -1.7068634033203125), (-172.8708851764544, -199.26532745361328)]</val>
+<val>[(-5.108640344187279, 0.4416351318359375), (-183.57641126027124, -262.6342239379883)]</val>
 </points>
 <head-connection>
 <ref refid="1be01774-7fa1-11f1-b93e-054881a392a4"/>
@@ -5074,7 +5041,7 @@ controlflow {
 <val>(1.0, 0.0, 0.0, 1.0, 69.900634765625, 116.28145980834961)</val>
 </matrix>
 <points>
-<val>[(15.883064270019531, 7.188468933105469), (65.41299696465887, 110.36029815673828)]</val>
+<val>[(22.811077383523212, 9.336967468261719), (54.70747088084204, 46.99140167236328)]</val>
 </points>
 <head-connection>
 <ref refid="6201e5c6-7fa0-11f1-95d5-054881a392a4"/>
@@ -9106,5 +9073,137 @@ controlflow {
 <val>run</val>
 </name>
 </UML:Behavior>
+<UML:Action id="7b908d1d-8078-11f1-92ed-032ab6012b44">
+<inGroup>
+<reflist>
+<ref refid="2b93b52a-7fa0-11f1-903d-054881a392a4"/>
+<ref refid="2b97bec5-7fa0-11f1-89f5-054881a392a4"/>
+</reflist>
+</inGroup>
+<inPartition>
+<reflist>
+<ref refid="2b97bec5-7fa0-11f1-89f5-054881a392a4"/>
+</reflist>
+</inPartition>
+<incoming>
+<reflist>
+<ref refid="945cb4b9-8078-11f1-8d60-032ab6012b44"/>
+</reflist>
+</incoming>
+<name>
+<val>Get Round Action</val>
+</name>
+<outgoing>
+<reflist>
+<ref refid="970ec446-8078-11f1-97d3-032ab6012b44"/>
+</reflist>
+</outgoing>
+<presentation>
+<reflist>
+<ref refid="7b90d893-8078-11f1-bdcc-032ab6012b44"/>
+</reflist>
+</presentation>
+</UML:Action>
+<UML:ActionItem id="7b90d893-8078-11f1-bdcc-032ab6012b44">
+<matrix>
+<val>(1.0, 0.0, 0.0, 1.0, -87.67285044553114, 99.62480163574219)</val>
+</matrix>
+<top-left>
+<val>(0.0, 0.0)</val>
+</top-left>
+<width>
+<val>100.0</val>
+</width>
+<height>
+<val>59.0</val>
+</height>
+<diagram>
+<ref refid="247b8dea-7fa0-11f1-856e-054881a392a4"/>
+</diagram>
+<parent>
+<ref refid="2b93f8ef-7fa0-11f1-a377-054881a392a4"/>
+</parent>
+<subject>
+<ref refid="7b908d1d-8078-11f1-92ed-032ab6012b44"/>
+</subject>
+</UML:ActionItem>
+<UML:ControlFlowItem id="935b17cf-8078-11f1-ae49-032ab6012b44">
+<diagram>
+<ref refid="247b8dea-7fa0-11f1-856e-054881a392a4"/>
+</diagram>
+<horizontal>
+<val>False</val>
+</horizontal>
+<orthogonal>
+<val>False</val>
+</orthogonal>
+<subject>
+<ref refid="945cb4b9-8078-11f1-8d60-032ab6012b44"/>
+</subject>
+<matrix>
+<val>(1.0, 0.0, 0.0, 1.0, 187.85450744628906, 235.42247009277344)</val>
+</matrix>
+<points>
+<val>[(-12.246401799822024, -34.5350341796875), (85.22136911626194, 35.62654495239258)]</val>
+</points>
+<head-connection>
+<ref refid="a76b39a8-7fa0-11f1-9471-054881a392a4"/>
+</head-connection>
+<tail-connection>
+<ref refid="7b90d893-8078-11f1-bdcc-032ab6012b44"/>
+</tail-connection>
+</UML:ControlFlowItem>
+<UML:ControlFlow id="945cb4b9-8078-11f1-8d60-032ab6012b44">
+<presentation>
+<reflist>
+<ref refid="935b17cf-8078-11f1-ae49-032ab6012b44"/>
+</reflist>
+</presentation>
+<source>
+<ref refid="a76aec7b-7fa0-11f1-bc9c-054881a392a4"/>
+</source>
+<target>
+<ref refid="7b908d1d-8078-11f1-92ed-032ab6012b44"/>
+</target>
+</UML:ControlFlow>
+<UML:ControlFlowItem id="9639059e-8078-11f1-8c8d-032ab6012b44">
+<diagram>
+<ref refid="247b8dea-7fa0-11f1-856e-054881a392a4"/>
+</diagram>
+<horizontal>
+<val>False</val>
+</horizontal>
+<orthogonal>
+<val>False</val>
+</orthogonal>
+<subject>
+<ref refid="970ec446-8078-11f1-97d3-032ab6012b44"/>
+</subject>
+<matrix>
+<val>(1.0, 0.0, 0.0, 1.0, 351.91143798828125, 166.84434509277344)</val>
+</matrix>
+<points>
+<val>[(21.164438574269752, 123.5578384399414), (46.42401234743761, 156.64162826538086)]</val>
+</points>
+<head-connection>
+<ref refid="7b90d893-8078-11f1-bdcc-032ab6012b44"/>
+</head-connection>
+<tail-connection>
+<ref refid="b8f5c69d-7fa0-11f1-9221-054881a392a4"/>
+</tail-connection>
+</UML:ControlFlowItem>
+<UML:ControlFlow id="970ec446-8078-11f1-97d3-032ab6012b44">
+<presentation>
+<reflist>
+<ref refid="9639059e-8078-11f1-8c8d-032ab6012b44"/>
+</reflist>
+</presentation>
+<source>
+<ref refid="7b908d1d-8078-11f1-92ed-032ab6012b44"/>
+</source>
+<target>
+<ref refid="b8f590b4-7fa0-11f1-b38c-054881a392a4"/>
+</target>
+</UML:ControlFlow>
 </model>
 </gaphor>
