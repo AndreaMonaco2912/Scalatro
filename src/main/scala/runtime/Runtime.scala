@@ -14,9 +14,26 @@ import cats.effect.IO
 import cats.effect.std.Queue
 import cats.effect.unsafe.implicits.global
 
+/** The controller of game loop and manager of the application run.
+  *
+  * Owns the message loop: it takes [[Msg]]s from the queue, computes the next
+  * [[Model]] and resulting [[Cmd]] with the [[Update]], it passes the obtained
+  * [[Model]] to the view that renders it. In the end it processes the resulting
+  * [[Cmd]] of the [[Update]] and eventually enqueue a corresponding [[Msg]].
+  *
+  * @param screens
+  *   the screen loader used by the view
+  * @param seed
+  *   the seed corresponding to the game's random events
+  */
 class Runtime(screens: GameViews, seed: Seed = Seed.random):
   private given ScalatroRng = ScalatroRng(seed)
 
+  /** Starts the gameplay loop.
+    *
+    * @return
+    *   an IO that never terminates.
+    */
   def run: IO[Unit] =
     for
       queue <- Queue.unbounded[IO, Msg]
