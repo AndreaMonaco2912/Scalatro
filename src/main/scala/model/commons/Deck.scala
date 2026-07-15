@@ -77,4 +77,10 @@ object Deck:
       *   the function to apply
       */
     def foreach[A](f: Card => A): Unit = d.foreach(f)
+
+    /** The cards of the deck.
+      *
+      * @return
+      *   the cards
+      */
     def cards: Seq[Card] = d
