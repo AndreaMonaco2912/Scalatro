@@ -37,12 +37,12 @@ class RoundManagerSpec extends AnyFlatSpec, Matchers, MockFactory:
   private def runSequence(
       initialRoundState: RoundState,
       actions: Seq[RoundAction],
-      render: RoundState => IO[Unit] = _ => IO.unit
+      updateView: RoundState => IO[Unit] = _ => IO.unit
   ): RoundState =
     val testProgram = for
       queue <- Queue.unbounded[IO, RoundAction]
       _ <- actions.traverse_(action => queue.offer(action))
-      manager = RoundManager(render, queue.take)
+      manager = RoundManager(updateView, queue.take)
       finalRound <- manager.startRound(initialRoundState)
       queueFinalSize <- queue.size
     yield
@@ -70,28 +70,30 @@ class RoundManagerSpec extends AnyFlatSpec, Matchers, MockFactory:
     consumedCards.foreach(card => roundState.hand should not contain card)
     roundState.isFinished shouldBe true
 
-  /** A render mock function expecting to be called, in order, with exactly
+  /** A updateView function mock expecting to be called, in order, with exactly
     * `rounds`
     * @param rounds
-    *   the rounds, in order, to render
+    *   the rounds, in order, to update view
     * @return
-    *   the render function
+    *   the updateView function
     */
-  private def mockRenderSequence(rounds: RoundState*): RoundState => IO[Unit] =
-    val render = mockFunction[RoundState, IO[Unit]]
+  private def mockUpdateViewSequence(
+      rounds: RoundState*
+  ): RoundState => IO[Unit] =
+    val updateView = mockFunction[RoundState, IO[Unit]]
     inSequence:
-      rounds.foreach(round => render expects round returning IO.unit)
-    render
+      rounds.foreach(round => updateView expects round returning IO.unit)
+    updateView
 
-  "A RoundManager" should "return immediately if the initial round is already finished, rendering only once" in:
+  "A RoundManager" should "return immediately if the initial round is already finished, updating view only once" in:
     val initialRound = RoundState(
       initialGameState.blindProgression.targetScore,
       initialHand,
       initialDeck,
       initialGameState
     )
-    val render = mockRenderSequence(initialRound)
-    runSequence(initialRound, Seq(), render) shouldBe initialRound
+    val updateView = mockUpdateViewSequence(initialRound)
+    runSequence(initialRound, Seq(), updateView) shouldBe initialRound
 
   private case class PlayCase(
       description: String,
@@ -136,7 +138,7 @@ class RoundManagerSpec extends AnyFlatSpec, Matchers, MockFactory:
       )
   }
 
-  it should "call render with the initial round, plus once per subsequent round values" in:
+  it should "call updateView with the initial round, plus once per subsequent round values" in:
     val firstScore = Score.calculateScore(Seq(c1))
     val secondScore = firstScore + Score.calculateScore(Seq(c2))
     val initialRound = roundWithBlindScore(secondScore)
@@ -158,7 +160,7 @@ class RoundManagerSpec extends AnyFlatSpec, Matchers, MockFactory:
     )
 
     val actions = Seq(PlayCards(Seq(c1)), PlayCards(Seq(c2)))
-    val render =
-      mockRenderSequence(initialRound, roundAfterFirstPlay, finalRound)
+    val updateView =
+      mockUpdateViewSequence(initialRound, roundAfterFirstPlay, finalRound)
 
-    runSequence(initialRound, actions, render) shouldBe finalRound
+    runSequence(initialRound, actions, updateView) shouldBe finalRound
