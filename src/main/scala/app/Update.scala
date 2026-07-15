@@ -6,11 +6,27 @@ import model.commons.{Deck, HandTypeLevels}
 
 import model.rng.ScalatroRng
 
+/** The update function of the MVU loop.
+  *
+  * Maps the current [[Model]] and an incoming [[Msg]] to the next [[Model]] and
+  * [[Cmd]].
+  */
+
 object Update:
 
+  /** The initial model and command of the application. */
   val init: (Model, Cmd) =
     (Model.Playing, Cmd.Deal(GameState.initial))
 
+  /** Computes the next model and the command to perform.
+    *
+    * @param model
+    *   the current model
+    * @param msg
+    *   the incoming message
+    * @return
+    *   the next model and the command
+    */
   def update(model: Model, msg: Msg)(using ScalatroRng): (Model, Cmd) =
     msg match
       case effect: Msg.InternalEffect => fromEffect(effect)
@@ -25,7 +41,9 @@ object Update:
       case Msg.InternalEffect.ShopReady(gs, shop) =>
         (Model.InShop(gs, shop), Cmd.NoOp)
 
-  private def fromAction(model: Model, msg: Msg)(using ScalatroRng): (Model, Cmd) =
+  private def fromAction(model: Model, msg: Msg)(using
+      ScalatroRng
+  ): (Model, Cmd) =
     (model, msg) match
       case (Model.RoundWon(round), Msg.RoundEndAction.NextRound) =>
         (model, Cmd.BuildShop(round.gameState))
@@ -82,8 +100,8 @@ object Update:
     case _                        => None
 
   private def levelsOf(model: Model): Option[HandTypeLevels] = model match
-    case Model.RoundWon(round) => Some(round.gameState.levels)
-    case Model.RoundLost(round) => Some(round.gameState.levels)
-    case Model.InShop(gs, _) => Some(gs.levels)
+    case Model.RoundWon(round)    => Some(round.gameState.levels)
+    case Model.RoundLost(round)   => Some(round.gameState.levels)
+    case Model.InShop(gs, _)      => Some(gs.levels)
     case Model.OpeningPack(gs, _) => Some(gs.levels)
-    case _ => None
+    case _                        => None
