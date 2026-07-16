@@ -2,8 +2,7 @@ package scalatro
 package app
 
 import model.game.GameState
-import model.commons.{Deck, HandTypeLevels}
-
+import model.commons.{Deck, HandTypeLevels, Modification, OnBuyEffect}
 import model.rng.ScalatroRng
 
 /** The update function of the MVU loop.
@@ -71,8 +70,12 @@ object Update:
     selection match
       case Msg.PackSelection.SelectCard(c)   => gs.addCard(c)
       case Msg.PackSelection.SelectPlanet(p) => gs.usePlanet(p)
-      case Msg.PackSelection.SelectJoker(j)  => gs.addJoker(j)
-      case Msg.PackSelection.SkipPack        => gs
+      case Msg.PackSelection.SelectJoker(j)  =>
+        val newGs: GameState = j match
+          case j: OnBuyEffect => j.onBuy(gs).applyAll(gs)
+          case _              => gs
+        newGs.addJoker(j)
+      case Msg.PackSelection.SkipPack => gs
 
   private def inShop(
       model: Model.InShop,

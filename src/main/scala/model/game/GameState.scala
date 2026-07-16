@@ -2,8 +2,7 @@ package scalatro
 package model.game
 
 import model.commons.*
-import model.rng.ScalatroRng
-import model.rng.SelectionPolicies
+import model.rng.{ScalatroRng, SelectionPolicies, SelectionPolicy}
 
 /** The state of a game, carried across the whole match.
   * @param handInformation
@@ -137,3 +136,25 @@ object GameState:
       HandTypeLevels.initial,
       SelectionPolicies.default
     )
+
+type GameStateModification = Modification[GameState]
+
+object GameStateModification:
+  case class SetCardPolicy(policy: SelectionPolicy[Card])
+      extends GameStateModification:
+    override def apply(value: GameState): GameState =
+      value.copy(selectionPolicies =
+        value.selectionPolicies.copy(cardPolicy = policy)
+      )
+  case class SetJokerPolicy(policy: SelectionPolicy[Joker])
+      extends GameStateModification:
+    override def apply(value: GameState): GameState =
+      value.copy(selectionPolicies =
+        value.selectionPolicies.copy(jokerPolicy = policy)
+      )
+  case class SetPlanetPolicy(policy: SelectionPolicy[Planet])
+      extends GameStateModification:
+    override def apply(value: GameState): GameState =
+      value.copy(selectionPolicies =
+        value.selectionPolicies.copy(planetPolicy = policy)
+      )

@@ -1,6 +1,7 @@
 package scalatro
 package model.commons
 
+import model.game.{GameState, GameStateModification}
 import model.round.{RoundState, RoundStateModification}
 
 /** Trait which represents a modification of a value of type [[T]].
@@ -74,26 +75,27 @@ object Modification:
     def applyAll(initial: A): A =
       mods.foldLeft(initial)((acc, mod) => mod.apply(acc))
 
-/** A capability trait which represents an effect invoked at the start of the
-  * round.
+/** A capability trait for an effect invoked at the start of the round.
   */
 trait OnRoundStartEffect:
   def onRoundStart(round: RoundState): Seq[RoundStateModification]
 
-/** A capability trait which represents an effect invoked when a card has
-  * scored.
+/** A capability trait for an effect invoked when a card has scored.
   */
 trait OnCardScoredEffect:
   def onCardScored(card: Card): Seq[HandScoreModification]
 
-/** A capability trait which represents an effect invoked right when a hand has
-  * been played.
+/** A capability trait for an effect invoked right when a hand has been played.
   */
 trait OnHandPlayedEffect:
   def onHandPlayed(cards: Seq[Card]): Seq[HandScoreModification]
 
-/** A capability trait which represents an effect invoked after a hand has been
-  * played.
+/** A capability trait for an effect invoked after a hand has been played.
   */
 trait AfterHandPlayedEffect:
   def afterHandPlayed(cards: Seq[Card]): Seq[HandScoreModification]
+
+/** A capability trait for an effect invoked when an entity is bought.
+  */
+trait OnBuyEffect:
+  def onBuy(gameState: GameState): Seq[GameStateModification]

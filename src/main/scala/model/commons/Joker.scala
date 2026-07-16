@@ -1,7 +1,8 @@
 package scalatro
 package model.commons
 
-import model.rng.Weighable
+import model.game.{GameState, GameStateModification}
+import model.rng.{PresetPolicies, Weighable}
 import model.round.{RoundState, RoundStateModification}
 
 sealed trait Joker extends Weighable:
@@ -48,9 +49,14 @@ sealed trait RanksScored(
       modifications
     )
 
-sealed trait HandInformationModifier(modifications: Seq[RoundStateModification])
+sealed trait OnRoundStartModifier(modifications: Seq[RoundStateModification])
     extends OnRoundStartEffect:
   override def onRoundStart(round: RoundState): Seq[RoundStateModification] =
+    modifications
+
+sealed trait OnBuyModifier(modifications: Seq[GameStateModification])
+    extends OnBuyEffect:
+  override def onBuy(gameState: GameState): Seq[GameStateModification] =
     modifications
 
 /** An enum which represents a type of joker card.
@@ -89,7 +95,10 @@ enum JokerType(val name: String, val description: String) extends Joker:
       )
   case JollyJoker
       extends JokerType("Jolly Joker", "+8 Mult if played hand contains a Pair")
-      with HandTypeContained(HandType.Pair, HandScoreModification.FlatMult(Mult(8)))
+      with HandTypeContained(
+        HandType.Pair,
+        HandScoreModification.FlatMult(Mult(8))
+      )
   case DeviousJoker
       extends JokerType(
         "Devious Joker",
@@ -153,9 +162,12 @@ enum JokerType(val name: String, val description: String) extends Joker:
           HandScoreModification.FlatMult(Mult(4))
         )
       )
+      with OnBuyModifier(
+        Seq(GameStateModification.SetCardPolicy(PresetPolicies.scholarPolicy))
+      )
   case Juggler
       extends JokerType("Juggler", "+1 play and discard each round")
-      with HandInformationModifier(
+      with OnRoundStartModifier(
         Seq(
           RoundStateModification.IncreaseRemainingPlays(1),
           RoundStateModification.IncreaseRemainingDiscards(1)
