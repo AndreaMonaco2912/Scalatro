@@ -4311,6 +4311,7 @@ controlflow {
 <ref refid="932fd789-7fa3-11f1-afa6-054881a392a4"/>
 <ref refid="959d07bd-7fa3-11f1-aaa5-054881a392a4"/>
 <ref refid="991d7f34-7fa3-11f1-a334-054881a392a4"/>
+<ref refid="3f3264f2-813b-11f1-b445-b94a7aa709e6"/>
 <ref refid="33b592e6-7fa3-11f1-b722-054881a392a4"/>
 <ref refid="83826730-7fa3-11f1-8f05-054881a392a4"/>
 <ref refid="9edde35b-7fa3-11f1-b4f4-054881a392a4"/>
@@ -4318,6 +4319,7 @@ controlflow {
 <ref refid="a65b2a0f-7fa3-11f1-97c0-054881a392a4"/>
 <ref refid="a9d92860-7fa3-11f1-aee6-054881a392a4"/>
 <ref refid="d62b0355-7fa3-11f1-bec0-054881a392a4"/>
+<ref refid="45e6bf41-813b-11f1-bc3e-b94a7aa709e6"/>
 </reflist>
 </ownedPresentation>
 </UML:ClassDiagram>
@@ -4359,11 +4361,11 @@ controlflow {
 <ref refid="2b93f8ef-7fa0-11f1-a377-054881a392a4"/>
 <ref refid="6201e5c6-7fa0-11f1-95d5-054881a392a4"/>
 <ref refid="786e6ff3-7fa0-11f1-a2e0-054881a392a4"/>
-<ref refid="1be01774-7fa1-11f1-b93e-054881a392a4"/>
-<ref refid="7b90d893-8078-11f1-bdcc-032ab6012b44"/>
+<ref refid="a76b39a8-7fa0-11f1-9471-054881a392a4"/>
 <ref refid="b8f5c69d-7fa0-11f1-9221-054881a392a4"/>
 <ref refid="da81f786-7fa0-11f1-b7b4-054881a392a4"/>
-<ref refid="a76b39a8-7fa0-11f1-9471-054881a392a4"/>
+<ref refid="1be01774-7fa1-11f1-b93e-054881a392a4"/>
+<ref refid="7b90d893-8078-11f1-bdcc-032ab6012b44"/>
 <ref refid="04ebe059-7fa1-11f1-b90b-054881a392a4"/>
 <ref refid="43e7b5b8-7fa1-11f1-ad51-054881a392a4"/>
 <ref refid="542109c4-7fa1-11f1-bfbc-054881a392a4"/>
@@ -4394,8 +4396,8 @@ controlflow {
 <reflist>
 <ref refid="62019664-7fa0-11f1-bb21-054881a392a4"/>
 <ref refid="786e3ca5-7fa0-11f1-8deb-054881a392a4"/>
-<ref refid="a76aec7b-7fa0-11f1-bc9c-054881a392a4"/>
 <ref refid="1bdfdb88-7fa1-11f1-b4d5-054881a392a4"/>
+<ref refid="a76aec7b-7fa0-11f1-bc9c-054881a392a4"/>
 <ref refid="b8f590b4-7fa0-11f1-b38c-054881a392a4"/>
 <ref refid="da81bf52-7fa0-11f1-9c73-054881a392a4"/>
 <ref refid="7b908d1d-8078-11f1-92ed-032ab6012b44"/>
@@ -4491,8 +4493,8 @@ controlflow {
 </node>
 <nodeContents>
 <reflist>
-<ref refid="b8f590b4-7fa0-11f1-b38c-054881a392a4"/>
 <ref refid="7b908d1d-8078-11f1-92ed-032ab6012b44"/>
+<ref refid="b8f590b4-7fa0-11f1-b38c-054881a392a4"/>
 </reflist>
 </nodeContents>
 </UML:ActivityPartition>
@@ -5076,6 +5078,11 @@ controlflow {
 <name>
 <val>ScalatroRng</val>
 </name>
+<nestedClassifier>
+<reflist>
+<ref refid="3f320f52-813b-11f1-b3f3-b94a7aa709e6"/>
+</reflist>
+</nestedClassifier>
 <ownedOperation>
 <reflist>
 <ref refid="daac59a2-7fa2-11f1-8ed2-054881a392a4"/>
@@ -9205,5 +9212,61 @@ controlflow {
 <ref refid="b8f590b4-7fa0-11f1-b38c-054881a392a4"/>
 </target>
 </UML:ControlFlow>
+<UML:Class id="3f320f52-813b-11f1-b3f3-b94a7aa709e6">
+<name>
+<val>Rng</val>
+</name>
+<nestingClass>
+<ref refid="46979024-7fa2-11f1-ad78-054881a392a4"/>
+</nestingClass>
+<presentation>
+<reflist>
+<ref refid="3f3264f2-813b-11f1-b445-b94a7aa709e6"/>
+</reflist>
+</presentation>
+</UML:Class>
+<UML:ClassItem id="3f3264f2-813b-11f1-b445-b94a7aa709e6">
+<matrix>
+<val>(1.0, 0.0, 0.0, 1.0, 105.7125473022461, -76.886474609375)</val>
+</matrix>
+<top-left>
+<val>(0.0, 0.0)</val>
+</top-left>
+<width>
+<val>100.0</val>
+</width>
+<height>
+<val>83.0</val>
+</height>
+<diagram>
+<ref refid="c57fd871-7f9f-11f1-95f2-054881a392a4"/>
+</diagram>
+<subject>
+<ref refid="3f320f52-813b-11f1-b3f3-b94a7aa709e6"/>
+</subject>
+</UML:ClassItem>
+<UML:ContainmentItem id="45e6bf41-813b-11f1-bc3e-b94a7aa709e6">
+<diagram>
+<ref refid="c57fd871-7f9f-11f1-95f2-054881a392a4"/>
+</diagram>
+<horizontal>
+<val>False</val>
+</horizontal>
+<orthogonal>
+<val>False</val>
+</orthogonal>
+<matrix>
+<val>(1.0, 0.0, 0.0, 1.0, 159.69131469726562, 107.59664916992188)</val>
+</matrix>
+<points>
+<val>[(-3.9787673950195312, 0.561920166015625), (-3.9787673950195312, -101.48312377929688)]</val>
+</points>
+<head-connection>
+<ref refid="4697d061-7fa2-11f1-9651-054881a392a4"/>
+</head-connection>
+<tail-connection>
+<ref refid="3f3264f2-813b-11f1-b445-b94a7aa709e6"/>
+</tail-connection>
+</UML:ContainmentItem>
 </model>
 </gaphor>
