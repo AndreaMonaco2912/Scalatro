@@ -6,7 +6,7 @@ import model.commons.{Deck, Score}
 import model.game.GameState
 import model.round.{Hand, RoundState}
 
-/** A DSL for building a [[RoundState]] with a readable and declarative syntax.
+/** A DSL for building a [[RoundState]] with a readable syntax.
   *
   * Example:
   * {{{
@@ -24,12 +24,17 @@ class RoundBuilder:
   private var deck: Deck = Deck()
   private var gameState: GameState = GameState.initial
 
-  /** Builds the final immutable [[RoundState]] using the configured parameters.
+  /** Builds the final [[RoundState]] using the configured parameters.
     *
     * @return
     *   the constructed [[RoundState]]
     */
-  def build: RoundState = RoundState(score, hand, deck, gameState)
+  def build: RoundState = RoundState(
+    score = this.score,
+    hand = this.hand,
+    deck = this.deck,
+    gameState = this.gameState
+  )
 
 object RoundBuilder:
 

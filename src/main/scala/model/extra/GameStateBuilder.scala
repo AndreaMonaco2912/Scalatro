@@ -5,7 +5,7 @@ import model.commons.{Deck, HandTypeLevels, Joker}
 import model.game.{BlindProgression, GameState, HandInformation}
 import model.rng.SelectionPolicies
 
-/** A DSL for building a [[GameState]] with a readable syntax. * Example:
+/** A DSL for building a [[GameState]] with a readable syntax. Example:
   * {{{
   * val state: GameState = GameStateBuilder.configure {
   * HandSize    := 8
@@ -27,8 +27,8 @@ class GameStateBuilder:
   private var jokers: Seq[Joker] = Seq.empty
   private var levels: HandTypeLevels = HandTypeLevels.initial
 
-  /** Builds the final immutable [[GameState]] using the configured parameters.
-    * * @return the constructed [[GameState]]
+  /** Builds the final [[GameState]] using the configured parameters. * @return
+    * the constructed [[GameState]]
     */
   def build: GameState = GameState(
     handInformation = HandInformation(
@@ -58,7 +58,6 @@ object GameStateBuilder:
     builder.build
 
   object DSL:
-
     object HandSize:
       /** @param value the number of cards the player can hold */
       infix def :=(value: Int)(using b: GameStateBuilder): Unit =

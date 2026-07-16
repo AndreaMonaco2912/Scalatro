@@ -3,7 +3,7 @@ package model.extra
 
 import model.commons.{Card, Rank, Suit}
 
-/** A DSL for building [[Card]] instances. * Example usage:
+/** A DSL for building [[Card]] instances. Example usage:
   * {{{
   * val fiveOfHearts = 5 of H
   * val aceOfSpades = A of S
@@ -24,8 +24,9 @@ object CardBuilder:
   val D: Suit = Suit.Diamonds
 
   extension (value: Int)
-    /** Creates a numeric card (2 through 10) of the specified suit. * @param
-      * suit the suit of the card
+    /** Creates a numeric card (2 through 10) of the specified suit.
+      * @param suit
+      *   suit the suit of the card
       * @return
       *   a [[Card]] with the corresponding rank and suit
       * @throws IllegalArgumentException
@@ -49,27 +50,27 @@ object CardBuilder:
   /** Builder for a Jack. */
   object J:
     /** @param suit
-      *   the suit of the card
+      *   the suit of the Jack
       */
     infix def of(suit: Suit): Card = Card(Rank.Jack, suit)
 
   /** Builder for a Queen. */
   object Q:
     /** @param suit
-      *   the suit of the card
+      *   the suit of the Queen
       */
     infix def of(suit: Suit): Card = Card(Rank.Queen, suit)
 
   /** Builder for a King. */
   object K:
     /** @param suit
-      *   the suit of the card
+      *   the suit of the King
       */
     infix def of(suit: Suit): Card = Card(Rank.King, suit)
 
   /** Builder for an Ace. */
   object A:
     /** @param suit
-      *   the suit of the card
+      *   the suit of the Ace
       */
     infix def of(suit: Suit): Card = Card(Rank.Ace, suit)

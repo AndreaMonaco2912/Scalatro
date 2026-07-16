@@ -6,6 +6,10 @@ import model.rng.Weighable
 enum Suit:
   case Spades, Hearts, Clubs, Diamonds
 
+/** An enum that represents a rank of a card.
+  * @param value
+  *   the value of the rank (used for ordering and assigning chips)
+  */
 enum Rank(val value: Int):
   case Two extends Rank(2)
   case Three extends Rank(3)
@@ -27,9 +31,22 @@ trait Card extends Weighable:
   def onScored: Seq[HandScoreModification]
 
 object Card:
+  /** Creates a card.
+    * @param rank
+    *   the rank of the card
+    * @param suit
+    *   the suit of the card
+    * @return
+    *   the card
+    */
   def apply(rank: Rank, suit: Suit): Card = CardImpl(rank, suit)
 
   private case class CardImpl(rank: Rank, suit: Suit) extends Card:
+    /** Create the modification that increment the score by the base chip of the
+      * card
+      * @return
+      *   the modification to the hand score
+      */
     override def onScored: Seq[HandScoreModification] =
       Seq(HandScoreModification.FlatChips(this.baseChips))
 
