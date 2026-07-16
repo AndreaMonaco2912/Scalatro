@@ -1,9 +1,9 @@
 Sprint 1,,,,,,,,,
 Product backlog item,Sprint task,Volunteer,Initial estimate of effort,1,2,3,4,5,6
-I would like to be able to play a round,Define card,Samorì,5,5,5,2,0,0,0
-,Define effects,Samorì,5,5,5,5,3,2,0
+I would like to be able to play a round,Define card,SamorÃ¬,5,5,5,2,0,0,0
+,Define effects,SamorÃ¬,5,5,5,5,3,2,0
 ,Detect hand,Ronchi,4,4,2,2,2,0,0
-,Calculate hand score,Ronchi,11,11,5,5,5,3,3
+,Calculate hand score,Ronchi,11,11,5,5,5,3,0
 ,Play card,Baldazzi,10,7,3,0,0,0,0
 ,Discard card,Baldazzi,1,1,1,1,0,0,0
 ,Calculate total score,Baldazzi,3,3,3,2,1,0,0
@@ -14,53 +14,52 @@ I would like to be able to play multiple rounds,Define match with multiple round
 ,,,,,,,,,
 Sprint 2,,,,,,,,,
 Product backlog item,Sprint task,Volunteer,Initial estimate of effort,1,2,3,4,5,6
-Joker cards,Define joker concept,Ronchi,5,,,,,,
-,Define score joker effects,Ronchi,3,,,,,,
-,Implement different joker cards,Ronchi,3,,,,,,
-Planet cards,Define hand type levels,Ronchi,2,,,,,,
-,Define planet card,Ronchi,2,,,,,,
-Card packs,Define card pack,Samorì,5,,,,,,
-,Implement cards blacklist,Samorì,1,,,,,,
-Shop with default packs (free),Define shop,Monaco,5,,,,,,
-After round screen,Win and loss,Monaco,1,,,,,,
-,Implement round win screen,Monaco,1,,,,,,
-,Implement loss screen,Monaco,2,,,,,,
-Game menu for informations,Implement hand levels screen,Monaco,2,,,,,,
-,Implement deck screen,Monaco,4,,,,,,
-Playing hand animations,Implement score preview,Baldazzi,3,,,,,,
-,Implement hand animation,Samorì,9,,,,,,
-Sorting hand cards,Sort hand by suit,Baldazzi,2,,,,,,
-,Sort hand by rank,Baldazzi,1,,,,,,
-,Custom rearrange (all kinds of cards),Baldazzi,3,,,,,,
-Advanced testing techniques,Implement mockito,Baldazzi,6,,,,,,
+Joker cards,Define joker concept,Ronchi,5,4,2,1,0,0,0
+,Define score joker effects,Ronchi,3,2,2,1,0,0,0
+,Implement different joker cards,Ronchi,3,3,3,3,3,3,0
+Planet cards,Define hand type levels,Ronchi,2,2,2,2,0,0,0
+,Define planet card,Ronchi,2,2,2,2,2,0,0
+Card packs,Define card pack,SamorÃ¬,5,5,5,3,1,1,0
+,Implement cards blacklist,SamorÃ¬,1,1,1,0,0,0,0
+Shop with default packs (free),Define shop,Monaco,9,5,5,5,0,0,0
+After round screen,Win and loss,Monaco,1,0,0,0,0,0,0
+,Implement round win screen,Monaco,3,3,2,0,0,0,0
+,Implement loss screen,Monaco,3,3,2,0,0,0,0
+Playing hand animations,Implement score preview,Baldazzi,3,0,0,0,0,0,0
+,Implement hand animation,SamorÃ¬,9,9,9,7,5,2,0
+Sorting hand cards,Sort hand by suit,Baldazzi,2,2,0,0,0,0,0
+,Sort hand by rank,Baldazzi,1,1,0,0,0,0,0
+,Custom rearrange (all kinds of cards),Baldazzi,3,3,3,0,0,0,0
+Advanced testing techniques,Implement mockito,Baldazzi,6,6,6,6,3,0,0
 ,,,,,,,,,
 ,,,,,,,,,
 Sprint 3,,,,,,,,,
 Product backlog item,Sprint task,Volunteer,Initial estimate of effort,1,2,3,4,5,6
-Joker cards,Define general joker effects,Ronchi,10,,,,,,
-,Implement more joker cards,Ronchi,5,,,,,,
-Game menu for informations,Implement hand levels screen,Monaco,5,,,,,,
-,Implement deck screen,Monaco,5,,,,,,
-Shop with default packs (free),Implement buying,Monaco,3,,,,,,
-DSL for fast setup of game,Implement DSL,Samorì,15,,,,,,
-Hint for best hand to play,Implement hint,Samorì,5,,,,,,
-,Move implementation to prolog,Samorì,3,,,,,,
-Sorting hand cards,Reimplement with Prolog,Baldazzi,2,,,,,,
-Random number generation,Implement multiple RNGs,Baldazzi,11,,,,,,
-,Seed search,Baldazzi,11,,,,,,
-Refactor model-view architecture,Move to MVU (Model-View-Update),Monaco,20,,,,,,
+Joker cards,Define general joker effects,Ronchi,10,7,4,2,2,2,2
+,Implement more joker cards,Ronchi,5,5,5,5,4,0,0
+Shop with default packs (free),Implement buying,Monaco,3,0,0,0,0,0,0
+DSL for fast setup of game,Implement DSL,SamorÃ¬,17,15,15,10,5,2,2
+Hint for best hand to play,Implement hint,SamorÃ¬,5,5,5,5,5,5,2
+,Move implementation to prolog,SamorÃ¬,3,3,3,3,3,3,0
+Sorting hand cards,Reimplement with Prolog,Baldazzi,2,2,2,2,2,0,0
+Random number generation,Implement multiple RNGs,Baldazzi,11,7,4,1,0,0,0
+,Seed search,Baldazzi,11,11,11,11,9,6,6
+Refactor model-view architecture,Move to MVU (Model-View-Update),Monaco,20,16,10,7,7,6,5
 ,,,,,,,,,
 Sprint 4,,,,,,,,,
 Product backlog item,Sprint task,Volunteer,Initial estimate of effort,1,2,3,4,5,6
-Trackable effects during score calculation,Define score contribution,Ronchi,9,,,,,,
-,Include contribution in effects,Ronchi,4,,,,,,
-,Refactor card onScored,Ronchi,2,,,,,,
-Random number generation,Implement multiple RNGs,Baldazzi,3,,,,,,
-,Seed search,Baldazzi,3,,,,,,
-,Implement interface for seed search,Baldazzi,5,,,,,,
-Hint for best hand to play,Integrate hint into view,Baldazzi,1,,,,,,
-Refactor model-view architecture,Move to MVU (Model-View-Update),Monaco,5,,,,,,
-DSL for fast setup of game,Implement DSL,Samorì,2,,,,,,
-Hint for best hand to play,Implement hint,Samorì,2,,,,,,
-Boss blind,Define blind effects,Samorì,5,,,,,,
-,Implement boss blind,Samorì,5,,,,,,
+Trackable effects during score calculation,Define score contribution,Ronchi,9,5,2,1,1,1,0
+,Include contribution in effects,Ronchi,4,4,2,0,0,0,0
+,Refactor card onScored,Ronchi,2,2,2,0,0,0,0
+Joker cards,Refactor Effects,Ronchi,2,2,2,2,2,0,0
+Random number generation,Implement multiple RNGs,Baldazzi,3,3,3,3,0,0,0
+,Seed search,Baldazzi,3,0,0,0,0,0,0
+,Implement interface for seed search,Baldazzi,5,2,2,0,0,0,0
+Hint for best hand to play,Integrate hint into view,Baldazzi,1,1,1,1,1,0,0
+,Implement hint,SamorÃ¬,2,2,2,2,0,0,0
+Refactor model-view architecture,Move to MVU (Model-View-Update),Monaco,5,2,0,0,0,0,0
+Game menu for informations,Implement hand levels screen,Monaco,5,5,5,0,0,0,0
+,Implement deck screen,Monaco,5,5,5,5,0,0,0
+DSL for fast setup of game,Implement DSL,SamorÃ¬,2,2,2,2,2,2,0
+Boss blind,Define blind effects,SamorÃ¬,5,5,5,1,0,0,0
+,Implement boss blind,SamorÃ¬,5,5,5,5,2,0,0
