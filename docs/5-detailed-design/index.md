@@ -53,4 +53,27 @@ Il calcolo del punteggio si avvale di diversi componenti:
 
 La computazione del punteggio si articola in diverse fasi, come descritto nel requisito [2.2.19].
 
+## Randomness
+
+Come indicato nel requirement [2.2.27], l'avvenimento di certi eventi è condizionato dalla generazione di numeri casuali. In particolare si tratta sempre di estrarre degli elementi casualmente da una _Pool_, ovvero una collezione di elementi dello stesso tipo. Per permettere ciò, questi elementi devono essere _Weighable_, per indicare che ad essi può essere assegnato un peso, utilizzato per influenzare le probabilità di estrazione di quell'elemento. L'assegnazione del peso viene fatto da una _SelectionPolicy_ seguendo dei criteri stabiliti. In particolare, durante il gioco è attiva nello stesso momento una e solamente una policy per carte, joker, pianeti e blind e può cambiare durante la partita. Le policy per carte, joker e pianeti influenzano il contenuto dei pacchetti, mentre quella dei blind la loro apparizione. Ad esempio, una policy potrebbe raddoppiare le probabilità che appaiano degli assi nei pacchetti.
+_ScalatroRng_ è l'entità che si occupa di estrarre casualmente un certo numero di elementi distinti da una Pool, utilizzando le SelectionPolicy per l'assegnazione dei pesi. L'estrazione è condizionata dal seed, che è assegnato a inizio partita.
+
+![Scalatro Rng](Scalatro_Rng.svg)
+
+### Seed Search
+
+Data la presenza del seed, è risultato utile creare un sistema per individuarne uno che generi una partita che soddisfi certi requisiti. A tal fine è stato costruito un motore che simula l'esecuzione di più partite, controllando sempre che i vincoli sul seed (_SeedConstraint_) forniti siano soddisfatti. Ogni vincolo esprime una o più condizioni sul round. _PickFromPackPolicy_ definisce l'azione da eseguire quando un elemento viene selezionato da un pacchetto, modificando opportunamente il GameState.
+
+![Seed Search Class](Seed_Search_Class.svg)
+
+La simulazione utilizzata per la ricerca di un seed si compone delle seguenti fasi:
+1. Generazione di un nuovo seed casuale;
+2. Simulazione di un round come vinto, consistente nell'estrazione delle carte nella mano iniziale e del contenuto dei pacchetti nello shop;
+3. Verifica dei vincoli per il round appena simulato. Nel caso uno non sia soddisfatto si ritorna al punto 1;
+4. Passaggio al round successivo, ripetendo le azioni di simulazione dal punto 2.
+
+Nel caso tutti i vincoli su tutti i round fossero soddisfatti, la ricerca ha termine con la stampa del seed trovato.
+
+![Seed Search Activity](Seed_Search_Activity.svg)
+
 [Indice](../index.md) | [Indietro](../4-architectural-design/index.md)
