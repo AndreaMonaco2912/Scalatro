@@ -76,4 +76,4 @@ Nel caso tutti i vincoli su tutti i round fossero soddisfatti, la ricerca ha ter
 
 ![Seed Search Activity](Seed_Search_Activity.svg)
 
-[Indice](../index.md) | [Indietro](../4-architectural-design/index.md)
+[Indice](../index.md) | [Indietro](../4-architectural-design/index.md) | [Avanti](../6-implementation/index.md)
