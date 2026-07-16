@@ -52,4 +52,4 @@ object UpdateDSL:
       case (_, c) => c
 ```
 
-[Indice](../index.md) | [Indietro](../6-implementation/index.md)
+[Indice](../index.md) | [Indietro](../6-implementation/index.md) | [Avanti](../8-retrospective/index.md)

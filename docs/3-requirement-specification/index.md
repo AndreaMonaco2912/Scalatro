@@ -122,7 +122,7 @@ In questa sezione viene presentata la specifica dei requisiti.
   - _Arrowhead_. Effetto "A carta a segno": +50 Chips se la carta è di Picche;
   - _Onyx Gate_. Effetto "A carta a segno": +7 Mult se la carta è di Fiori;
   - _Fibonacci_. Effetto "A carta a segno": +8 Mult se la carta è Asso, Due, Tre, Cinque, Otto;
-  - _Scholar_. Effetto "A carta a segno": +20 Chips e +4 Mult se la carta è un Asso;
+  - _Scholar_. Effetto "A carta a segno": +20 Chips e +4 Mult se la carta è un Asso. Effetto "Ad acquisto": aumento della probabilità di ottenere assi e riduzione della probabilità di ottenere carte figura nei pacchetti dello shop;
   - _Juggler_. Effetto "A inizio round": +1 giocata e +1 scarto.
 - **[2.2.27]** Lo svolgimento della partita è condizionato da un seme (_seed_), ovvero un numero che determina la sequenza e l'estrazione degli eventi che sfruttano casualità. Dato lo stesso seed, è possibile rigiocare la stessa partita. Gli eventi influenzati dal seed sono:
   - mescolamento del mazzo
