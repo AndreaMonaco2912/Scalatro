@@ -94,9 +94,7 @@ class UpdateSpec extends AnyFlatSpec with Matchers:
       .BuildShop(round.gameState)
 
   "RoundLost on Restart" should "Create a new Game" in:
-    Model.RoundLost(round) ? Msg.RoundEndAction.Restart shouldBe Cmd.Deal(
-      GameState.initial
-    )
+    Model.RoundLost(round) ? Msg.RoundEndAction.Restart shouldBe Cmd.DealFirstRound
 
   "InShop on OpenCardPack" should "move to OpeningPack with the shop's card pack" in:
     Model.InShop(gs, shop) ! Msg.ShopAction.OpenCardPack shouldBe Model

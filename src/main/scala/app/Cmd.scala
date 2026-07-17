@@ -10,9 +10,9 @@ enum Cmd:
   /** The command performing no effect. */
   case NoOp
 
-  /** Starts a new round from the given game state.
+  /** Requires to start the successive round.
     * @param gameState
-    *   the game state of the match
+    *   the game state of the match with previous round
     */
   case Deal(gameState: GameState)
 

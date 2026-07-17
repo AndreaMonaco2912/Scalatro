@@ -44,7 +44,7 @@ object Update:
       case (Model.RoundWon(round), Msg.RoundEndAction.NextRound) =>
         (model, Cmd.BuildShop(round.gameState))
       case (Model.RoundLost(_), Msg.RoundEndAction.Restart) =>
-        (model, Cmd.Deal(GameState.initial))
+        (model, Cmd.DealFirstRound)
       case (m: Model.InShop, action: Msg.ShopAction) =>
         inShop(m, action)
       case (Model.OpeningPack(gs, _), selection: Msg.PackSelection) =>
