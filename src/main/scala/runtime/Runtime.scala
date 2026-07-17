@@ -8,7 +8,7 @@ import model.rng.ScalatroRng
 import model.rng.Types.Seed
 import model.round.{RoundManager, RoundState}
 import model.shop.Shop
-import view.{FxView, GameViews}
+import view.{FxView, ScreenRouter}
 
 import cats.effect.IO
 import cats.effect.std.Queue
@@ -26,7 +26,7 @@ import cats.effect.unsafe.implicits.global
   * @param seed
   *   the seed corresponding to the game's random events
   */
-class Runtime(screens: GameViews, seed: Seed = Seed.random):
+class Runtime(screens: ScreenRouter, seed: Seed = Seed.random):
   private given ScalatroRng = ScalatroRng(seed)
 
   /** Starts the gameplay loop.

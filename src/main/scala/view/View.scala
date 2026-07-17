@@ -13,7 +13,7 @@ private enum Screen:
   case Gameplay, Won, Lost, ShopScreen, CardPack, PlanetPack, JokerPack, Deck,
     HandLevels
 
-class FxView(screens: GameViews, dispatch: Msg => Unit) extends View:
+class FxView(screens: ScreenRouter, dispatch: Msg => Unit) extends View:
   private var current: Option[Screen] = None
   private var gameplay: Option[FxRoundController] = None
 

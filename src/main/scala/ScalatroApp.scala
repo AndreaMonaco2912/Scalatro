@@ -3,7 +3,7 @@ package scalatro
 import ScalatroApp.stage
 import model.rng.Types.Seed
 import runtime.Runtime
-import view.{GameViews, Resources}
+import view.{ScreenRouter, Resources}
 
 import cats.effect.unsafe.implicits.global
 import javafx.scene.Scene
@@ -44,4 +44,4 @@ object ScalatroApp extends JFXApp3:
     stage.centerOnScreen()
     stage.show()
 
-    Runtime(GameViews(scene), parseSeed).run.unsafeRunAndForget()
+    Runtime(ScreenRouter(scene), parseSeed).run.unsafeRunAndForget()

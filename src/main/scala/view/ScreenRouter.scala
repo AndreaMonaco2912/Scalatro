@@ -13,7 +13,7 @@ import javafx.scene.{Parent, Scene}
   * @param scene
   *   the application scene whose root gets replaced
   */
-class GameViews(scene: Scene):
+class ScreenRouter(scene: Scene):
 
   private def switchTo[C](fxml: String): IO[C] =
     IO.async_ { cb =>
