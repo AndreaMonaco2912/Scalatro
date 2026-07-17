@@ -2,7 +2,7 @@ package scalatro
 package view
 
 import app.{Model, Msg, OpenPack}
-import view.fx.{Dispatcher, FxController}
+import view.fx.{Dispatcher, FxRoundController}
 
 import cats.effect.IO
 
@@ -15,7 +15,7 @@ private enum Screen:
 
 class FxView(screens: GameViews, dispatch: Msg => Unit) extends View:
   private var current: Option[Screen] = None
-  private var gameplay: Option[FxController] = None
+  private var gameplay: Option[FxRoundController] = None
 
   def render(model: Model): IO[Unit] = model match
     case Model.RoundWon(round) =>
@@ -36,7 +36,7 @@ class FxView(screens: GameViews, dispatch: Msg => Unit) extends View:
       enter(Screen.HandLevels, screens.handLevels)(_.showLevels(levels))
     case Model.Playing => IO.unit
 
-  def enterGameplay: IO[FxController] =
+  def enterGameplay: IO[FxRoundController] =
     screens.gameplay.flatMap: ctrl =>
       IO:
         gameplay = Some(ctrl)

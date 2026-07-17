@@ -20,7 +20,7 @@ import java.util.ResourceBundle
 import scala.compiletime.uninitialized
 
 @SuppressWarnings(Array("org.wartremover.warts.Null"))
-class FxController extends Initializable, Bindable[RoundAction]:
+class FxRoundController extends Initializable, Bindable[RoundAction]:
 
   // Joker and hand slots
   @FXML private var jokerSlotsBox: HBox = uninitialized

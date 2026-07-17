@@ -9,7 +9,7 @@
 <?import javafx.scene.text.*?>
 <BorderPane prefHeight="680.0" prefWidth="1100.0" style="-fx-background-color: #1a6b3a;" stylesheets="@styles.css"
             xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="scalatro.view.fx.FxController">
+            fx:controller="scalatro.view.fx.FxRoundController">
 
     <!-- ============================================================ -->
     <!-- LEFT COLUMN: Blind info / Goal score / Round score / Chips×Mult -->

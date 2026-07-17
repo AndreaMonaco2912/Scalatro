@@ -32,7 +32,7 @@ class GameViews(scene: Scene):
     * @return
     *   an IO yielding its controller
     */
-  def gameplay: IO[FxController] = switchTo(Resources.Fxml.gameplay)
+  def gameplay: IO[FxRoundController] = switchTo(Resources.Fxml.gameplay)
 
   /** Loads the round won screen.
     *
