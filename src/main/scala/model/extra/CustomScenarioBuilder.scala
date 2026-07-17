@@ -70,7 +70,7 @@ object HandLevelBuilder:
       * @return
       *   a pair of ([[HandType]], [[Level]])
       */
-    infix def lv(level: Level): (HandType, Level) = handType -> Level(level)
+    infix def lv(level: Level): (HandType, Level) = handType -> level
 
 /** A builder for quickly setting up a [[RoundState]] context.
   *

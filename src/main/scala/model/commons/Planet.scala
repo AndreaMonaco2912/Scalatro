@@ -7,10 +7,6 @@ type Level = Int
 
 /** The level of a poker hand */
 object Level:
-  def apply(l: Int): Level =
-    require(l >= 1, "Level must be at least 1")
-    l
-
   /** The initial level for every poker hand */
   def initial: Level = 1
 
