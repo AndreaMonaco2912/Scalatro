@@ -1,5 +1,3 @@
-name: Build PDF
-
 on:
   workflow_dispatch:
 
@@ -9,33 +7,25 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Install Pandoc + LaTeX
+      - name: Install pandoc and LaTeX
         run: |
           sudo apt-get update
-          sudo apt-get install -y pandoc texlive-xetex texlive-fonts-recommended texlive-latex-extra librsvg2-bin
+          sudo apt-get install -y pandoc librsvg2-bin lmodern \
+            texlive-latex-recommended texlive-latex-extra
 
-      - name: Build ordered file list
-        id: files
+      - name: Build PDF
         run: |
-          FILES="docs/index.md"
-          for d in $(find docs -maxdepth 1 -type d -name '[0-9]*-*' -printf '%f\n' | sort -t- -k1,1n); do
-            FILES="$FILES docs/${d}/index.md"
-            RPATH="$RPATH:docs/${d}"
-          done
-          echo "list=$FILES" >> "$GITHUB_OUTPUT"
-          echo "rpath=$RPATH" >> "$GITHUB_OUTPUT"
-
-      - name: Convert to PDF
-        run: |
-          pandoc ${{ steps.files.outputs.list }} \
-            -o output.pdf \
-            --pdf-engine=xelatex \
+          cd docs
+          pandoc [0-9]*-*/index.md \
+            -f markdown-implicit_figures \
+            --resource-path=$(echo [0-9]*-* | tr ' ' ':') \
             --toc \
-            --resource-path=${{ steps.files.outputs.rpath }} \
-            -V geometry:margin=1in
+            --number-sections \
+            --metadata title=Documentazione \
+            -V geometry:margin=1in \
+            -o ../output.pdf 
 
-      - name: Upload PDF
-        uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v5
         with:
           name: documentation-pdf
           path: output.pdf
