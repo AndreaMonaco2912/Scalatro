@@ -20,6 +20,7 @@ Nello sprint 3 è stato integrato lo shop all'interno del gioco, avvalendosi del
 ### Sprint 4
 
 Nell'ultimo sprint il gioco ha raggiunto la sua versione finale:
+- aggiunta dei Blind con possibili effetti 
 - possibilità di visualizzare il mazzo corrente e i livelli delle combinazioni di carte dallo shop
 - calcolo della migliore giocata possibile utilizzando le carte in mano 
 - finalizzazione del DSL per configurare una partita
