@@ -99,6 +99,128 @@ La classe `View` si occupa aggiornare i controller di JavaFx in base allo stato 
 
 ## Mattia Ronchi
 
+Il mio contributo si è concentrato sugli elementi relativi al punteggio di gioco e agli effetti:
+
+- combinazioni di carte (`HandType`)
+- carte pianeta (`Planet`)
+- effetti (`Modification`)
+- carte joker (`Joker`)
+- punteggio (`Score`)
+
+### Combinazioni di carte
+
+Le combinazioni di carte sono state modellate attraverso un'enumerazione come entità statiche dotate di un punteggio di
+base.
+
+Il companion object fornisce i seguenti metodi:
+
+- `detect`: rileva la combinazione di carte valida per il punteggio a partire dalle carte giocate
+- `contains`: determina se un sottoinsieme delle carte giocate può formare la combinazione data
+- `scoringCards`: restituisce le carte che contribuiscono alla combinazione valida per il punteggio
+
+### Carte pianeta
+
+Le carte pianeta sono modellate attraverso un'enumerazione come entità statiche contenenti il punteggio aggiunto alla
+rispettiva combinazione ad ogni utilizzo.
+
+Assieme alle carte pianeta sono state definiti altri tipi di dato relativi al loro utilizzo:
+
+- `Level` rappresenta il livello di una combinazione
+- `HandTypeLevels` rappresenta l'associazione, all'interno di una partita, tra una combinazione di carte e il suo
+  livello
+
+### Effetti
+
+Gli effetti sono uno degli aspetti del gioco più importanti che ho realizzato. Come descritto nei capitoli precedenti,
+essi rappresentano modifiche allo stato della partita che vengono invocate in momenti predefiniti da parte di joker e
+blind.
+
+`Modification` è un trait che rappresenta una funzione che prende un elemento e restituisce la versione a seguito della
+modifica. All'interno del companion object sono definiti metodi di utility che semplificano l'applicazione degli effetti
+all'interno del gioco:
+
+- `applyAll` applica in sequenza una serie di effetti
+- `when` applica una modifica o meno in base al valore di una condizione
+- `run` applica in sequenza una serie di effetti da parte di una serie di fonti
+
+```scala
+object Modification:
+  def run[A, S, I](initial: A, sources: Seq[S], input: I)(
+    pf: PartialFunction[S, I => Seq[Modification[A]]]
+  ): A =
+    sources.collect(pf).flatMap(effect => effect(input)).applyAll(initial)
+
+  extension [A](mods: Seq[Modification[A]])
+    def applyAll(initial: A): A =
+      mods.foldLeft(initial)((acc, mod) => mod.apply(acc))
+```
+
+La modellazione della Modification come trait permette di stabilire a priori le diverse tipologie di modifiche
+effettuabili allo
+stato della partita ed è stata pensata anche con l'intento, poi non realizzato concretamente, di arricchirne
+l'applicazione con
+funzionalità di logging e animazioni grafiche.
+
+Relativamente al concetto di effetti sono inoltre definiti dei capability trait per rappresentare la presenza, da parte
+di una fonte di effetti, di un effetto invocabile in uno specifico momento della partita. Durante l'applicazione degli
+effetti, questi trait sono utilizzati nella partial function di `run` per selezionare le fonti il cui effetto è
+invocabile in quel momento.
+Come esempio mostro l'invocazione degli effetti di tipo "A inizio round" presente in `RoundManager`:
+
+```scala
+def runOnRoundStartEffects(roundState: RoundState): RoundState =
+  val onRoundStartEffectSources = Seq(
+    initialRoundState.gameState.blindProgression.blind
+  ) ++ initialRoundState.gameState.jokers
+  Modification.run(roundState, onRoundStartEffectSources, roundState) {
+    case s: OnRoundStartEffect => s.onRoundStart
+  }
+```
+
+### Joker
+
+I joker sono stati implementati come trait aventi soltanto informazioni statiche e non comportamentali (nome e
+descrizione). La realizzazione dei singoli tipi di joker è stata realizzata attraverso il meccanismo dei mixin, che
+permette di costruire facilmente nuovi tipi di joker aggiungendo diversi tipi di effetti.
+
+Come esempio è mostrata la costruzione di un joker avente 2 effetti applicabili in diversi momenti della partita:
+
+```scala
+case Scholar
+extends JokerType(
+  "Scholar",
+  "Played Aces give +20 Chips and +4 Mult when scored"
+)
+with RanksScored(
+  Seq(Rank.Ace),
+  Seq(
+    HandScoreModification.FlatChips(Chips(20)),
+    HandScoreModification.FlatMult(Mult(4))
+  )
+)
+with OnBuyModifier(
+  Seq(GameStateModification.SetCardPolicy(PresetPolicies.scholarPolicy))
+)
+```
+
+### Punteggio
+
+All'interno di `Score` sono definiti diversi tipi di dato relativi al punteggio:
+
+- Chips e Mult per rappresentare le componenti del punteggio
+- HandScore: punteggio accumulato durante la giocata di una mano, composto da Chips e Mult
+- Score: punteggio a seguito della combinazione di Chips e Mult dall'`HandScore`
+
+Il metodo principale relativo al punteggio è `calculateScore` (e `calculateHandScore` su cui si appoggia) che si occupa
+di calcolare il punteggio effettuato
+dall'intera giocata di una mano. Esso contiene la logica di applicazione ordinata degli effetti, semplificata grazie ai
+metodi presenti in `Modification`. Il metodo ottiene il punteggio di base della combinazione e aggrega le modifiche
+degli effetti fino ad ottenere il punteggio della mano finale. La strategia di combinazione dei valori di Chips e Mult
+all'interno del punteggio finale è definita da `HandScoreCalculator`.
+
+Il calcolo del punteggio utilizza un parametro contestuale `scoreConfig` contenente gli elementi che, oltre alle carte
+giocate, contribuiscono a determinare il punteggio.
+
 ## Samorì Andrea
 
 [Indice](../index.md) | [Indietro](../5-detailed-design/index.md) | [Avanti](../7-testing/index.md)
