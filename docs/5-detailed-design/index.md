@@ -17,6 +17,12 @@ All'interno del sistema c'è la necessità di rappresentare alcune informazioni 
 
 Il mazzo rappresenta una sequenza ordinata di carte che, all'inizio del gioco è composto dalle carte da poker come richiesto al punto **[2.2.7]** dei Requirements. Esiste un modo per disordinare le carte di un mazzo in modo casuale e riproducibile attraverso un seed, come richiesto al punto **[2.2.27]**. Per permettere il punto **[2.1.17]** esiste anche un modo per riordinarlo. Infine esiste un modo per pescare le carte dalla cima del mazzo per il requisito **[[2.2.16]]**.
 
+### Blind
+
+Il gioco è diviso in _Ante_ formate da tre blind ognuna: prima `Small Blind`, poi `Big Blind` e infine `Boss Blind`. Quest'ultimo comporta effetti svantaggiosi per il giocatore (in risposta ai requisiti **[[2.2.2]]** e **[[2.2.3]]**). Viene creata una struttura chiamata `BlindProgression` che modella sia l'avanzamento dei blind sia la gestione del punteggio incrementale da battere (in risposta ai requisiti **[[2.2.4]]** e **[[2.2.5]]**).
+
+Ogni volta che si sfida un `Boss Blind`, questo deve essere scelto in maniera randomica (secondo il seme della partita) tra quelli disponibili (requisito **[2.2.27]**). Per farlo i `Boss Blind` devono essere _Weighable_ (maggiori dettagli nella sezione Randomness).
+
 ### Shop
 
 Il negozio, `Shop` è una struttura dati che in fase di creazione richiede:
