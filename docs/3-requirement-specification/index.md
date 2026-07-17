@@ -75,7 +75,7 @@ In questa sezione viene presentata la specifica dei requisiti.
   - _Mercury_, associato a Pair, aumenta il punteggio di base di +15 Chips e +1 Mult;
   - _Pluto_, associato a High Card, aumenta il punteggio di base di +10 Chips e +1 Mult.
 - **[2.2.12]** Un blind viene affrontato all'interno di un _round_.
-- **[2.2.13]** Le carte joker e i Boss blind invocano degli effetti che modificano alcune caratteristiche della partita. Un effetto ha un preciso momento della partita in cui viene invocato.
+- **[2.2.13]** Le carte joker e i Boss blind invocano degli effetti che modificano alcune caratteristiche della partita. Ciascun effetto viene invocato in un preciso momento della partita.
 - **[2.2.14]** Gli effetti dei blind hanno priorità su quelli delle carte joker. Relativamente alla posizione delle carte joker, gli effetti sono applicati da sinistra a destra.
 - **[2.2.15]** All'inizio del round il deck viene mescolato e al giocatore viene assegnata una mano.
 - **[2.2.16]** Una mano è composta da 8 carte, ottenute pescandole dal deck. Qualora non sia possibile pescare dal deck il numero di carte necessarie a raggiungere la dimensione della mano (il deck ha esaurito le carte), essa avrà un numero ridotto di carte.
@@ -110,7 +110,7 @@ In questa sezione viene presentata la specifica dei requisiti.
   - _The Goad_. Effetto "A carta a segno": tutte le carte di Picche sono debuffed
   - _The Window_. Effetto "A carta a segno": tutte le carte di quadri sono debuffed
   - _The Plant_. Effetto "A carta a segno": tutte le carte "figura" (Re, Regina, Jack) sono debuffed
-- **[2.2.15]** Le carte joker sono le seguenti:
+- **[2.2.27]** Le carte joker sono le seguenti:
   - _Clever Joker_. Effetto "Al termine di mano giocata": +80 Chips se la mano giocata contiene un Two Pair;
   - _Crafty Joker_. Effetto "Al termine di mano giocata": +80 Chips se la mano giocata contiene un Flush;
   - _Crazy Joker_. Effetto "Al termine di mano giocata": +12 Mult se la mano giocata contiene una Straight;
@@ -124,22 +124,21 @@ In questa sezione viene presentata la specifica dei requisiti.
   - _Fibonacci_. Effetto "A carta a segno": +8 Mult se la carta è Asso, Due, Tre, Cinque, Otto;
   - _Scholar_. Effetto "A carta a segno": +20 Chips e +4 Mult se la carta è un Asso. Effetto "Ad acquisto": aumento della probabilità di ottenere assi e riduzione della probabilità di ottenere carte figura nei pacchetti dello shop;
   - _Juggler_. Effetto "A inizio round": +1 giocata e +1 scarto.
-- **[2.2.27]** Lo svolgimento della partita è condizionato da un seme (_seed_), ovvero un numero che determina la sequenza e l'estrazione degli eventi che sfruttano casualità. Dato lo stesso seed, è possibile rigiocare la stessa partita. Gli eventi influenzati dal seed sono:
+- **[2.2.28]** Lo svolgimento della partita è condizionato da un seme (_seed_), ovvero un numero che determina la sequenza e l'estrazione degli eventi che sfruttano casualità. Dato lo stesso seed, è possibile rigiocare la stessa partita. Gli eventi influenzati dal seed sono:
   - mescolamento del mazzo
   - contenuto dei pacchetti nello shop
   - apparizione dei boss blind
-- **[2.2.28]** La ricerca di un seed avviene specificando un numero arbitrario di vincoli e il numero di round a cui essi sono associati. Durante la ricerca avvengono varie simulazioni fino a trovare il seed richiesto. I vincoli riguardano:
+- **[2.2.29]** La ricerca di un seed avviene specificando un numero arbitrario di vincoli e il numero di round a cui essi sono associati. Durante la ricerca avvengono varie simulazioni fino a trovare il seed richiesto. I vincoli riguardano:
   - la presenza di carte nella mano a inizio di un round
   - la presenza di una combinazione di carte nella mano a inizio round
   - la presenza di una specifica carta, joker o pianeta all'interno di un pacchetto alla fine di un round
-- **[2.2.29]** La ricerca di seed funziona grazie alle seguenti assunzioni:
+- **[2.2.30]** La ricerca di seed funziona grazie alle seguenti assunzioni:
   - Per ogni vincolo sul contenuto di un pacchetto, si assume che il giocatore scelga il contenuto specificato
   - Per ogni round in cui non è specificato nessun vincolo sul contenuto di un pacchetto, si assume che nessun pacchetto venga scelto
 
 ## Requisiti non funzionali
 
 - **[3.1]** Il sistema deve fornire un'interfaccia grafica che aiuti il giocatore nella scelta delle azioni in maniera intuitiva e rapida.
-// TODO: cambiare
 - **[3.2]** L'interfaccia grafica deve ricordare il gioco originale.
 
 ## Requisiti di implementazione
