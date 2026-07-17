@@ -10,18 +10,18 @@ Il contributo personale sul progetto ha riguardato soprattutto l'implementazione
 
 - `GameState`: una semplice case class contenente tutte le informazioni persistenti della partita;
 - Elementi di Gameplay:
-    - `Shop`
-    - `Deck`
+  - `Shop`
+  - `Deck`
 - Schermate di gioco, e con esse la loro integrazione nel GamePlay Loop:
-    - Schermata di sconfitta e vittoria
-    - Schermata di informazioni del `Deck`
-    - Schermata di informazioni dei livelli delle mani
-    - Schermata di del negozio
-    - Schermata di apertura dei pacchetti
+  - Schermata di sconfitta e vittoria
+  - Schermata di informazioni del `Deck`
+  - Schermata di informazioni dei livelli delle mani
+  - Schermata di del negozio
+  - Schermata di apertura dei pacchetti
 
 ### Model View Update
 
-L'implementazione di `MVU` è nata come un refactor rispetto al codice precedente, questo si proponeva l'obiettivo di mantenere, quanto più possibile, inalterato e funzionante il codice già scritto, ma permettendo di ridurre il debito tecnico e semplificando l'aggiunta di nuove schermate e feature aderendo il più possibile alle logiche di funzionamento del pattern selezionato.
+L'implementazione di `MVU` è nata come un refactor rispetto al codice precedente, questo si proponeva l'obiettivo di mantenere, quanto più possibile, inalterato e funzionante il codice già scritto non direttamente interessato, ma permettendo di ridurre il debito tecnico e semplificando l'aggiunta di nuove schermate e feature aderendo il più possibile alle logiche di funzionamento del pattern selezionato.
 
 #### Runtime
 
@@ -49,6 +49,8 @@ La gestione dei comandi avviene attraverso un mach case che a seconda del comand
 
 In output rilascia il `Model` che derivante dalla computazione e l'eventuale `Cmd` da eseguire.
 
+`Update` ha anche una funzione `init` che imposta ritorna il `Model.Playing` e il `Cmd.DealFirstRound`.
+
 #### Model, Cmd, Msg
 
 Model, Cmd e Msg sono stati implementati come degli enum che permettono di rappresentare rispettivamente tutti gli stati della partita, tutti i comandi da eseguire a Runtime e tutti i messaggi utilizzati.
@@ -58,6 +60,25 @@ I `Cmd` sono:
 - `NoOp`: che indica l'assenza di un comando generato, quindi l'operazione è stata gestita completamente in Update.
 - `Deal(GameState)` e `DealFirstRound` che richiedono a `Runtime` di creare un round, in particolare `Deal` fa creare il round successivo e DealFirst il primo.
 - `BuildShop` richiede a `Runtime` di creare lo shop.
+
+Con il sono fine di approfondire tutti le funzioni che hanno i messaggi e il loro risultato sul model: indichiamo con `Model ! Msg` un metodo che chiama `Update` su `(Model, Msg)` e ritorna solo il prossimo `Model` senza definire il comando, viceversa `Model ? Msg` fa lo stesso ritornando solo il `Cmd` che ne deriva ignorando il model. Di seguito l'elenco con tutte le reazioni che porta `Update`:
+
+- `Model.Playing ! Msg.RoundWon` => `Model.RoundWon`
+- `Model.RoundWon ! Msg.ShopReady` => `Model.InShop`
+- `Model.RoundWon ? Msg.NextRound` => `Cmd.BuildShop`
+- `Model.RoundLost ? Msg.Restart` => `Cmd.DealFirstRound`
+- `Model.InShop ! Msg.OpenCardPack` => `Model.OpeningPack`
+- `Model.InShop ! Msg.OpenPlanetPack` => `Model.OpeningPack`
+- `Model.InShop ! Msg.OpenJokerPack` => `Model.OpeningPack`
+- `Model.InShop ? Msg.SkipShop` => `Cmd.Deal`
+- `Model.OpeningPack ? Msg.SelectCard` => `Cmd.Deal`
+- `Model.OpeningPack ? Msg.SelectPlanet` => `Cmd.Deal`
+- `Model.OpeningPack ? Msg.SelectJoker` => `Cmd.Deal`
+- `Model.OpeningPack ? Msg.SkipPack` => `Cmd.Deal`
+- `Model.ShowDeck ! Msg.CloseDeck` => `previousModel`
+- `Model.ShowLevels ! Msg.CloseLevels` => `previousModel`
+- `Model.AnyStateWithDeck ! Msg.ShowDeck` => `Model.ShowDeck`
+- `Model.AnyStateWithLevel ! Msg.ShowLevels` => `Model.ShowLevels`
 
 ### Deck
 
@@ -72,7 +93,7 @@ Il metodo default è presente nel `companion object` di Shop e si occupa anche d
 
 ### Schermate di gioco
 
-Per la creazione delle schermate di gioco si è fatto uso di `JavaFx` con `FXML`. Vengono utilizzati dei file fxml per definire gli aspetti grafici statici delle schermate e ad essi vengono associati dei `Controller` per modellare gli aspetti dinamici e le interazioni.
+Per la creazione delle schermate di gioco si è fatto uso di `JavaFx` con `FXML`. Vengono utilizzati dei file fxml per definire gli aspetti grafici statici delle schermate e ad essi vengono associati dei `Controller` per modellare gli aspetti dinamici e le interazioni, questi controlli hanno metodi pubblici per aggiornare le loro grafiche che vengono al thread `Platform` tramite `JavaFx`.
 
 La classe `View` si occupa aggiornare i controller di JavaFx in base allo stato della partita. In particolare preso in input uno stato esegue un match case per aggiornare la schermata. Qui utilizza uno `ScreenRouter` che cambia la `root` dell'immagine a quella richiesta e ritorna un `IO[Controller]` su cui poi la view chiama eventualmente ulteriori funzioni per concludere l'aggiornamento.
 
