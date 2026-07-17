@@ -79,29 +79,29 @@ In questa sezione viene presentata la specifica dei requisiti.
 - **[2.2.14]** Gli effetti dei blind hanno priorità su quelli delle carte joker. Relativamente alla posizione delle carte joker, gli effetti sono applicati da sinistra a destra.
 - **[2.2.15]** All'inizio del round il deck viene mescolato e al giocatore viene assegnata una mano.
 - **[2.2.16]** Una mano è composta da 8 carte, ottenute pescandole dal deck. Qualora non sia possibile pescare dal deck il numero di carte necessarie a raggiungere la dimensione della mano (il deck ha esaurito le carte), essa avrà un numero ridotto di carte.
-- **[2.2.18]** Durante il round è possibile effettuare le seguenti azioni:
+- **[2.2.17]** Durante il round è possibile effettuare le seguenti azioni:
   - Giocare: selezionare tra 1 e 5 carte di cui viene calcolato il punteggio, sommato a quello del blind corrente. Infine le carte giocate vengono scartate;
   - Scartare: selezionare tra 1 e 5 carte che vengono rimosse dalla mano senza essere reinserite nel mazzo. Una volta rimosse, vengono pescate un pari numero di carte dal mazzo;
   - Cambiare l'ordine delle carte joker.
-- **[2.2.19]** Il calcolo del punteggio è suddiviso nelle seguenti fasi:
+- **[2.2.18]** Il calcolo del punteggio è suddiviso nelle seguenti fasi:
     1. Si considerano le carte selezionate e si determina il punteggio di base della giocata considerando la combinazione di carte e il corrispettivo livello. La combinazione di carte è scelta seguendo la proprità stabilita in **[2.2.18]**.
     2. Vengono applicati gli effetti di tipo "A mano giocata" del boss blind e delle carte joker.
     3. Ogni carta che fa parte della combinazione contribuisce al punteggio aggiungendo al numero di Chips corrente il suo valore (11 per l'Asso, 10 per Re,Regina,Jack,Dieci, 9 per Nove e così via).
     4. Dopo il contributo di ogni carta vengono invocati gli effetti di tipo "A carta a segno" di boss blind e joker.
     5. Al termine dei contributi e dei relativi effetti, vengono applicati gli effetti di tipo "Al termine di mano giocata" di boss blind e joker.
     6. Il punteggio complessivo della mano è calcolato combinando Chips e Mult accumulati fino a questo momento.
-- **[2.2.20]** Una carta può venire _debuffed_. In questo caso la fase 3 e 4 del calcolo del punteggio ([2.2.19]) vengono saltate.
-- **[2.2.21]** In ciascun round il giocatore ha a disposizione un numero finito di giocate e scarti.
-- **[2.2.22]** Un round non viene superato, dunque la partita termina, quando si verifica una delle seguenti situazioni:
+- **[2.2.19]** Una carta può venire _debuffed_. In questo caso la fase 3 e 4 del calcolo del punteggio ([2.2.19]) vengono saltate.
+- **[2.2.20]** In ciascun round il giocatore ha a disposizione un numero finito di giocate e scarti.
+- **[2.2.21]** Un round non viene superato, dunque la partita termina, quando si verifica una delle seguenti situazioni:
     1. il giocatore non ha raggiunto il punteggio richiesto nel numero di giocate a disposizione
     2. il giocatore ha esaurito le carte in mano e nel mazzo senza raggiungere il punteggio richiesto.
-- **[2.2.23]** Al superamento di un round, il giocatore accede al negozio (_shop_), dove ha la possibilità di scegliere al più 1 tra i seguenti pacchetti:
+- **[2.2.22]** Al superamento di un round, il giocatore accede al negozio (_shop_), dove ha la possibilità di scegliere al più 1 tra i seguenti pacchetti:
   - pacchetto carte da gioco (_standard pack_)
   - pacchetto carte pianeta (_celestial pack_)
   - pacchetto carta joker (_buffoon pack_).
-- **[2.2.24]** Ciascun pacchetto contiene fino a 3 elementi e il giocatore può selezionarne al più 1.
-- **[2.2.25]** Il buffoon pack propone solamente joker di cui non si è a disposizione.
-- **[2.2.26]** I boss blind sono i seguenti:
+- **[2.2.23]** Ciascun pacchetto contiene fino a 3 elementi e il giocatore può selezionarne al più 1.
+- **[2.2.24]** Il buffoon pack propone solamente joker di cui non si è a disposizione.
+- **[2.2.25]** I boss blind sono i seguenti:
   - _The Needle_. Effetto "A inizio round": riduce il numero delle giocate a 1
   - _The Water_. Effetto "A inizio round": azzera il numero di scarti
   - _The Flint_. Effetto "A mano giocata": Chips e Mult del punteggio di base per ogni combinazione vengono dimezzati
@@ -110,7 +110,7 @@ In questa sezione viene presentata la specifica dei requisiti.
   - _The Goad_. Effetto "A carta a segno": tutte le carte di Picche sono debuffed
   - _The Window_. Effetto "A carta a segno": tutte le carte di quadri sono debuffed
   - _The Plant_. Effetto "A carta a segno": tutte le carte "figura" (Re, Regina, Jack) sono debuffed
-- **[2.2.27]** Le carte joker sono le seguenti:
+- **[2.2.26]** Le carte joker sono le seguenti:
   - _Clever Joker_. Effetto "Al termine di mano giocata": +80 Chips se la mano giocata contiene un Two Pair;
   - _Crafty Joker_. Effetto "Al termine di mano giocata": +80 Chips se la mano giocata contiene un Flush;
   - _Crazy Joker_. Effetto "Al termine di mano giocata": +12 Mult se la mano giocata contiene una Straight;
@@ -124,15 +124,15 @@ In questa sezione viene presentata la specifica dei requisiti.
   - _Fibonacci_. Effetto "A carta a segno": +8 Mult se la carta è Asso, Due, Tre, Cinque, Otto;
   - _Scholar_. Effetto "A carta a segno": +20 Chips e +4 Mult se la carta è un Asso. Effetto "Ad acquisto": aumento della probabilità di ottenere assi e riduzione della probabilità di ottenere carte figura nei pacchetti dello shop;
   - _Juggler_. Effetto "A inizio round": +1 giocata e +1 scarto.
-- **[2.2.28]** Lo svolgimento della partita è condizionato da un seme (_seed_), ovvero un numero che determina la sequenza e l'estrazione degli eventi che sfruttano casualità. Dato lo stesso seed, è possibile rigiocare la stessa partita. Gli eventi influenzati dal seed sono:
+- **[2.2.27]** Lo svolgimento della partita è condizionato da un seme (_seed_), ovvero un numero che determina la sequenza e l'estrazione degli eventi che sfruttano casualità. Dato lo stesso seed, è possibile rigiocare la stessa partita. Gli eventi influenzati dal seed sono:
   - mescolamento del mazzo
   - contenuto dei pacchetti nello shop
   - apparizione dei boss blind
-- **[2.2.29]** La ricerca di un seed avviene specificando un numero arbitrario di vincoli e il numero di round a cui essi sono associati. Durante la ricerca avvengono varie simulazioni fino a trovare il seed richiesto. I vincoli riguardano:
+- **[2.2.28]** La ricerca di un seed avviene specificando un numero arbitrario di vincoli e il numero di round a cui essi sono associati. Durante la ricerca avvengono varie simulazioni fino a trovare il seed richiesto. I vincoli riguardano:
   - la presenza di carte nella mano a inizio di un round
   - la presenza di una combinazione di carte nella mano a inizio round
   - la presenza di una specifica carta, joker o pianeta all'interno di un pacchetto alla fine di un round
-- **[2.2.30]** La ricerca di seed funziona grazie alle seguenti assunzioni:
+- **[2.2.29]** La ricerca di seed funziona grazie alle seguenti assunzioni:
   - Per ogni vincolo sul contenuto di un pacchetto, si assume che il giocatore scelga il contenuto specificato
   - Per ogni round in cui non è specificato nessun vincolo sul contenuto di un pacchetto, si assume che nessun pacchetto venga scelto
 
