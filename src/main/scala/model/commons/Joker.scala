@@ -5,6 +5,8 @@ import model.game.{GameState, GameStateModification}
 import model.rng.{PresetPolicies, Weighable}
 import model.round.{RoundState, RoundStateModification}
 
+/** Trait which represents a joker.
+  */
 sealed trait Joker extends Weighable:
 
   /** @return
@@ -30,7 +32,7 @@ sealed trait HandTypeContained(
       HandType.detect(cards) == handType
     )(modification)
 
-/** Trait which increases the score with an addition by a certain amount
+/** Trait which increases the score given by a card with a certain suit
   */
 sealed trait SuitScored(suit: Suit, modification: HandScoreModification)
     extends OnCardScoredEffect:
@@ -40,6 +42,8 @@ sealed trait SuitScored(suit: Suit, modification: HandScoreModification)
       card.suit == suit
     )(modification)
 
+/** Trait which increases the score given by a card with a certain rank
+  */
 sealed trait RanksScored(
     ranks: Seq[Rank],
     modifications: Seq[HandScoreModification]
@@ -49,11 +53,15 @@ sealed trait RanksScored(
       modifications
     )
 
+/** Trait which generically apply modifications on the start of the round
+  */
 sealed trait OnRoundStartModifier(modifications: Seq[RoundStateModification])
     extends OnRoundStartEffect:
   override def onRoundStart(round: RoundState): Seq[RoundStateModification] =
     modifications
 
+/** Trait which generically apply modifications when an entity is bought
+  */
 sealed trait OnBuyModifier(modifications: Seq[GameStateModification])
     extends OnBuyEffect:
   override def onBuy(gameState: GameState): Seq[GameStateModification] =
