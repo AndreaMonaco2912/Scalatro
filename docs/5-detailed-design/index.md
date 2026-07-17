@@ -5,12 +5,26 @@
 ### GameState
 
 All'interno del sistema c'è la necessità di rappresentare alcune informazioni che persistono tra un round e l'altro. Queste informazioni sono raggruppate all'intern di _GameState_ e riguardano:
-- le carte di cui è composto un Deck;
+
+- le carte di cui è composto un `Deck`;
 - dimensione della mano;
 - numero di giocate e scarti per ogni round;
 - informazioni sul blind corrente;
 - i joker accumulati;
 - i livelli delle combinazioni di carte.
+
+### Deck
+
+Il mazzo rappresenta una sequenza ordinata di carte che, all'inizio del gioco è composto dalle carte da poker come richiesto al punto **[2.2.7]** dei Requirements. Esiste un modo per disordinare le carte di un mazzo in modo casuale e riproducibile attraverso un seed, come richiesto al punto **[2.2.27]**. Per permettere il punto **[2.1.17]** esiste anche un modo per riordinarlo. Infine esiste un modo per pescare le carte dalla cima del mazzo per il requisito **[[2.2.16]]**.
+
+### Shop
+
+Il negozio, `Shop` è una struttura dati che in fase di creazione richiede:
+
+- rng per il punto **[[2.2.27]]**;
+- `SelectionPolicies` (descritte successivamente);
+- una lista di Joker bannati per permettere il punto **[[2.2.25]]**;
+Al suo interno contiene 3 pacchetti da lui creati dei 3 tipi disponibili nel gioco come richiesto al punto **[[2.2.23]]**.
 
 ### RoundState
 

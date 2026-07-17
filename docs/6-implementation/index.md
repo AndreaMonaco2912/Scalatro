@@ -68,6 +68,8 @@ I metodi: `shuffle`, `sort` e `draw` sono stati implementati come extension meth
 
 Lo `Shop` è una semplice case class che viene tipicamente creata con il metodo `default` che prende in input una lista dei Joker e le selection policies, inoltre il parametro contestuale dell'rng per permettere di generare i pacchetti.
 
+Il metodo default è presente nel `companion object` di Shop e si occupa anche della creazione dei 3 pacchetti contenuti.
+
 ### Schermate di gioco
 
 Per la creazione delle schermate di gioco si è fatto uso di `JavaFx` con `FXML`. Vengono utilizzati dei file fxml per definire gli aspetti grafici statici delle schermate e ad essi vengono associati dei `Controller` per modellare gli aspetti dinamici e le interazioni.

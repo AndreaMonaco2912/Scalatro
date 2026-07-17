@@ -28,7 +28,7 @@ In questa sezione viene presentata la specifica dei requisiti.
 - **[2.1.14]** L'utente deve poter vedere il numero di giocate e scarti rimanenti per il blind corrente.
 - **[2.1.15]** L'utente deve poter vedere quali carte tra quelle giocate contribuiscono al punteggio.
 - **[2.1.16]** L'utente deve poter vedere, al superamento di un blind o in caso di sconfitta, una schermata di riepilogo del blind con le seguenti informazioni: messaggio di superamento/sconfitta, punteggio richiesto dal blind, punteggio effettuato, numero di giocate rimanenti e numero di scarti rimanenti.
-- **[2.1.17]** L'utente deve poter visualizzare le carte da gioco presenti nel mazzo.
+- **[2.1.17]** L'utente deve poter visualizzare le carte da gioco presenti nel mazzo in ordine.
 - **[2.1.18]** L'utente deve poter visualizzare i livelli di ciascuna combinazione di carte.
 - **[2.1.19]** L'utente deve poter selezionare al più un pacchetto dal negozio.
 - **[2.1.20]** L'utente deve poter selezionare al più un oggetto da un pacchetto.
