@@ -4,7 +4,7 @@ package runtime
 import app.Msg.RoundAction
 import app.{Cmd, Model, Msg, Update}
 import model.game.GameState
-import model.rng.{ScalatroRng, SelectionPolicies}
+import model.rng.ScalatroRng
 import model.rng.Types.Seed
 import model.round.{RoundManager, RoundState}
 import model.shop.Shop
@@ -59,11 +59,15 @@ class Runtime(screens: GameViews, seed: Seed = Seed.random):
 
   private def perform(cmd: Cmd, queue: Queue[IO, Msg], view: FxView): IO[Unit] =
     cmd match
-      case Cmd.NoOp          => IO.unit
-      case Cmd.Deal(gs)      => runRound(view, queue, gs)
-      case Cmd.BuildShop(gs) =>
+      case Cmd.NoOp           => IO.unit
+      case Cmd.DealFirstRound => runFirstRound(view, queue)
+      case Cmd.Deal(gs)       => runRound(view, queue, gs.advanceBlind)
+      case Cmd.BuildShop(gs)  =>
         IO(Shop.default(gs.shopInformation, gs.selectionPolicies))
           .flatMap(s => queue.offer(Msg.InternalEffect.ShopReady(gs, s)))
+
+  private def runFirstRound(view: FxView, queue: Queue[IO, Msg]): IO[Unit] =
+    runRound(view, queue, GameState.initial)
 
   private def runRound(
       view: FxView,

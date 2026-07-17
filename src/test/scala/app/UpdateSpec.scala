@@ -6,30 +6,60 @@ import model.extra.CardBuilder.*
 import model.extra.GameStateBuilder.DSL.*
 import model.extra.RoundBuilder.DSL.*
 import model.extra.{GameStateBuilder, RoundBuilder}
-import model.game.{BossBlind, GameState}
+import model.game.GameState
 import model.round.RoundState
 import model.shop.Shop
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import model.rng.{ScalatroRng, SelectionPolicy}
-import model.rng.SelectionPolicy.UniformSelection
 
+/** A small internal DSL to make `Update` tests more readable.
+  *
+  * It provides a compact way to simulate the delivery of a [[Msg]] to a
+  * [[Model]], letting each test focus on the next model, the command, or both.
+  *
+  * {{{
+  * val next = model ! Msg.Draw          // only the resulting model
+  * val cmd  = model ? Msg.Draw          // only the resulting command
+  * val both = model on Msg.Draw         // the full (Model, Cmd) pair
+  * }}}
+  */
 object UpdateDSL:
-  extension (model: Model)
-    infix def on(msg: Msg)(using ScalatroRng): (Model, Cmd) = Update.update(model, msg)
 
-    infix def !(msg: Msg)(using ScalatroRng): Model = model on msg match
+  extension (model: Model)
+    /** Delivers `msg` to `model` and returns the complete result of update
+      * step.
+      *
+      * @param msg
+      *   the message to deliver
+      * @return
+      *   the pair of the next model and the command it emits
+      */
+    infix def on(msg: Msg): (Model, Cmd) =
+      Update.update(model, msg)
+
+    /** Delivers `msg` to `model` and returns the next model.
+      *
+      * @param msg
+      *   the message to deliver
+      * @return
+      *   the next model
+      */
+    infix def !(msg: Msg): Model = model on msg match
       case (m, _) => m
 
-    infix def ?(msg: Msg)(using ScalatroRng): Cmd = model on msg match
+    /** Delivers `msg` to `model` and returns the command that derives from it.
+      *
+      * @param msg
+      *   the message to deliver
+      * @return
+      *   the emitted command
+      */
+    infix def ?(msg: Msg): Cmd = model on msg match
       case (_, c) => c
 
 class UpdateSpec extends AnyFlatSpec with Matchers:
   export UpdateDSL.*
-
-  given SelectionPolicy[BossBlind] = UniformSelection[BossBlind]
-  given ScalatroRng = ScalatroRng.default
 
   private val gs: GameState = GameStateBuilder.configure {
     Jokers := Seq(JokerType.CleverJoker)
@@ -55,7 +85,8 @@ class UpdateSpec extends AnyFlatSpec with Matchers:
       .RoundLost(round)
 
   "InternalEffect.ShopReady" should "move to InShop" in:
-    Model.RoundWon(round) ! Msg.InternalEffect.ShopReady(gs, shop) shouldBe Model
+    Model
+      .RoundWon(round) ! Msg.InternalEffect.ShopReady(gs, shop) shouldBe Model
       .InShop(gs, shop)
 
   "RoundWon on NextRound" should "Build the shop" in:
@@ -80,30 +111,28 @@ class UpdateSpec extends AnyFlatSpec with Matchers:
       .OpeningPack(gs, OpenPack.Jokers(shop.jokerPack))
 
   "InShop on SkipShop" should "Advanced blind" in:
-    Model.InShop(gs, shop) ? Msg.ShopAction.SkipShop shouldBe Cmd.Deal(
-      gs.advanceBlind
-    )
+    Model.InShop(gs, shop) ? Msg.ShopAction.SkipShop shouldBe Cmd.Deal(gs)
 
   "OpeningPack on SelectCard" should "Advance Blind on a game with the card added" in:
     val card = A of S
     Model.OpeningPack(gs, OpenPack.Cards(shop.cardPack)) ? Msg.PackSelection
-      .SelectCard(card) shouldBe Cmd.Deal(gs.addCard(card).advanceBlind)
+      .SelectCard(card) shouldBe Cmd.Deal(gs.addCard(card))
 
   "OpeningPack on SelectPlanet" should "Advance Blind on a game with the planet used" in:
     val planet = Planet.Mars
     Model.OpeningPack(gs, OpenPack.Planets(shop.planetPack)) ? Msg.PackSelection
-      .SelectPlanet(planet) shouldBe Cmd.Deal(gs.usePlanet(planet).advanceBlind)
+      .SelectPlanet(planet) shouldBe Cmd.Deal(gs.usePlanet(planet))
 
   "OpeningPack on SelectJoker" should "Advance Blind on a game with the joker added" in:
     val joker = JokerType.Arrowhead
     Model.OpeningPack(gs, OpenPack.Jokers(shop.jokerPack)) ? Msg.PackSelection
-      .SelectJoker(joker) shouldBe Cmd.Deal(gs.addJoker(joker).advanceBlind)
+      .SelectJoker(joker) shouldBe Cmd.Deal(gs.addJoker(joker))
 
   "OpeningPack on SkipPack" should "Advance Blind" in:
     Model.OpeningPack(
       gs,
       OpenPack.Cards(shop.cardPack)
-    ) ? Msg.PackSelection.SkipPack shouldBe Cmd.Deal(gs.advanceBlind)
+    ) ? Msg.PackSelection.SkipPack shouldBe Cmd.Deal(gs)
 
   "ShowDeck on CloseDeck" should "return to the previous model" in:
     val previous = Model.InShop(gs, shop)
@@ -143,4 +172,4 @@ class UpdateSpec extends AnyFlatSpec with Matchers:
       Model.ShowLevels(gs.levels, Model.InShop(gs, shop))
 
   "init" should "start a new game" in:
-    Update.init shouldBe (Model.Playing, Cmd.Deal(GameState.initial))
+    Update.init shouldBe (Model.Playing, Cmd.DealFirstRound)

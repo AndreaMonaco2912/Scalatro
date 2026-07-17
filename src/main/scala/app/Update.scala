@@ -3,7 +3,6 @@ package app
 
 import model.game.GameState
 import model.commons.{Deck, HandTypeLevels, Modification, OnBuyEffect}
-import model.rng.ScalatroRng
 
 /** The update function of the MVU loop.
   *
@@ -15,7 +14,7 @@ object Update:
 
   /** The initial model and command of the application. */
   val init: (Model, Cmd) =
-    (Model.Playing, Cmd.Deal(GameState.initial))
+    (Model.Playing, Cmd.DealFirstRound)
 
   /** Computes the next model and the command to perform.
     *
@@ -26,7 +25,7 @@ object Update:
     * @return
     *   the next model and the command
     */
-  def update(model: Model, msg: Msg)(using ScalatroRng): (Model, Cmd) =
+  def update(model: Model, msg: Msg): (Model, Cmd) =
     msg match
       case effect: Msg.InternalEffect => fromEffect(effect)
       case action                     => fromAction(model, action)
@@ -40,9 +39,7 @@ object Update:
       case Msg.InternalEffect.ShopReady(gs, shop) =>
         (Model.InShop(gs, shop), Cmd.NoOp)
 
-  private def fromAction(model: Model, msg: Msg)(using
-      ScalatroRng
-  ): (Model, Cmd) =
+  private def fromAction(model: Model, msg: Msg): (Model, Cmd) =
     (model, msg) match
       case (Model.RoundWon(round), Msg.RoundEndAction.NextRound) =>
         (model, Cmd.BuildShop(round.gameState))
@@ -51,7 +48,7 @@ object Update:
       case (m: Model.InShop, action: Msg.ShopAction) =>
         inShop(m, action)
       case (Model.OpeningPack(gs, _), selection: Msg.PackSelection) =>
-        (Model.Playing, Cmd.Deal(applySelection(gs, selection).advanceBlind))
+        (Model.Playing, Cmd.Deal(applySelection(gs, selection)))
       case (Model.ShowDeck(_, prev), Msg.ManagementAction.CloseDeck) =>
         (prev, Cmd.NoOp)
       case (Model.ShowLevels(_, prev), Msg.ManagementAction.CloseLevels) =>
@@ -80,7 +77,7 @@ object Update:
   private def inShop(
       model: Model.InShop,
       action: Msg.ShopAction
-  )(using ScalatroRng): (Model, Cmd) =
+  ): (Model, Cmd) =
     val gs = model.gameState
     action match
       case Msg.ShopAction.OpenCardPack =>
@@ -93,7 +90,7 @@ object Update:
       case Msg.ShopAction.OpenJokerPack =>
         (Model.OpeningPack(gs, OpenPack.Jokers(model.shop.jokerPack)), Cmd.NoOp)
       case Msg.ShopAction.SkipShop =>
-        (Model.Playing, Cmd.Deal(gs.advanceBlind))
+        (Model.Playing, Cmd.Deal(gs))
 
   private def deckOf(model: Model): Option[Deck] = model match
     case Model.RoundWon(round)    => Some(round.gameState.deck)

@@ -21,3 +21,7 @@ enum Cmd:
     *   the game state of the match
     */
   case BuildShop(gameState: GameState)
+
+  /** Starts the First Round
+    */
+  case DealFirstRound
