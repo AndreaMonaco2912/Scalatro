@@ -31,6 +31,8 @@ enum HandType(val baseScore: HandScore, val name: String):
 
 object HandType:
 
+  private val playingHandSize = 5
+
   /** Check if the combinations formed by the playing cards contain the given
     * hand type
     * @param cards
@@ -40,25 +42,32 @@ object HandType:
     * @return
     */
   def contains(cards: Seq[Card], handType: HandType): Boolean =
-    val isFlush = cards.sizeIs == 5 && cards.map(_.suit).distinct.sizeIs == 1
+    checkNumberOfPlayingCards(cards)
+    val isFlush =
+      cards.sizeIs == playingHandSize && cards.map(_.suit).distinct.sizeIs == 1
     val ranks = cards.groupBy(_.rank)
     val containsAce = ranks.contains(Rank.Ace)
     val normalStraight =
-      cards.sizeIs == 5 && cards.map(_.rank.value).sorted.sliding(2).forall {
-        case Seq(a, b) => b - a == 1
-      }
-    val aceLowStraight = cards.sizeIs == 5 && containsAce && (1 +: cards
-      .map(_.rank.value)
-      .sorted
-      .dropRight(1)).sliding(2).forall { case Seq(a, b) => b - a == 1 }
+      cards.sizeIs == playingHandSize && cards
+        .map(_.rank.value)
+        .sorted
+        .sliding(2)
+        .forall { case Seq(a, b) =>
+          b - a == 1
+        }
+    val aceLowStraight =
+      cards.sizeIs == playingHandSize && containsAce && (1 +: cards
+        .map(_.rank.value)
+        .sorted
+        .dropRight(1)).sliding(2).forall { case Seq(a, b) => b - a == 1 }
     val isStraight = normalStraight || aceLowStraight
     val numRanks = ranks.values.map(_.size).toSeq.sorted.reverse
     val isFullHouse = numRanks.take(2) == Seq(3, 2)
 
     handType match
-      case FlushFive     => numRanks.contains(5) && isFlush
+      case FlushFive     => numRanks.contains(playingHandSize) && isFlush
       case FlushHouse    => isFullHouse && isFlush
-      case FiveOfAKind   => numRanks.contains(5)
+      case FiveOfAKind   => numRanks.contains(playingHandSize)
       case StraightFlush => isStraight && isFlush
       case FourOfAKind   => numRanks.exists(_ >= 4)
       case FullHouse     => isFullHouse
@@ -76,6 +85,7 @@ object HandType:
     *   the hand type
     */
   def detect(cards: Seq[Card]): HandType =
+    checkNumberOfPlayingCards(cards)
     HandType.values
       .findLast(handType => contains(cards, handType))
       .getOrElse(HighCard)
@@ -87,6 +97,7 @@ object HandType:
     *   the scoring cards
     */
   def scoringCards(cards: Seq[Card]): Seq[Card] =
+    checkNumberOfPlayingCards(cards)
     val handType: HandType = detect(cards)
     val ranks = cards.groupBy(_.rank)
 
@@ -115,3 +126,6 @@ object HandType:
         cards.maxByOption(_.rank.ordinal) match
           case None    => Seq.empty
           case Some(c) => Seq(c)
+
+  private def checkNumberOfPlayingCards(cards: Seq[Card]): Unit =
+    require(cards.nonEmpty && cards.length <= 5)
