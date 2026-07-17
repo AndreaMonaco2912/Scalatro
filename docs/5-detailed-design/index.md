@@ -29,6 +29,7 @@ Al suo interno contiene 3 pacchetti da lui creati dei 3 tipi disponibili nel gio
 ### RoundState
 
 Il ciclo di vita di alcune informazioni invece è limitato solamente al round corrente e sono necessarie per il suo svolgimento. Queste sono raggruppate in _RoundState_ e riguardano:
+
 - il punteggio attuale;
 - le carte presenti nella mano;
 - le carte rimaste all'interno del mazzo;
@@ -41,13 +42,23 @@ Nello specifico, il mazzo iniziale utilizzato all'interno del round è ottenuto 
 
 ### Stati del sistema
 
-In ogni momento il sistema può trovarsi o in fase di gioco (ovvero all'interno di un round) oppure all'interno dello shop. La fine della fase di gioco avviene in seguito alla conclusione di un round. In caso il round sia stato superato con successo, il giocatore accede allo shop, dove ha la possibilità di visualizzare i livelli delle combinazioni di carte e di aprire un pacchetto, selezionando eventualmente un oggetto. Conclusa la fase dello shop, il giocatore rientra nella fase di gioco iniziando il round successivo. Nel caso invece di sconfitta, può iniziare una nuova partita.
+In ogni momento il sistema può trovarsi in uno dei seguenti `Model`:
+
+- _Playing_: durante un round;
+- _Round Won/Lost_: dopo il round;
+- _InShop_: dopo lo stato di Round Won;
+- _Opening Pack_: Nel caso in cui apra un pacchetto nello shop;
+- _Show Deck_: cliccando sul deck fuori dal round;
+- _Show Level_: cliccando sul bottone apposito dallo stato _InShop_.
 
 ![Model Update](Model_Update.svg)
+
+A ognuno di questi stati corrisponde una schermata apposita con una serie di messaggi.
 
 ### Esecuzione del round
 
 Il componente che si occupa di gestire il flusso di esecuzione del round è _RoundManager_, che esegue ciclicamente, fino alla terminazione del round, le seguenti azioni:
+
 1. Aggiornamento della grafica;
 2. Recupero della prossima azione di gioco (Play, Discard o Order);
 3. Processamento di quest'ultima;
@@ -58,6 +69,7 @@ Il componente che si occupa di gestire il flusso di esecuzione del round è _Rou
 ## Calcolo del punteggio
 
 Il calcolo del punteggio si avvale di diversi componenti:
+
 - Mano di gioco: sequenza di carte giocate;
 - Joker posseduti;
 - Blind corrente;
@@ -81,6 +93,7 @@ Data la presenza del seed, è risultato utile creare un sistema per individuarne
 ![Seed Search Class](Seed_Search_Class.svg)
 
 La simulazione utilizzata per la ricerca di un seed si compone delle seguenti fasi:
+
 1. Generazione di un nuovo seed casuale;
 2. Simulazione di un round come vinto, consistente nell'estrazione delle carte nella mano iniziale e del contenuto dei pacchetti nello shop;
 3. Verifica dei vincoli per il round appena simulato. Nel caso uno non sia soddisfatto si ritorna al punto 1;
