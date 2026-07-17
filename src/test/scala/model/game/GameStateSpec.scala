@@ -38,15 +38,6 @@ class GameStateSpec extends AnyFlatSpec, Matchers:
     val result = start.shuffleDeck
     result.deck should not equal start.deck
 
-  "shopInformation" should "carry over the deck, levels, and jokers" in:
-    val jokers = Seq(JokerType.CraftyJoker)
-    val levels = HandTypeLevels.initial.updated(HandType.Flush, 2)
-    val state = start.copy(jokers = jokers, levels = levels)
-    val info = state.shopInformation
-    info.deck shouldBe state.deck
-    info.levels shouldBe levels
-    info.jokers shouldBe jokers
-
   "addCard" should "add a card to the Deck" in:
     val aceOfSpade = A of S
     val deckOnTwoAceOfSpade = Deck().add(aceOfSpade)

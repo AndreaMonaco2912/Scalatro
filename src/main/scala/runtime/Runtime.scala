@@ -63,7 +63,7 @@ class Runtime(screens: ScreenRouter, seed: Seed = Seed.random):
       case Cmd.DealFirstRound => runFirstRound(view, queue)
       case Cmd.Deal(gs)       => runRound(view, queue, gs.advanceBlind)
       case Cmd.BuildShop(gs)  =>
-        IO(Shop.default(gs.shopInformation, gs.selectionPolicies))
+        IO(Shop.default(gs.jokers, gs.selectionPolicies))
           .flatMap(s => queue.offer(Msg.InternalEffect.ShopReady(gs, s)))
 
   private def runFirstRound(view: FxView, queue: Queue[IO, Msg]): IO[Unit] =

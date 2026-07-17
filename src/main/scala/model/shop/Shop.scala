@@ -2,7 +2,6 @@ package scalatro
 package model.shop
 
 import model.commons.*
-import model.game.ShopInformation
 import model.rng.SelectionPolicies
 import model.rng.{ScalatroRng, SelectionPolicy}
 
@@ -25,8 +24,8 @@ object Shop:
   /** Creates the default shop, with a small pack per category. Jokers already
     * owned by the player are excluded from the joker pack.
     *
-    * @param shopInformation
-    *   the game information influencing pack generation
+    * @param blackList
+    *   list of Jocker of the user that cannot appear in the shop
     * @param selectionPolicies
     *   the selection policies for each category
     * @param rng
@@ -35,7 +34,7 @@ object Shop:
     *   the shop
     */
   def default(
-      shopInformation: ShopInformation,
+      blackList: Seq[Joker],
       selectionPolicies: SelectionPolicies
   )(using
       rng: ScalatroRng
@@ -46,5 +45,5 @@ object Shop:
     Shop(
       CardsPack().smallPack,
       PlanetPack().smallPack,
-      JokerPack().smallPack(shopInformation.jokers)
+      JokerPack().smallPack(blackList)
     )

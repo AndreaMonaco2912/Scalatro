@@ -55,14 +55,6 @@ case class GameState(
       blindProgression.blind
     )
 
-  /** The subset of information needed to generate a shop.
-    *
-    * @return
-    *   the shop information
-    */
-  def shopInformation: ShopInformation =
-    ShopInformation(deck, levels, jokers)
-
   /** Adds a card to the deck.
     *
     * @param card
@@ -99,20 +91,6 @@ case class GameState(
   *   the number of discards per round
   */
 case class HandInformation(handSize: Int, handNum: Int, discardNum: Int)
-
-/** The information needed to generate a shop.
-  * @param deck
-  *   the player's deck
-  * @param levels
-  *   the levels of the hand types
-  * @param jokers
-  *   the owned jokers
-  */
-case class ShopInformation(
-    deck: Deck,
-    levels: HandTypeLevels,
-    jokers: Seq[Joker]
-)
 
 object GameState:
   val initialHandSize = 8
