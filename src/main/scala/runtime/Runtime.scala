@@ -62,8 +62,7 @@ class Runtime(screens: GameViews, seed: Seed = Seed.random):
       case Cmd.NoOp          => IO.unit
       case Cmd.Deal(gs)      => runRound(view, queue, gs)
       case Cmd.BuildShop(gs) =>
-        given SelectionPolicies = gs.selectionPolicies
-        IO(Shop.default(gs.shopInformation))
+        IO(Shop.default(gs.shopInformation, gs.selectionPolicies))
           .flatMap(s => queue.offer(Msg.InternalEffect.ShopReady(gs, s)))
 
   private def runRound(

@@ -27,16 +27,18 @@ object Shop:
     *
     * @param shopInformation
     *   the game information influencing pack generation
-    * @param rng
-    *   the random number generator
     * @param selectionPolicies
     *   the selection policies for each category
+    * @param rng
+    *   the random number generator
     * @return
     *   the shop
     */
-  def default(shopInformation: ShopInformation)(using
-      rng: ScalatroRng,
+  def default(
+      shopInformation: ShopInformation,
       selectionPolicies: SelectionPolicies
+  )(using
+      rng: ScalatroRng
   ): Shop =
     given SelectionPolicy[Card] = selectionPolicies.cardPolicy
     given SelectionPolicy[Planet] = selectionPolicies.planetPolicy

@@ -17,11 +17,10 @@ class ShopSpec extends AnyFlatSpec, Matchers:
   private val smallPackSize = 3
 
   private def shopOwning(blackList: Seq[Joker]): Shop =
-    Shop.default(ShopInformation(Deck(), HandTypeLevels.initial, blackList))(
-      using
-      ScalatroRng.default,
+    Shop.default(
+      ShopInformation(Deck(), HandTypeLevels.initial, blackList),
       SelectionPolicies.default
-    )
+    )(using ScalatroRng.default)
 
   "default" should "offer a card pack of the small pack size" in:
     shopOwning(Seq.empty).cardPack.items.length shouldBe smallPackSize

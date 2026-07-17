@@ -45,8 +45,7 @@ private[seed] object SimulationActions:
     */
   def generateShop(using ScalatroRng): SimStep[Shop] =
     State.inspect { s =>
-      given SelectionPolicies = s.selectionPolicies
-      Shop.default(s.shopInformation)
+      Shop.default(s.shopInformation, s.selectionPolicies)
     }
 
   /** Generates a [[WantedPackItems]] from the given constraints
