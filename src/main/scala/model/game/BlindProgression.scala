@@ -44,11 +44,23 @@ case class BlindProgression(
 
   def anteNum: Int = (roundNum - 1) / roundsInAnte + 1
 
+  /** @return
+    *   the score required to beat the current blind, either overridden by
+    *   [[targetScoreFromOutside]] or computed from the ante and blind type
+    */
   def targetScore: Score =
     targetScoreFromOutside.getOrElse(BlindProgression.scoreFor(anteNum, blind))
 
   def isBeaten(achieved: Score): Boolean = achieved >= targetScore
 
+  /** Creates a copy of this progression with an explicit target score,
+    * overriding the default ante-based calculation.
+    *
+    * @param score
+    *   the target score to use
+    * @return
+    *   a new `BlindProgression` with [[targetScoreFromOutside]] set
+    */
   def withTargetScore(score: Score): BlindProgression =
     copy(targetScoreFromOutside = Some(score))
 
@@ -56,6 +68,15 @@ case class BlindProgression(
     case _: BossBlind   => true
     case _: NormalBlind => false
 
+  /** Advances to the next blind: small blind to big blind, big blind to a
+    * randomly-drawn boss blind, and boss blind back to small blind (starting a
+    * new ante).
+    *
+    * @param rng
+    *   the random number generator used to draw the next boss blind
+    * @return
+    *   a new `BlindProgression` for the following round
+    */
   def next(using rng: ScalatroRng): BlindProgression =
     val nextBlind: Blind = blind match
       case SmallBlind => BigBlind
@@ -69,12 +90,30 @@ object BlindProgression:
   private val initialScore: Double = 300
   val roundsInAnte: Int = 3
   val initialSmallBlindScore: Score = Score(initialScore)
+
+  /** The multiplier applied to the small blind score to get the big blind
+    * score.
+    */
   private val bigBlindScoreMultiplier = 1.5
+
+  /** The multiplier applied to the small blind score to get the boss blind
+    * score.
+    */
   private val bossBlindScoreMultiplier = 2
 
   def first: BlindProgression =
     BlindProgression(1, SmallBlind)
 
+  /** Computes the target score for a given ante and blind type, scaling the
+    * base small blind score exponentially with the ante number.
+    *
+    * @param anteNum
+    *   the ante number
+    * @param blind
+    *   the blind type to compute the score for
+    * @return
+    *   the target score for the given ante and blind
+    */
   private def scoreFor(anteNum: Int, blind: Blind): Score =
     val small = initialSmallBlindScore * scala.math.pow(3, anteNum - 1)
     blind match
@@ -95,6 +134,12 @@ sealed trait Blind:
 
 object Blind:
   extension (blind: Blind)
+    /** @param card
+      *   the card to check
+      * @return
+      *   `true` if this blind debuffs the given card. It means that is a
+      *   [[Debuffer]] whose debuff condition applies to the card
+      */
     def isDebuffing(card: Card): Boolean = blind match
       case d: Debuffer => d.debuffs(card)
       case _           => false
