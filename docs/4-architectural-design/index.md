@@ -1,6 +1,5 @@
 # Design architetturale
 
-
 A fronte del requisito critico **[4.1]**, il gruppo ha deciso di adottare il pattern architetturale MVU (Model View Update). Esso è basato sulle seguenti componenti principali:
 
 - Model: rappresenta lo stato del sistema;
@@ -9,7 +8,9 @@ A fronte del requisito critico **[4.1]**, il gruppo ha deciso di adottare il pat
 - Command: messaggio che può richiedere una computazione e il cui risultato può generare ulteriori messaggi;
 - Update: entità che utilizza un messaggio e il model per creare una versione aggiornata di quest'ultimo secondo il messaggio e, eventualmente, un comando.
 
-// TODO: aggiungere i metodi dentro le componenti (es. update dentro Update)
+Seguendo il pattern MVU: `Update` deve essere una funzione pura, che dato un input produce sempre lo stesso output senza effetti collaterali, dunque, nel caso di questo progetto specifico, i `Cmd` sono utilizzati per richiedere al programma, `Runtime` di eseguire computazioni che sono influenzate dalla casualità.
+
+<!-- TODO: aggiungere i metodi dentro le componenti (es. update dentro Update) -->
 
 ![Alt text](MVU_Class_Diagram.svg)
 
