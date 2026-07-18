@@ -24,19 +24,13 @@ quali:
 
 ### Model View Update
 
-L'implementazione di `MVU` è nata come un refactor rispetto al codice precedente, questo si proponeva l'obiettivo di
-mantenere, quanto più possibile, inalterato e funzionante il codice già scritto non direttamente interessato, ma
-permettendo di ridurre il debito tecnico e semplificando l'aggiunta di nuove schermate e feature aderendo il più
-possibile alle logiche di funzionamento del pattern selezionato.
+<!-- L'implementazione di `MVU` è nata come un refactor rispetto al codice precedente, questo si proponeva l'obiettivo di mantenere, quanto più possibile, inalterato e funzionante il codice già scritto non direttamente interessato, ma permettendo di ridurre il debito tecnico e semplificando l'aggiunta di nuove schermate e feature aderendo il più possibile alle logiche di funzionamento del pattern selezionato. -->
 
 #### Runtime
 
-La classe cuore del programma è `Runtime`, questa gestisce il loop di gioco e esegue i comandi `Cmd` che derivano dai
-messaggi.
+La classe cuore del programma è `Runtime`, questa gestisce il loop di gioco e esegue i comandi `Cmd` che derivano dai messaggi.
 
-Il loop si basa sull'utilizzo della monade IO e una coda di `Msg` durante il quale, come si vede nel codice riportato di
-seguito, vengono estratti i messaggi, passati a `Update` assieme allo stato attuale (`Model`) e, per finire viene
-aggiornata la view e gestite le computazioni legate ai `Cmd` ricevuti.
+Il loop si basa sull'utilizzo della monade IO e una coda di `Msg` durante il quale, come si vede nel codice riportato di seguito, vengono estratti i messaggi, passati a `Update` assieme allo stato attuale (`Model`) e, per finire viene aggiornata la view e gestite le computazioni legate ai `Cmd` ricevuti.
 
 ```scala
 for
@@ -48,31 +42,26 @@ for
 yield ()
 ```
 
-La gestione dei comandi avviene attraverso un mach case che a seconda del comando ricevuto lo gestisce o lo delega a
-altre classi e funzioni.
+La gestione dei comandi avviene attraverso un mach case che a seconda del comando ricevuto lo gestisce o lo delega a altre classi e funzioni.
 
-`Runtime`, al contrario di `Update` ha il parametro contestuale di `rng` che permette di eseguire i comandi che lo
-richiedono.
+`Runtime`, al contrario di `Update` ha il parametro contestuale di `rng` che permette di processare i comandi che lo richiedono.
 
 #### Update
 
-`Update` è un singleton (`object`) che si occupa della gestione dei messaggi e aggiornamento del model, ricevuto un
-input si occupa semplicemente di eseguire un match case per definire la computazione da eseguire come conseguenza.
+`Update` è un singleton (`object`) che si occupa della gestione dei messaggi e aggiornamento del model, ricevuto un input utilizza un match case per definire la computazione da eseguire come conseguenza. Tuttavia non può gestire direttamente nessuna computazione legata all'`rng`, altrimenti non sarebbe una funzione pura e non rispetterebbe il pattern `MVU`, quali la creazione di `Round` e `Shop`, dunque delega il compito a `Runtime` attraverso l'uso di `Cmd`.
 
-In output rilascia il `Model` che derivante dalla computazione e l'eventuale `Cmd` da eseguire.
+Riceve in input il `Model` attuale e l'`Msg` ricevuto e rilascia in output il `Model` successivo e l'eventuale  `Cmd` da eseguire.
 
 `Update` ha anche una funzione `init` che imposta ritorna il `Model.Playing` e il `Cmd.DealFirstRound`.
 
 #### Model, Cmd, Msg
 
-Model, Cmd e Msg sono stati implementati come degli enum che permettono di rappresentare rispettivamente tutti gli stati
-della partita, tutti i comandi da eseguire a Runtime e tutti i messaggi utilizzati.
+Model, Cmd e Msg sono stati implementati come degli enum che permettono di rappresentare rispettivamente tutti gli stati della partita, tutti i comandi da eseguire a Runtime e tutti i messaggi utilizzati.
 
 I `Cmd` sono:
 
 - `NoOp`: che indica l'assenza di un comando generato, quindi l'operazione è stata gestita completamente in Update.
-- `Deal(GameState)` e `DealFirstRound` che richiedono a `Runtime` di creare un round, in particolare `Deal` fa creare il
-  round successivo e DealFirst il primo.
+- `Deal(GameState)` e `DealFirstRound` che richiedono a `Runtime` di creare un round, in particolare `Deal` fa creare il round successivo e DealFirst il primo.
 - `BuildShop` richiede a `Runtime` di creare lo shop.
 
 Con il sono fine di approfondire tutti le funzioni che hanno i messaggi e il loro risultato sul model: indichiamo con
