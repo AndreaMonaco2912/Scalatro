@@ -5,6 +5,162 @@ del progetto seguendo il paradigma funzionale dimostrando le conoscenze apprese 
 
 ## Baldazzi Andrea
 
+All'interno del progetto ho contribuito all'implementazione della logica per la gestione del round, sviluppando anche gli algoritmi per l'ordinamento di elementi (quali le carte). Ho sviluppato poi il sistema di rng del gioco, compreso di un meccanismo per la ricerca del seed.
+Di seguito sono elencati i file su cui ho contribuito totalmente o parzialmente:
+- Round: `RoundManager`, `RoundState`, `TurnActions`;
+- Ordinamento: `Orderer`;
+- Rng: `ScalatroRng`, `SelectionPolicy`, `Types`;
+- Ricerca seed: `ScalatroSeedSearch`, `SeedConstraint`, `SimulationActions`, `SimulationTypes`.
+
+### Gestione Round
+
+L'elemento di base nella gestione del round è rappresentato da `RoundState`, una semplice case class che contiene tutte le informazioni importanti. 
+
+#### TurnActions
+
+Rappresenta una collezione di metodi per modificare un `RoundState` in seguito a un'azione di gioco. La sua implementazione è fatta con la monade `State` della libreria _cats_, in modo tale da scomporre le computazioni in piccoli passaggi da eseguire in sequenza.
+
+#### RoundManager
+
+Il manager è il motore della gestione del round. La sua implementazione è funzionale ed è basata completamente sulla monade `IO`, fornita dalla libreria _cats effect_. 
+Il manager esegue una ricorsione finché il round non è finito, eseguendo in sequenza le seguenti azioni:
+- ottenere la prossima azione;
+- processare l'azione e aggiornare il lo stato del round;
+- aggiornare la view.
+
+Per eseguire la prima e la terza utilizza delle funzioni IO, passate alla creazione del manager. Quando il round è terminato, viene restituito un `IO` puro contenente il risultato.
+Di seguito è mostrato il codice relativo a quanto descritto:
+
+```scala 3
+def roundLoop(initialRoundState: RoundState): IO[RoundState] =
+  if initialRoundState.isFinished
+  then IO.pure(initialRoundState)
+  else
+    for
+      action <- getAction
+      newRound <- processAction(initialRoundState, action)
+      _ <- updateView(newRound)
+      result <- roundLoop(newRound)
+    yield result
+```
+
+### Ordinamento
+L'ordinamento degli elementi è un trait generico con un solo metodo `order`, che prende in ingresso una sequenza di elementi e restituisce una sequenza con gli elementi in ordine modificato.
+Nel suo companion object sono presenti ordinamenti di default e factory method:
+- `identity`: ordinamento nullo;
+- `rankOrdering`: (solo per le carte) ordina in base al rank delle carte;
+- `suitOrdering`: (solo per le carte) ordina in base al suit delle carte;
+- `swapElems`: scambia due elementi della sequenza;
+- `moveElement`: sposta un elemento della sequenza in un'altra posizione.
+
+In particolare, `swapElems` e `moveElement` sono implementati utilizzando il linguaggio Prolog, dal momento che la programmazione logica è particolarmente adatta a questi algoritmi. Di seguito sono fornite le teorie Prolog utilizzate:
+
+```
+% swap(+List, +I, +J, -NewList)
+swap(List, I, J, O) :- getElem(List, I, Ei), getElem(List, J, Ej), setElem(List, I, Ej, Tmp), setElem(Tmp, J, Ei, O).
+ 
+getElem([H|_], 0, H) :- !.
+getElem([_|T], I, E) :- I1 is I-1, getElem(T, I1, E).
+ 
+setElem([_|T], 0, E, [E|T]) :- !.
+setElem([H|T], I, E, [H|O]) :- I1 is I-1, setElem(T, I1, E, O).
+```
+
+```
+% move(+List, +FromIndex, +ToIndex, -NewList)
+move(List, From, To, O) :- remove(List, From, Elem, Rest), insert(Rest, Elem, To, O).
+
+remove([H|T], 0, H, T) :- !.
+remove([H|T], From, Elem, [H|Rest]) :- From2 is From - 1, remove(T, From2, Elem, Rest).
+
+insert(T, Elem, 0, [Elem|T]) :- !.
+insert([H|T], Elem, To, [H|O]) :- To2 is To-1, insert(T, Elem, To2, O).
+```
+### Rng
+
+Per il sistema di randomizzazione sono stati introdotti dei tipi opachi per rapresentare i seguenti elementi:
+- `Seed`: un numero utilizzato per la generazione dei numeri casuali;
+- `Weight`: il peso utilizzato per la selezione di un elemento da un pool;
+- `Pool`: una sequenza di elementi da cui poter estrarre.
+
+#### SelectionPolicy
+
+Una `SelectionPolicy` è rappresentata da un trait generico con un metodo `weight` che serve ad assegnare il peso all'elemento. L'implementazione prevede che una policy sia componibile e ciò avviene grazie ai mixin. 
+Partendo infatti dalla classe base `UniformSelectionPolicy`, che assegna peso 1.0 a tutti gli elementi, è possibile mixare altri trait come se fossero dei decoratori per il metodo `weight`, sovrascritto con _abstract override_. 
+Nel programma sono presenti i seguenti mixin:
+- `BoostRank`;
+- `BoostSuit`;
+- `BoostCard`;
+- `BoostFaces`;
+- `BoostJoker`;
+- `BoostPlanetHandType`.
+
+#### ScalatroRng
+
+Rappresenta l'entità che si occupa di estrarre un certo numero di elementi da una pool. L'estrazione avviene tramite il metodo `draw` che è context bound in `SelectionPolicy` e generico con upperbound a `Weighable`:
+esso infatti ha bisogno di una implementazione di policy per quel tipo di elemento, che deve essere marcato come `Weighable`. Internamente l'implementazione prevede di utilizzare un seed per creare un oggetto `scala.Random` per ogni tipo `Weighable`, in modo tale da rendere indipendenti gli stream di numeri casuali.
+L'algoritmo di estrazione, A-Res, genera un numero casuale per ogni elemento e lo associa al peso dell'elemento per decidere la sua precedenza nell'estrazione.
+
+### Ricerca del seed
+
+La ricerca di un seed prevede due passaggi:
+- generazione di un nuovo seed;
+- simulazione della partita per controllare se il seed sia giusto.
+
+Quanto appena descritto è implementato con una `LazyList`, in modo da interrompere la generazione al bisogno, nel seguente modo:
+```scala 3
+LazyList
+  .continually(Random.nextLong())
+  .map(Seed(_))
+  .take(maxAttempts)
+  .find(seed => satisfiesConstraints(constraints)(using ScalatroRng(seed)))
+  .getOrElse(Seed(0L))
+```
+
+#### SeedConstraint
+
+Un vincolo sul seed è un semplice trait con il metodo `isSatisfiedBy(round: SimRound): Boolean` che controlla, dato un round simulato, che il vincolo sia soddisfatto. `SimRound` è una semplice case class che contiene le informazioni su un round simulato, ovvero le carte nella mano a inizio round e il contenuto dei pacchetti nello shop.
+
+#### PickFromPackPolicy
+
+Un trait che definisce il modo in cui modificare il `GameState` durante la simulazione in seguito alla selezione di un elemento da un pacchetto.
+In particolare, sono definite le implementazioni per `Card`, `Joker` e `Planet` con dei given nel companion object, in modo da essere importate autonomamente.
+
+#### Simulazione
+
+La simulazione è l'elemento più importante della ricerca del seed. La sua implementazione prevede delle stateful computation su `GameState` con la monade `State` della libreria _cats_, utilizzata per creare una serie di azioni per modificare lo stato e allo stesso tempo restituire un risultato.
+Queste computazioni accettano un oggetto di tipo `ScalatroRng`, selezionandolo dal contesto tramite _using_, e hanno come valore di ritorno il tipo:
+```scala 3
+private type SimStep[A] = State[GameState, A]
+```
+I metodi che sfruttano la monade `State` durante la simulazione sono i seguenti:
+
+```scala 3
+def shuffleDeckAndDraw(using ScalatroRng): SimStep[Hand]
+def generateShop(using ScalatroRng): SimStep[Shop]
+def pickFromPacks(constraints: Seq[SeedConstraint]): SimStep[Unit]
+def simulateRound(using ScalatroRng): SimStep[SimRound]
+def advanceBlind(using ScalatroRng): SimStep[Unit]
+def checkAllRounds(constraints: Seq[SeedConstraint])(using ScalatroRng): SimStep[Boolean]
+```
+
+#### CLI Parser
+
+L'avvio della ricerca del seed viene effettuata da riga di comando, specificando i vincoli nella seguente maniera:
+```bash
+java -jar scalatro.jar -ss [-c <constraint>] [-c <constraint>]...
+
+Examples:
+  -c "initial-hand-cards:1:Ace-Hearts,Ace-Diamonds"
+  -c "initial-hand-type:1:FullHouse"
+  -c "card-pack-contains:1:King-Spades"
+  -c "joker-pack-contains:1:CleverJoker"
+  -c "planet-pack-contains:1:Earth"
+```
+
+Questi vincoli, che inizialmente sono delle stringhe, devono attraversare una fase di parsing per verificarne la correttezza, implementata mediante la monade `Either`, che prevede di restituire un `Right` in caso di successo e un `Left` in caso di insuccesso.
+Questa monade prevede un meccanismo di short-circuit che interrompe la computazione non appena viene ottenuto un `Left`, comportamento particolarmente adatto per implementare il parsing, in quanto rende semplice produrre messaggi di errore relativi allo specifico errore riscontrato (ad esempio, un nome di joker scritto in modo errato).
+
 ## Monaco Andrea
 
 Il contributo personale sul progetto ha riguardato soprattutto l'implementazione della logica legata a `MVU` e la
