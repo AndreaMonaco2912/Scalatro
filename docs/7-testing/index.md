@@ -33,6 +33,7 @@ private def mockUpdateViewSequence(
 ### DSL per i test
 
 Per aumentare la comprensione del test di Update, è risultato comodo creare un piccolo DSL apposito per simulare l'invio di messaggi a un Model. Sono state create le seguenti azioni:
+
 - `!` (send): simula l'invio di un messaggio al Model, ricevendo il prossimo Model che ne deriva;
 - `?` (ask): simula l'invio di un messaggio al Model, ricevendo il Cmd che ne deriva.
 

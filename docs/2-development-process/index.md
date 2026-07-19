@@ -9,6 +9,7 @@ Prima dell'avvio del progetto adottando la metolodogia Scrum, si è verificato u
 ## Organizzazione
 
 Adottando la regola P8, l'organizzazione dei membri all'interno del processo di sviluppo ha previsto i seguenti ruoli:
+
 - Esperto del dominio, assunto da Andrea Monaco
 - Product Owner, assunto da Andrea Samorì
 - Scrum Master, assunto da Andrea Baldazzi
@@ -16,6 +17,7 @@ Adottando la regola P8, l'organizzazione dei membri all'interno del processo di 
 ## Strumenti
 
 In supporto alle attività del gruppo sono stati utilizzati i seguenti strumenti:
+
 - `Git` (versioning)
 - `Intellij IDEA` (sviluppo del codice (IDE))
 - `sbt` (build/test)
