@@ -451,7 +451,7 @@ override def onScored: Seq[HandScoreModification] =
 ```
 
 È stato scelto di ritornare una sequenza e non una singola `HandScoreModification` per permettere in maniera semplice di
-aggiungere degli effetti addizzionali che vengono attivati quando avviene l'`onScored` della carta.
+aggiungere degli effetti addizionali che vengono attivati quando avviene l'`onScored` della carta.
 
 ### Pack
 
@@ -459,8 +459,7 @@ L'elemento con cui l'utente può arricchire la sua partita. Alla fine di ogni ro
 sono presenti tre pacchetti (un card pack, un joker pack e un planet pack). Il giocatore sceglie uno di questi pacchetti
 e lo apre. Al suo interno sono presenti tre elementi di cui il giocatore ne può scegliere al più uno. Per modellare
 queste entità, ho creato una `PackFactory` generica sul tipo di elementi del pacchetto (nel nostro caso carte, joker
-oppure pianeti). A livello di tipo, devono essere tutti sottotipo di `Weighable` (vedere la parte di gestione della
-randomicità per maggiori dettagli).
+oppure pianeti). A livello di tipo, devono essere tutti sottotipo di `Weighable`.
 
 ```scala
 case class Pack[A](items: Seq[A])
@@ -500,8 +499,7 @@ sealed trait NormalBlind extends Blind
 sealed trait BossBlind extends Blind, Weighable
 ```
 
-`Boss Blind` estende anche da `Weighable` perchè è un entità che deve essere estratta randomicamente (vedere la parte di
-gestione della randomicità per maggiori dettagli).
+`Boss Blind` estende anche da `Weighable` perché è un entità che deve essere estratta casualmente.
 
 Per ogni Blind, ho creato un object a lui associato che estende dal trait appropriato.
 
@@ -564,7 +562,7 @@ modificare. Questo è utile sia per eventuali joker che possono modificarlo sia 
 ## Costruttori
 
 Questi componenti costituiscono un insieme di Domain-Specific Language (DSL) interni pensati per costruire in modo
-dichiarativo e leggibile gli oggetti del dominio. Questi sono stati particolarmente prezionsi durante il testing visto
+dichiarativo e leggibile gli oggetti del dominio. Questi sono stati particolarmente preziosi durante il testing visto
 che gran parte dei comportamenti di gioco vanno verificati creando scenari specifici e circoscritti.
 
 ### CardBuilder

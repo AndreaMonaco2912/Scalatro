@@ -84,7 +84,7 @@ In questa sezione viene presentata la specifica dei requisiti.
   - Scartare: selezionare tra 1 e 5 carte che vengono rimosse dalla mano senza essere reinserite nel mazzo. Una volta rimosse, vengono pescate un pari numero di carte dal mazzo;
   - Cambiare l'ordine delle carte joker.
 - **[2.2.18]** Il calcolo del punteggio è suddiviso nelle seguenti fasi:
-    1. Si considerano le carte selezionate e si determina il punteggio di base della giocata considerando la combinazione di carte e il corrispettivo livello. La combinazione di carte è scelta seguendo la proprità stabilita in **[2.2.18]**.
+    1. Si considerano le carte selezionate e si determina il punteggio di base della giocata considerando la combinazione di carte e il corrispettivo livello. La combinazione di carte è scelta seguendo la priorità stabilita in **[2.2.18]**.
     2. Vengono applicati gli effetti di tipo "A mano giocata" del boss blind e delle carte joker.
     3. Ogni carta che fa parte della combinazione contribuisce al punteggio aggiungendo al numero di Chips corrente il suo valore (11 per l'Asso, 10 per Re,Regina,Jack,Dieci, 9 per Nove e così via).
     4. Dopo il contributo di ogni carta vengono invocati gli effetti di tipo "A carta a segno" di boss blind e joker.
