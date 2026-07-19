@@ -21,5 +21,6 @@ In supporto alle attività del gruppo sono stati utilizzati i seguenti strumenti
 - `Git` (versioning)
 - `Intellij IDEA` (sviluppo del codice (IDE))
 - `sbt` (build/test)
+- `Github Actions` (CI/CD per release con build dell'applicazione e compilazione del report)
 
 <!-- [Indice](../index.md) | [Indietro](../1-introduction/index.md) | [Prossimo](../3-requirement-specification/index.md) -->
