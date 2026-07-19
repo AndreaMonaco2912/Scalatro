@@ -22,9 +22,10 @@ jobs:
             --toc \
             --number-sections \
             --metadata title=Scalatro \
+            --metadata author="Baldazzi Andrea, Monaco Andrea, Samorì Andrea, Ronchi Mattia" \
             -V geometry:margin=1in \
             -V header-includes='\usepackage{titlesec}\newcommand{\sectionbreak}{\clearpage}' \
-            -o ../report.pdf 
+            -o ../report.pdf
 
       - uses: actions/upload-artifact@v5
         with:
