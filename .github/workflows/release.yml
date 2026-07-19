@@ -23,19 +23,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download JAR
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           name: scalatro-jar
           path: ./release-assets
 
       - name: Download PDF
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           name: report-pdf
           path: ./release-assets
 
       - name: Create Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ inputs.version }}
           name: ${{ inputs.version }}
