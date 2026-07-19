@@ -10,10 +10,6 @@ Durante il meeting iniziale, si è valutato di utilizzare il framework ScalaTest
 
 Durante lo sviluppo è emersa la necessità di effettuare testing di unità di componenti con dipendenze da altre componenti. A tal fine è risultato utile adottare la tecnica del mocking. Sono stati messi a confronto i framework Mockito e ScalaMock e si è deciso di utilizzare quest'ultimo per la sintassi (DSL) più chiara e per la possibilità di esprimere delle _expectations_ rispetto a delle verifiche a posteriori sulle condizioni volute.
 
-## Grado di copertura
-
-Bruh
-
 ## Metodologia utilizzata
 
 Seguendo le linee guida dello sviluppo agile si è cercato di seguire l'approccio Test Driven Development (TDD) per garantire una maggior qualità al sistema. Nella parte iniziale del progetto ci siamo attenuti rigorosamente a questa metodologia, mentre nelle fasi successive si è utilizzato un approccio al testing più classico, testando una funzionalità dopo averla sviluppata.
