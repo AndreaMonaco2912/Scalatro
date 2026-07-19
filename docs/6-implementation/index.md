@@ -31,7 +31,7 @@ Il manager esegue una ricorsione finché il round non è finito, eseguendo in se
 - aggiornare la view.
 
 Per eseguire la prima e la terza utilizza delle funzioni IO, passate alla creazione del manager. Quando il round è terminato, viene restituito un `IO` puro contenente il risultato.
-Di seguito è mostrato il codice relativo a quanto descritto:
+Di seguito è mostrato il codice relativo a quanto appena descritto:
 
 ```scala
 def roundLoop(initialRoundState: RoundState): IO[RoundState] =
