@@ -19,7 +19,7 @@ Il mazzo rappresenta una sequenza ordinata di carte che, all'inizio del gioco è
 
 ### Blind
 
-Il gioco è diviso in _Ante_ formate da tre blind ognuna: prima `Small Blind`, poi `Big Blind` e infine `Boss Blind`. Quest'ultimo comporta effetti svantaggiosi per il giocatore (in risposta ai requisiti **[[2.2.2]]** e **[[2.2.3]]**). Viene creata una struttura chiamata `BlindProgression` che modella sia l'avanzamento dei blind sia la gestione del punteggio incrementale da battere (in risposta ai requisiti **[[2.2.4]]** e **[[2.2.5]]**).
+Il gioco è diviso in _Ante_ formate da tre blind ognuna: prima `Small Blind`, poi `Big Blind` e infine `Boss Blind`. Quest'ultimo comporta effetti svantaggiosi per il giocatore (in risposta ai requisiti **[2.2.2]** e **[2.2.3]**). Viene creata una struttura chiamata `BlindProgression` che modella sia l'avanzamento dei blind sia la gestione del punteggio incrementale da battere (in risposta ai requisiti **[2.2.4]** e **[2.2.5]**).
 
 Ogni volta che si sfida un `Boss Blind`, questo deve essere scelto in maniera randomica (secondo il seme della partita) tra quelli disponibili (requisito **[2.2.27]**). Per farlo i `Boss Blind` devono essere _Weighable_ (maggiori dettagli nella sezione Randomness).
 
@@ -27,10 +27,10 @@ Ogni volta che si sfida un `Boss Blind`, questo deve essere scelto in maniera ra
 
 Il negozio, `Shop` è una struttura dati che in fase di creazione richiede:
 
-- rng per il punto **[[2.2.27]]**;
+- rng per il punto **[2.2.27]**;
 - `SelectionPolicies` (descritte successivamente);
-- una lista di Joker bannati per permettere il punto **[[2.2.25]]**;
-Al suo interno contiene 3 pacchetti da lui creati dei 3 tipi disponibili nel gioco come richiesto al punto **[[2.2.23]]**.
+- una lista di Joker bannati per permettere il punto **[2.2.25]**;
+Al suo interno contiene 3 pacchetti da lui creati dei 3 tipi disponibili nel gioco come richiesto al punto **[2.2.23]**.
 
 ### RoundState
 
