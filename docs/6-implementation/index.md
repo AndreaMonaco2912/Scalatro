@@ -7,6 +7,7 @@ del progetto seguendo il paradigma funzionale dimostrando le conoscenze apprese 
 
 All'interno del progetto ho contribuito all'implementazione della logica per la gestione del round, sviluppando anche gli algoritmi per l'ordinamento di elementi (quali le carte). Ho sviluppato poi il sistema di rng del gioco, compreso di un meccanismo per la ricerca del seed.
 Di seguito sono elencati i file su cui ho contribuito totalmente o parzialmente:
+
 - Round: `RoundManager`, `RoundState`, `TurnActions`;
 - Ordinamento: `Orderer`;
 - Rng: `ScalatroRng`, `SelectionPolicy`, `Types`;
@@ -14,7 +15,7 @@ Di seguito sono elencati i file su cui ho contribuito totalmente o parzialmente:
 
 ### Gestione Round
 
-L'elemento di base nella gestione del round è rappresentato da `RoundState`, una semplice case class che contiene tutte le informazioni importanti. 
+L'elemento di base nella gestione del round è rappresentato da `RoundState`, una semplice case class che contiene tutte le informazioni importanti.
 
 #### TurnActions
 
@@ -22,8 +23,9 @@ Rappresenta una collezione di metodi per modificare un `RoundState` in seguito a
 
 #### RoundManager
 
-Il manager è il motore della gestione del round. La sua implementazione è funzionale ed è basata completamente sulla monade `IO`, fornita dalla libreria _cats effect_. 
+Il manager è il motore della gestione del round. La sua implementazione è funzionale ed è basata completamente sulla monade `IO`, fornita dalla libreria _cats effect_.
 Il manager esegue una ricorsione finché il round non è finito, eseguendo in sequenza le seguenti azioni:
+
 - ottenere la prossima azione;
 - processare l'azione e aggiornare il lo stato del round;
 - aggiornare la view.
@@ -31,7 +33,7 @@ Il manager esegue una ricorsione finché il round non è finito, eseguendo in se
 Per eseguire la prima e la terza utilizza delle funzioni IO, passate alla creazione del manager. Quando il round è terminato, viene restituito un `IO` puro contenente il risultato.
 Di seguito è mostrato il codice relativo a quanto descritto:
 
-```scala 3
+```scala
 def roundLoop(initialRoundState: RoundState): IO[RoundState] =
   if initialRoundState.isFinished
   then IO.pure(initialRoundState)
@@ -45,8 +47,10 @@ def roundLoop(initialRoundState: RoundState): IO[RoundState] =
 ```
 
 ### Ordinamento
+
 L'ordinamento degli elementi è un trait generico con un solo metodo `order`, che prende in ingresso una sequenza di elementi e restituisce una sequenza con gli elementi in ordine modificato.
 Nel suo companion object sono presenti ordinamenti di default e factory method:
+
 - `identity`: ordinamento nullo;
 - `rankOrdering`: (solo per le carte) ordina in base al rank delle carte;
 - `suitOrdering`: (solo per le carte) ordina in base al suit delle carte;
@@ -55,9 +59,11 @@ Nel suo companion object sono presenti ordinamenti di default e factory method:
 
 In particolare, `swapElems` e `moveElement` sono implementati utilizzando il linguaggio Prolog, dal momento che la programmazione logica è particolarmente adatta a questi algoritmi. Di seguito sono fornite le teorie Prolog utilizzate:
 
-```
+<!-- Il codice non è C#, ma il linguaggio il cui stile grafico di default risulta meglio con il prolog  -->
+<!--TODO Andare a capo entro setElem(List, I, Ej, Tmp)-->
+```C#
 % swap(+List, +I, +J, -NewList)
-swap(List, I, J, O) :- getElem(List, I, Ei), getElem(List, J, Ej), setElem(List, I, Ej, Tmp), setElem(Tmp, J, Ei, O).
+swap(List, I, J, O) :- getElem(List, I, Ei), getElem(List, J, Ej), setElem(List, I, Ej, Tmp), setElem(Tmp, J, Ei, O). 
  
 getElem([H|_], 0, H) :- !.
 getElem([_|T], I, E) :- I1 is I-1, getElem(T, I1, E).
@@ -66,7 +72,7 @@ setElem([_|T], 0, E, [E|T]) :- !.
 setElem([H|T], I, E, [H|O]) :- I1 is I-1, setElem(T, I1, E, O).
 ```
 
-```
+```C#
 % move(+List, +FromIndex, +ToIndex, -NewList)
 move(List, From, To, O) :- remove(List, From, Elem, Rest), insert(Rest, Elem, To, O).
 
@@ -76,18 +82,21 @@ remove([H|T], From, Elem, [H|Rest]) :- From2 is From - 1, remove(T, From2, Elem,
 insert(T, Elem, 0, [Elem|T]) :- !.
 insert([H|T], Elem, To, [H|O]) :- To2 is To-1, insert(T, Elem, To2, O).
 ```
+
 ### Rng
 
-Per il sistema di randomizzazione sono stati introdotti dei tipi opachi per rapresentare i seguenti elementi:
+Per il sistema di randomizzazione sono stati introdotti dei tipi opachi per rappresentare i seguenti elementi:
+
 - `Seed`: un numero utilizzato per la generazione dei numeri casuali;
 - `Weight`: il peso utilizzato per la selezione di un elemento da un pool;
 - `Pool`: una sequenza di elementi da cui poter estrarre.
 
 #### SelectionPolicy
 
-Una `SelectionPolicy` è rappresentata da un trait generico con un metodo `weight` che serve ad assegnare il peso all'elemento. L'implementazione prevede che una policy sia componibile e ciò avviene grazie ai mixin. 
-Partendo infatti dalla classe base `UniformSelectionPolicy`, che assegna peso 1.0 a tutti gli elementi, è possibile mixare altri trait come se fossero dei decoratori per il metodo `weight`, sovrascritto con _abstract override_. 
+Una `SelectionPolicy` è rappresentata da un trait generico con un metodo `weight` che serve ad assegnare il peso all'elemento. L'implementazione prevede che una policy sia componibile e ciò avviene grazie ai mixin.
+Partendo infatti dalla classe base `UniformSelectionPolicy`, che assegna peso 1.0 a tutti gli elementi, è possibile mixare altri trait come se fossero dei decoratori per il metodo `weight`, sovrascritto con _abstract override_.
 Nel programma sono presenti i seguenti mixin:
+
 - `BoostRank`;
 - `BoostSuit`;
 - `BoostCard`;
@@ -104,10 +113,12 @@ L'algoritmo di estrazione, A-Res, genera un numero casuale per ogni elemento e l
 ### Ricerca del seed
 
 La ricerca di un seed prevede due passaggi:
+
 - generazione di un nuovo seed;
 - simulazione della partita per controllare se il seed sia giusto.
 
 Quanto appena descritto è implementato con una `LazyList`, in modo da interrompere la generazione al bisogno, nel seguente modo:
+
 ```scala 3
 LazyList
   .continually(Random.nextLong())
@@ -130,9 +141,11 @@ In particolare, sono definite le implementazioni per `Card`, `Joker` e `Planet` 
 
 La simulazione è l'elemento più importante della ricerca del seed. La sua implementazione prevede delle stateful computation su `GameState` con la monade `State` della libreria _cats_, utilizzata per creare una serie di azioni per modificare lo stato e allo stesso tempo restituire un risultato.
 Queste computazioni accettano un oggetto di tipo `ScalatroRng`, selezionandolo dal contesto tramite _using_, e hanno come valore di ritorno il tipo:
+
 ```scala 3
 private type SimStep[A] = State[GameState, A]
 ```
+
 I metodi che sfruttano la monade `State` durante la simulazione sono i seguenti:
 
 ```scala 3
@@ -147,6 +160,7 @@ def checkAllRounds(constraints: Seq[SeedConstraint])(using ScalatroRng): SimStep
 #### CLI Parser
 
 L'avvio della ricerca del seed viene effettuata da riga di comando, specificando i vincoli nella seguente maniera:
+
 ```bash
 java -jar scalatro.jar -ss [-c <constraint>] [-c <constraint>]...
 
@@ -169,14 +183,14 @@ quali:
 
 - `GameState`: una semplice case class contenente tutte le informazioni persistenti della partita;
 - Elementi di Gameplay:
-    - `Shop`
-    - `Deck`
+  - `Shop`
+  - `Deck`
 - Schermate di gioco, e con esse la loro integrazione nel GamePlay Loop:
-    - Schermata di sconfitta e vittoria
-    - Schermata di informazioni del `Deck`
-    - Schermata di informazioni dei livelli delle mani
-    - Schermata di del negozio
-    - Schermata di apertura dei pacchetti
+  - Schermata di sconfitta e vittoria
+  - Schermata di informazioni del `Deck`
+  - Schermata di informazioni dei livelli delle mani
+  - Schermata di del negozio
+  - Schermata di apertura dei pacchetti
 
 ### Model View Update
 
@@ -400,15 +414,15 @@ componenti. Infine ho realizzato la funzione di suggerimento (Hint) che per dete
 ogni situazione. Le classi a cui ho contribuito, in totalità o per la maggior parte, sono le seguenti:
 
 - Gioco
-    - `Card`
-    - `Pack`
-    - `BlindProgression`
+  - `Card`
+  - `Pack`
+  - `BlindProgression`
 
 - Costruttori (DSL)
-    - `CardBuilder`
-    - `GameStateBuilder`
-    - `RoundBuilder`
-    - `CustomScenarioBuilder`
+  - `CardBuilder`
+  - `GameStateBuilder`
+  - `RoundBuilder`
+  - `CustomScenarioBuilder`
 
 - `Hint`
 
