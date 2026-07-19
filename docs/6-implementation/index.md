@@ -59,11 +59,10 @@ Nel suo companion object sono presenti ordinamenti di default e factory method:
 
 In particolare, `swapElems` e `moveElement` sono implementati utilizzando il linguaggio Prolog, dal momento che la programmazione logica è particolarmente adatta a questi algoritmi. Di seguito sono fornite le teorie Prolog utilizzate:
 
-<!-- Il codice non è C#, ma il linguaggio il cui stile grafico di default risulta meglio con il prolog  -->
-<!--TODO Andare a capo entro setElem(List, I, Ej, Tmp)-->
-```C#
+```prolog
 % swap(+List, +I, +J, -NewList)
-swap(List, I, J, O) :- getElem(List, I, Ei), getElem(List, J, Ej), setElem(List, I, Ej, Tmp), setElem(Tmp, J, Ei, O). 
+swap(List, I, J, O) :- getElem(List, I, Ei), getElem(List, J, Ej),
+  setElem(List, I, Ej, Tmp), setElem(Tmp, J, Ei, O). 
  
 getElem([H|_], 0, H) :- !.
 getElem([_|T], I, E) :- I1 is I-1, getElem(T, I1, E).
@@ -72,7 +71,7 @@ setElem([_|T], 0, E, [E|T]) :- !.
 setElem([H|T], I, E, [H|O]) :- I1 is I-1, setElem(T, I1, E, O).
 ```
 
-```C#
+```prolog
 % move(+List, +FromIndex, +ToIndex, -NewList)
 move(List, From, To, O) :- remove(List, From, Elem, Rest), insert(Rest, Elem, To, O).
 
@@ -620,7 +619,11 @@ codice passato a `configure` non riceve il builder esplicitamente, ma lo trova i
 Questo componente è pensato specificamente per costruire scenari in un unico flusso di facile interpretazione:
 
 ```scala
-Cards(A of S, K of H) withJokers Seq(Scholar, Fibonacci) onLevels(HC lv 3, TP lv 2, SF lv 5) inBlind BigBlind withTarget Score(500)
+Cards(A of S, K of H) 
+    withJokers Seq(Scholar, Fibonacci)
+    onLevels(HC lv 3, TP lv 2, SF lv 5)
+    inBlind BigBlind
+    withTarget Score(500)
 ```
 
 ## Hint
