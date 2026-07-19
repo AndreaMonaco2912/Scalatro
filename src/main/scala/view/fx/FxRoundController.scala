@@ -337,7 +337,7 @@ class FxRoundController extends Initializable, Bindable[RoundAction]:
     btn.setGraphic(iv)
     btn.setOnAction(_ =>
       setHandType(selectedCards match
-        case _ :: _ => Some(selectedCards.levelledHandType)
+        case _ :: _ if selectedCards.sizeIs <= 5 => Some(selectedCards.levelledHandType)
         case _      => None)
     )
     setupCardDragAndDrop(btn, index)
