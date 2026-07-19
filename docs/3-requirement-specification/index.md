@@ -149,4 +149,4 @@ In questa sezione viene presentata la specifica dei requisiti.
 - **[4.4]** Utilizzare Prolog
 - **[4.5]** Utilizzare JDK 25+
 
-[Indice](../index.md) | [Indietro](../2-development-process/index.md) | [Avanti](../4-architectural-design/index.md)
+<!-- [Indice](../index.md) | [Indietro](../2-development-process/index.md) | [Avanti](../4-architectural-design/index.md) -->

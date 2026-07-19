@@ -17,4 +17,4 @@ Il seguente diagramma di sequenza rappresenta quanto appena descritto:
 
 ![Alt text](Interactions.svg)
 
-[Indice](../index.md) | [Indietro](../3-requirement-specification/index.md) | [Avanti](../5-detailed-design/index.md)
+<!-- [Indice](../index.md) | [Indietro](../3-requirement-specification/index.md) | [Avanti](../5-detailed-design/index.md) -->

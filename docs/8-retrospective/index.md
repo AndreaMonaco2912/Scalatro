@@ -33,4 +33,4 @@ Durante lo sviluppo del progetto si sono riscontrate delle difficoltà nell'util
 
 La scelta di realizzare il sistema seguendo più possibile l'approccio funzionale ha introdotto notevoli difficoltà. Il dover pensare in un paradigma nuovo e con il quale si ha meno esperienza ha richiesto uno sforzo maggiore da parte dei membri del gruppo, richiedendo vari refactor per ristrutturare l'applicazione, mantenendo una certa qualità del codice. Per un dominio applicativo come quello di Balatro, sarebbe stato più facile adottare in molte parti il paradigma object-oriented. Nel mondo reale probabilmente sarebbe stato più opportuno realizzare una versione più ibrida tra funzionale e OOP, sfruttando i vantaggi di ciascuno.
 
-[Indice](../index.md) | [Indietro](../7-testing/index.md)
+<!-- [Indice](../index.md) | [Indietro](../7-testing/index.md) -->

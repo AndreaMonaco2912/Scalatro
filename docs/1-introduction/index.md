@@ -6,4 +6,4 @@ Il videogioco è un solitario ispirato alle combinazioni di carte del poker. La 
 
 Il punteggio richiesto dai livelli aumenta esponenzialmente. Per far fronte a questo aumento, il gioco fornisce degli elementi (_pianeti_, _joker_) che permettono di incrementarlo. Una caratteristica importante del gioco consiste nel combinare in sinergia questi elementi.
 
-[Indietro](../index.md) | [Prossimo](../2-development-process/index.md)
+<!-- [Indietro](../index.md) | [Prossimo](../2-development-process/index.md) -->

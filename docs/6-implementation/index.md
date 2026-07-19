@@ -664,4 +664,4 @@ def best(hand: Hand)(using ScoreConfig): Seq[Card] =
 Tramite `best` riusciamo a ridurre tutte le `rankedPlayes` in quella che ha il maggior punteggio (a parità di punteggio,
 viene scelta quella con meno carte).
 
-[Indice](../index.md) | [Indietro](../5-detailed-design/index.md) | [Avanti](../7-testing/index.md)
+<!-- [Indice](../index.md) | [Indietro](../5-detailed-design/index.md) | [Avanti](../7-testing/index.md) -->
