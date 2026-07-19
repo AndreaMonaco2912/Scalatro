@@ -21,11 +21,12 @@ jobs:
             --resource-path=$(echo [0-9]*-* | tr ' ' ':') \
             --toc \
             --number-sections \
-            --metadata title=Documentazione \
+            --metadata title=Scalatro \
             -V geometry:margin=1in \
-            -o ../output.pdf 
+            -V header-includes='\usepackage{titlesec}\newcommand{\sectionbreak}{\clearpage}' \
+            -o ../report.pdf 
 
       - uses: actions/upload-artifact@v5
         with:
-          name: documentation-pdf
-          path: output.pdf
+          name: report-pdf
+          path: report.pdf
