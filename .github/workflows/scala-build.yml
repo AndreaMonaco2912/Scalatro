@@ -1,5 +1,6 @@
 on:
   workflow_dispatch:
+  workflow_call:
 
 jobs:
   build-jar:
@@ -11,7 +12,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '25'
+          java-version: "25"
           cache: sbt
 
       - name: Setup sbt
@@ -23,7 +24,7 @@ jobs:
       - name: Collect jar
         run: |
           mkdir -p out
-          cp target/scala-*/*.jar out/  
+          cp target/scala-*/*.jar out/
 
       - uses: actions/upload-artifact@v5
         with:
