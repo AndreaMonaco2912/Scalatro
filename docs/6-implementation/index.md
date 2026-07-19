@@ -1,6 +1,6 @@
 # Implementazione
 
-Durante lo sviluppo del progetto, il team ha soddisfatto pienamente il requisito [4.3], implementando la quasi totalità
+Durante lo sviluppo del progetto, il team ha soddisfatto pienamente il requirement [4.3], implementando la quasi totalità
 del progetto seguendo il paradigma funzionale dimostrando le conoscenze apprese durante il corso.
 
 ## Baldazzi Andrea
@@ -193,13 +193,11 @@ quali:
 
 ### Model View Update
 
-<!-- L'implementazione di `MVU` è nata come un refactor rispetto al codice precedente, questo si proponeva l'obiettivo di mantenere, quanto più possibile, inalterato e funzionante il codice già scritto non direttamente interessato, ma permettendo di ridurre il debito tecnico e semplificando l'aggiunta di nuove schermate e feature aderendo il più possibile alle logiche di funzionamento del pattern selezionato. -->
-
 #### Runtime
 
 La classe cuore del programma è `Runtime`, questa gestisce il loop di gioco e esegue i comandi `Cmd` che derivano dai messaggi.
 
-Il loop si basa sull'utilizzo della monade IO e una coda di `Msg` durante il quale, come si vede nel codice riportato di seguito, vengono estratti i messaggi, passati a `Update` assieme allo stato attuale (`Model`) e, per finire viene aggiornata la view e gestite le computazioni legate ai `Cmd` ricevuti.
+Il loop si basa sull'utilizzo della monade IO e una coda di `Msg` durante il quale, come si vede nel codice riportato di seguito, vengono estratti i messaggi, passati a `Update` assieme allo stato attuale (`Model`) e, per finire, viene aggiornata la view e gestite le computazioni legate ai `Cmd` ricevuti.
 
 ```scala
 for
@@ -211,21 +209,21 @@ for
 yield ()
 ```
 
-La gestione dei comandi avviene attraverso un mach case che a seconda del comando ricevuto lo gestisce o lo delega a altre classi e funzioni.
+La gestione dei comandi avviene attraverso un match case che a seconda del comando ricevuto lo gestisce o lo delega a altre classi e funzioni.
 
 `Runtime`, al contrario di `Update` ha il parametro contestuale di `rng` che permette di processare i comandi che lo richiedono.
 
 #### Update
 
-`Update` è un singleton (`object`) che si occupa della gestione dei messaggi e aggiornamento del model, ricevuto un input utilizza un match case per definire la computazione da eseguire come conseguenza. Tuttavia non può gestire direttamente nessuna computazione legata all'`rng`, altrimenti non sarebbe una funzione pura e non rispetterebbe il pattern `MVU`, quali la creazione di `Round` e `Shop`, dunque delega il compito a `Runtime` attraverso l'uso di `Cmd`.
+`Update` è un singleton (`object`) che si occupa della gestione dei messaggi e aggiornamento del model, ricevuto un input utilizza un match case per definire la computazione da eseguire come conseguenza. Tuttavia non può gestire direttamente nessuna computazione legata all'`rng`, quali la creazione di `Round` e `Shop`, gestirle infatti la renderebbe una funzione non pura che non rispetterebbe il pattern `MVU` dunque delega il compito a `Runtime` attraverso l'uso di `Cmd`.
 
 Riceve in input il `Model` attuale e l'`Msg` ricevuto e rilascia in output il `Model` successivo e l'eventuale  `Cmd` da eseguire.
 
-`Update` ha anche una funzione `init` che imposta ritorna il `Model.Playing` e il `Cmd.DealFirstRound`.
+`Update` ha anche una funzione `init` che ritorna il `Model.Playing` e il `Cmd.DealFirstRound`.
 
 #### Model, Cmd, Msg
 
-Model, Cmd e Msg sono stati implementati come degli enum che permettono di rappresentare rispettivamente tutti gli stati della partita, tutti i comandi da eseguire a Runtime e tutti i messaggi utilizzati.
+Model, Cmd e Msg sono stati implementati come degli enum che permettono di rappresentare rispettivamente tutti gli stati della partita, tutti i comandi da eseguire a Runtime e tutti i messaggi utilizzati. Al termine della loro computazione i comandi inseriscono un messaggio nella queue.
 
 I `Cmd` sono:
 
@@ -233,10 +231,7 @@ I `Cmd` sono:
 - `Deal(GameState)` e `DealFirstRound` che richiedono a `Runtime` di creare un round, in particolare `Deal` fa creare il round successivo e DealFirst il primo.
 - `BuildShop` richiede a `Runtime` di creare lo shop.
 
-Con il sono fine di approfondire tutti le funzioni che hanno i messaggi e il loro risultato sul model: indichiamo con
-`Model ! Msg` un metodo che chiama `Update` su `(Model, Msg)` e ritorna solo il prossimo `Model` senza definire il
-comando, viceversa `Model ? Msg` fa lo stesso ritornando solo il `Cmd` che ne deriva ignorando il model. Di seguito
-l'elenco con tutte le reazioni che porta `Update`:
+Con il solo fine di approfondire tutti le funzioni che hanno i messaggi e il loro risultato sul model: indichiamo con `Model ! Msg` un metodo che chiama `Update` su `(Model, Msg)` e ritorna solo il prossimo `Model` senza definire il comando, viceversa `Model ? Msg` fa lo stesso ritornando solo il `Cmd` che ne deriva ignorando il model. Di seguito l'elenco con tutte le reazioni che porta `Update`, salvo diversa specifica un messaggio crea come comando `NoOp`:
 
 - `Model.Playing ! Msg.RoundWon` => `Model.RoundWon`
 - `Model.RoundWon ! Msg.ShopReady` => `Model.InShop`
@@ -257,29 +252,19 @@ l'elenco con tutte le reazioni che porta `Update`:
 
 ### Deck
 
-Il Deck è un tipo opaco che rappresenta una sequenza di carte. Alla sua creazione viene tipicamente creato come un
-normale mazzo da poker di 52 carte.
-I metodi: `shuffle`, `sort` e `draw` sono stati implementati come extension method, in particolare `shuffle` usa un
-parametro contestuale per ottenere l'rng con cui disordinare il deck per rispettare il requirement **[2.2.27]**.
+Il Deck è un tipo opaco che rappresenta una sequenza di carte. Alla sua creazione viene tipicamente creato come un normale mazzo da poker di 52 carte. I metodi: `shuffle`, `sort` e `draw` sono stati implementati come extension method, in particolare `shuffle` usa un parametro contestuale per ottenere l'rng con cui disordinare il deck per rispettare il requirement **[2.2.27]**.
 
 ### Shop
 
-Lo `Shop` è una semplice case class che viene tipicamente creata con il metodo `default` che prende in input una lista
-dei Joker e le selection policies, inoltre il parametro contestuale dell'rng per permettere di generare i pacchetti.
+Lo `Shop` è una semplice case class che viene tipicamente creata con il metodo `default` che prende in input una lista dei Joker e le selection policies, inoltre il parametro contestuale dell'rng per permettere di generare i pacchetti.
 
 Il metodo default è presente nel `companion object` di Shop e si occupa anche della creazione dei 3 pacchetti contenuti.
 
 ### Schermate di gioco
 
-Per la creazione delle schermate di gioco si è fatto uso di `JavaFx` con `FXML`. Vengono utilizzati dei file fxml per
-definire gli aspetti grafici statici delle schermate e ad essi vengono associati dei `Controller` per modellare gli
-aspetti dinamici e le interazioni, questi controlli hanno metodi pubblici per aggiornare le loro grafiche che vengono al
-thread `Platform` tramite `JavaFx`.
+Per la creazione delle schermate di gioco si è fatto uso di `JavaFx` con `FXML`. Vengono utilizzati dei file fxml per definire gli aspetti grafici statici delle schermate e ad essi vengono associati dei `Controller` per modellare gli aspetti dinamici e le interazioni. Questi hanno metodi pubblici per aggiornare le loro grafiche che vengono eseguite dal thread `Platform` tramite `JavaFx`.
 
-La classe `View` si occupa aggiornare i controller di JavaFx in base allo stato della partita. In particolare preso in
-input uno stato esegue un match case per aggiornare la schermata. Qui utilizza uno `ScreenRouter` che cambia la `root`
-dell'immagine a quella richiesta e ritorna un `IO[Controller]` su cui poi la view chiama eventualmente ulteriori
-funzioni per concludere l'aggiornamento.
+La classe `View` si occupa di aggiornare i controller di JavaFx in base allo stato della partita. In particolare preso in input uno stato esegue un match case per aggiornare la schermata. Qui utilizza uno `ScreenRouter` che cambia la `root` della scena a quella richiesta e ritorna un `IO[Controller]` su cui poi la view chiama eventualmente ulteriori funzioni per concludere l'aggiornamento.
 
 ## Mattia Ronchi
 

@@ -15,7 +15,7 @@ All'interno del sistema c'è la necessità di rappresentare alcune informazioni 
 
 ### Deck
 
-Il mazzo rappresenta una sequenza ordinata di carte che, all'inizio del gioco è composto dalle carte da poker come richiesto al punto **[2.2.7]** dei Requirements. Esiste un modo per disordinare le carte di un mazzo in modo casuale e riproducibile attraverso un seed, come richiesto al punto **[2.2.27]**. Per permettere il punto **[2.1.17]** esiste anche un modo per riordinarlo. Infine esiste un modo per pescare le carte dalla cima del mazzo per il requisito **[[2.2.16]]**.
+Il mazzo rappresenta una sequenza ordinata di carte che, all'inizio del gioco è composto dalle carte da poker come richiesto al punto **[2.2.7]** dei Requirements. Esiste un modo per disordinare le carte di un mazzo in modo casuale e riproducibile attraverso un seed, come richiesto al punto **[2.2.27]**. Per permettere il punto **[2.1.18]** esiste anche un modo per riordinarlo. Infine esiste un modo per pescare le carte dalla cima del mazzo per il requisito **[2.2.16]**.
 
 ### Blind
 
@@ -29,7 +29,7 @@ Il negozio, `Shop` è una struttura dati che in fase di creazione richiede:
 
 - rng per il punto **[2.2.27]**;
 - `SelectionPolicies` (descritte successivamente);
-- una lista di Joker bannati per permettere il punto **[2.2.25]**;
+- una lista di Joker bannati per permettere il punto **[2.2.24]**;
 Al suo interno contiene 3 pacchetti da lui creati dei 3 tipi disponibili nel gioco come richiesto al punto **[2.2.23]**.
 
 ### RoundState
@@ -83,7 +83,7 @@ Il calcolo del punteggio si avvale di diversi componenti:
 
 ![Score Engine](Score_Engine.svg)
 
-La computazione del punteggio si articola in diverse fasi, come descritto nel requisito [2.2.19].
+La computazione del punteggio si articola in diverse fasi, come descritto nel requisito [2.2.18].
 
 ## Randomness
 

@@ -1,6 +1,6 @@
 # Design architetturale
 
-A fronte del requisito critico **[4.1]**, il gruppo ha deciso di adottare il pattern architetturale MVU (Model View Update). Esso è basato sulle seguenti componenti principali:
+A fronte del requisito critico **[4.3]**, il gruppo ha deciso di adottare il pattern architetturale MVU (Model View Update). Esso è basato sulle seguenti componenti principali:
 
 - Model: rappresenta lo stato del sistema;
 - View: rappresenta ciò con cui interagisce l'utente;
