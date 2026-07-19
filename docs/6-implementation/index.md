@@ -119,7 +119,7 @@ La ricerca di un seed prevede due passaggi:
 
 Quanto appena descritto è implementato con una `LazyList`, in modo da interrompere la generazione al bisogno, nel seguente modo:
 
-```scala 3
+```scala
 LazyList
   .continually(Random.nextLong())
   .map(Seed(_))
@@ -142,13 +142,13 @@ In particolare, sono definite le implementazioni per `Card`, `Joker` e `Planet` 
 La simulazione è l'elemento più importante della ricerca del seed. La sua implementazione prevede delle stateful computation su `GameState` con la monade `State` della libreria _cats_, utilizzata per creare una serie di azioni per modificare lo stato e allo stesso tempo restituire un risultato.
 Queste computazioni accettano un oggetto di tipo `ScalatroRng`, selezionandolo dal contesto tramite _using_, e hanno come valore di ritorno il tipo:
 
-```scala 3
+```scala
 private type SimStep[A] = State[GameState, A]
 ```
 
 I metodi che sfruttano la monade `State` durante la simulazione sono i seguenti:
 
-```scala 3
+```scala
 def shuffleDeckAndDraw(using ScalatroRng): SimStep[Hand]
 def generateShop(using ScalatroRng): SimStep[Shop]
 def pickFromPacks(constraints: Seq[SeedConstraint]): SimStep[Unit]
