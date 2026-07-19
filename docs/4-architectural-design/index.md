@@ -10,8 +10,6 @@ A fronte del requisito critico **[4.1]**, il gruppo ha deciso di adottare il pat
 
 Seguendo il pattern MVU: `Update` deve essere una funzione pura, che dato un input produce sempre lo stesso output senza effetti collaterali, dunque, nel caso di questo progetto specifico, i `Cmd` sono utilizzati per richiedere al programma, `Runtime` di eseguire computazioni che sono influenzate dalla casualità.
 
-<!-- TODO: aggiungere i metodi dentro le componenti (es. update dentro Update) -->
-
 ![Alt text](MVU_Class_Diagram.svg)
 
 La View genera dei Message in risposta agli input dell'utente; essi vengono passati a Runtime (il programma), che usa Update per ricevere il Model aggiornato ed eventualmente il prossimo comando da eseguire. Infine, Runtime invia il Model aggiornato alla View che ne esegue il render.

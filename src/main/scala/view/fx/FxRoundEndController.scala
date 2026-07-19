@@ -33,8 +33,6 @@ abstract class FxRoundEndController extends Initializable, Dispatcher:
     button.setOnAction(_ => dispatch(message))
     clickableDeck.mount(deckHost)
 
-  // TODO: valutare se mantenere hands e discards remaining solo nel round won
-  // e se mostrare ulteriori informazioni nel round lost (es. blind raggiunto)
   def showStats(roundState: RoundState): Unit =
     Platform.runLater { () =>
       scoreLabel.setText(s"You scored: ${roundState.score.asDouble.toString}")
