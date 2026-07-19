@@ -425,9 +425,9 @@ ogni situazione. Le classi a cui ho contribuito, in totalità o per la maggior p
 
 - `Hint`
 
-## Gioco
+### Gioco
 
-### Card
+#### Card
 
 Uno degli elementi principali del sistema. Ogni carta è composta dalle seguenti informazioni: `rank`, `suit`. Oltre a
 questo, ogni carta implementa un metodo `onScored` che ritorna una sequenza di `HandScoreModification`.
@@ -453,7 +453,7 @@ override def onScored: Seq[HandScoreModification] =
 È stato scelto di ritornare una sequenza e non una singola `HandScoreModification` per permettere in maniera semplice di
 aggiungere degli effetti addizionali che vengono attivati quando avviene l'`onScored` della carta.
 
-### Pack
+#### Pack
 
 L'elemento con cui l'utente può arricchire la sua partita. Alla fine di ogni round vinto viene proposto uno shop dove
 sono presenti tre pacchetti (un card pack, un joker pack e un planet pack). Il giocatore sceglie uno di questi pacchetti
@@ -478,9 +478,9 @@ trait PackFactory[A <: Weighable](using SelectionPolicy[A]):
 
 All'interno di `PackFactory` è presente un `pool` da cui inserire gli oggetti nei vari pacchetti.
 
-### BlindProgression
+#### BlindProgression
 
-#### Blind
+##### Blind
 
 Ad ogni round il giocatore si trova a dover sfidare un `Blind`. Questo può avere degli effetti che vanno a svantaggio
 del giocatore. In questo caso, stiamo parlando di `Boss Blind`. Per accentuare la distinzione tra Boss e Non Boss blind,
@@ -531,7 +531,7 @@ Ogni `BossBlind` porta con se un effetto negativo per il giocatore. Questo effet
 attivarsi in diverse fasi del round (vedere la parte di descrizione su come funzionano gli effetti per maggiori
 dettagli).
 
-#### Progressione dei Blind
+##### Progressione dei Blind
 
 `BlindProgression` è l'entità dati responsabile di modellare e far avanzare correttamente la sequenza dei blind durante
 una partita. Ogni `ante` è composta da tre blind consecutivi Small Blind, poi Big Blind e infine Boss Blind al termine
@@ -559,13 +559,13 @@ scalato in base al tipo di blind. Il metodo targetScore dà però sempre priorit
 dall'esterno (targetScoreFromOutside), rendendo il calcolo standard sovrascrivibile senza doverlo duplicare o
 modificare. Questo è utile sia per eventuali joker che possono modificarlo sia per permettere un testing semplice.
 
-## Costruttori
+### Costruttori
 
 Questi componenti costituiscono un insieme di Domain-Specific Language (DSL) interni pensati per costruire in modo
 dichiarativo e leggibile gli oggetti del dominio. Questi sono stati particolarmente preziosi durante il testing visto
 che gran parte dei comportamenti di gioco vanno verificati creando scenari specifici e circoscritti.
 
-### CardBuilder
+#### CardBuilder
 
 ```scala
 object CardBuilder:
@@ -600,7 +600,7 @@ comprensibile. La dicitura `infix` evita di dover specificare i punti e le paren
 anziché `7.of(C)`). Per le carte non numeriche sono stati creati dei singleton che permettono di mantenere uniforme per
 tutte le carte il modo di creazione.
 
-### RoundBuilder e GameStateBuilder
+#### RoundBuilder e GameStateBuilder
 
 ```scala
 def configure(configuration: GameStateBuilder ?=> Unit): GameState =
@@ -612,7 +612,7 @@ def configure(configuration: GameStateBuilder ?=> Unit): GameState =
 La parte interessante di questi due componenti è l'utilizzo di una `context function` nella funzione `configure`. Il
 codice passato a `configure` non riceve il builder esplicitamente, ma lo trova implicitamente in scope grazie a using.
 
-### CustomScenarioBuilder
+#### CustomScenarioBuilder
 
 Questo componente è pensato specificamente per costruire scenari in un unico flusso di facile interpretazione:
 
@@ -624,7 +624,7 @@ Cards(A of S, K of H)
     withTarget Score(500)
 ```
 
-## Hint
+### Hint
 
 `Hint` implementa la logica di suggerimento della miglior giocata possibile data una mano di carte: individua, tra tutte
 le combinazioni di carte giocabili, quella che produce il punteggio più alto (a parità di punteggio, quella con meno
