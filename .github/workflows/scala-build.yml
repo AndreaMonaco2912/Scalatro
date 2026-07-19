@@ -20,6 +20,11 @@ jobs:
       - name: Build assembly JAR
         run: sbt assembly
 
+      - name: Collect jar
+        run: |
+          mkdir -p out
+          cp target/scala-*/*.jar out/  
+
       - uses: actions/upload-artifact@v5
         with:
           name: scalatro-jar
