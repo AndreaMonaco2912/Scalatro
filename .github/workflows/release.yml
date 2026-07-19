@@ -12,14 +12,14 @@ permissions:
   contents: write
 
 jobs:
-  build-jar:
-    uses: ./.github/workflows/build-jar.yml
+  scala-build:
+    uses: ./.github/workflows/scala-build.yml
 
   build-pdf:
     uses: ./.github/workflows/build-pdf.yml
 
   release:
-    needs: [build-jar, build-pdf]
+    needs: [scala-build, build-pdf]
     runs-on: ubuntu-latest
     steps:
       - name: Download JAR
