@@ -1,0 +1,26 @@
+on:
+  workflow_dispatch:
+
+jobs:
+  build-jar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: sbt
+
+      - name: Setup sbt
+        uses: sbt/setup-sbt@v1
+
+      - name: Build assembly JAR
+        run: sbt assembly
+
+      - uses: actions/upload-artifact@v5
+        with:
+          name: scalatro-jar
+          path: target/scala-*/*.jar
