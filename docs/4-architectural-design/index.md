@@ -5,7 +5,7 @@ A fronte del requisito critico **[4.3]**, il gruppo ha deciso di adottare il pat
 - Model: rappresenta lo stato del sistema;
 - View: rappresenta ciò con cui interagisce l'utente;
 - Message: rappresenta un messaggio scambiato internamente per l'aggiornamento dello stato;
-- Command: messaggio che può richiedere una computazione e il cui risultato può generare ulteriori messaggi;
+- Command: descrittore di una computazione il cui risultato può generare ulteriori messaggi;
 - Update: entità che utilizza un messaggio e il model per creare una versione aggiornata di quest'ultimo secondo il messaggio e, eventualmente, un comando.
 
 Seguendo il pattern MVU: `Update` deve essere una funzione pura, che dato un input produce sempre lo stesso output senza effetti collaterali, dunque, nel caso di questo progetto specifico, i `Cmd` sono utilizzati per richiedere al programma, `Runtime` di eseguire computazioni che sono influenzate dalla casualità.
