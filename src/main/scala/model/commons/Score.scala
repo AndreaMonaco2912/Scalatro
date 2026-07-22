@@ -215,9 +215,7 @@ object Score:
   def calculateHandScore(cards: Seq[Card])(using
       scoreConfig: ScoreConfig
   ): HandScore =
-    val jokers = scoreConfig.jokers
-    val levels = scoreConfig.levels
-    val blind = scoreConfig.blind
+    val ScoreConfig(jokers,levels,_,blind) = scoreConfig
     val handType: HandType = HandType.detect(cards)
     val initialScore: HandScore = getHandTypeBaseScore(handType, levels)
     val scoringCards = HandType.scoringCards(cards)
