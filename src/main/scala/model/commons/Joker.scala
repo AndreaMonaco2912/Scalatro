@@ -29,7 +29,7 @@ sealed trait HandTypeContained(
 
   override def afterHandPlayed(cards: Seq[Card]): Seq[HandScoreModification] =
     Modification.when(
-      HandType.detect(cards) == handType
+      HandType.contains(cards, handType)
     )(modification)
 
 /** Trait which increases the score given by a card with a certain suit
